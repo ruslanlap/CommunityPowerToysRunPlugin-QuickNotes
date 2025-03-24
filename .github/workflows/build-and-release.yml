@@ -165,7 +165,7 @@ jobs:
           cat > release_notes.md << 'EOL'
           # 📝 QuickNotes v${{ steps.get_version.outputs.VERSION }}
           
-          ![QuickNotes Logo](https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/main/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png)
+          ![QuickNotes Logo](https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png)
           
           ## ✨ What's New
           
