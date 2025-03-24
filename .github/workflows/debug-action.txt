@@ -1,0 +1,184 @@
+##[debug]Evaluating condition for step: 'Copy build output to artifacts directory'
+##[debug]Evaluating: success()
+##[debug]Evaluating success:
+##[debug]=> true
+##[debug]Result: true
+##[debug]Starting: Copy build output to artifacts directory
+##[debug]Loading inputs
+##[debug]Evaluating: format('$artifactDir = "artifacts/QuickNotes-v{0}-{1}"
+##[debug]
+##[debug]# Create the artifact directory
+##[debug]New-Item -ItemType Directory -Force -Path $artifactDir
+##[debug]
+##[debug]# Create QuickNotes subfolder
+##[debug]New-Item -ItemType Directory -Force -Path "$artifactDir/QuickNotes"
+##[debug]
+##[debug]# Find the build output directory
+##[debug]$buildOutput = Get-ChildItem -Path "QuickNotes" -Recurse -Directory | 
+##[debug]               Where-Object {{ $_.Name -eq "Release" -and $_.FullName -like "*{2}*" }} | 
+##[debug]               Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found build output directory: $buildOutput"
+##[debug]
+##[debug]# Find the .NET runtime folder (net9.0-windows10.0.22621.0) inside the build output
+##[debug]$runtimeFolder = Get-ChildItem -Path $buildOutput -Directory | 
+##[debug]                 Where-Object {{ $_.Name -like "net*-windows*" }} | 
+##[debug]                 Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found runtime folder: $runtimeFolder"
+##[debug]
+##[debug]# Copy all files from the runtime folder directly to the QuickNotes subfolder
+##[debug]if (Test-Path $runtimeFolder) {{
+##[debug]  Copy-Item -Path "$runtimeFolder/*" -Destination "$artifactDir/QuickNotes" -Recurse
+##[debug]  Write-Host "Files copied successfully"
+##[debug]}} else {{
+##[debug]  Write-Error "Runtime folder not found"
+##[debug]  exit 1
+##[debug]}}
+##[debug]', steps.get_version.outputs.VERSION, matrix.platform, matrix.platform)
+##[debug]Evaluating format:
+##[debug]..Evaluating String:
+##[debug]..=> '$artifactDir = "artifacts/QuickNotes-v{0}-{1}"
+##[debug]
+##[debug]# Create the artifact directory
+##[debug]New-Item -ItemType Directory -Force -Path $artifactDir
+##[debug]
+##[debug]# Create QuickNotes subfolder
+##[debug]New-Item -ItemType Directory -Force -Path "$artifactDir/QuickNotes"
+##[debug]
+##[debug]# Find the build output directory
+##[debug]$buildOutput = Get-ChildItem -Path "QuickNotes" -Recurse -Directory | 
+##[debug]               Where-Object {{ $_.Name -eq "Release" -and $_.FullName -like "*{2}*" }} | 
+##[debug]               Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found build output directory: $buildOutput"
+##[debug]
+##[debug]# Find the .NET runtime folder (net9.0-windows10.0.22621.0) inside the build output
+##[debug]$runtimeFolder = Get-ChildItem -Path $buildOutput -Directory | 
+##[debug]                 Where-Object {{ $_.Name -like "net*-windows*" }} | 
+##[debug]                 Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found runtime folder: $runtimeFolder"
+##[debug]
+##[debug]# Copy all files from the runtime folder directly to the QuickNotes subfolder
+##[debug]if (Test-Path $runtimeFolder) {{
+##[debug]  Copy-Item -Path "$runtimeFolder/*" -Destination "$artifactDir/QuickNotes" -Recurse
+##[debug]  Write-Host "Files copied successfully"
+##[debug]}} else {{
+##[debug]  Write-Error "Runtime folder not found"
+##[debug]  exit 1
+##[debug]}}
+##[debug]'
+##[debug]..Evaluating Index:
+##[debug]....Evaluating Index:
+##[debug]......Evaluating Index:
+##[debug]........Evaluating steps:
+##[debug]........=> Object
+##[debug]........Evaluating String:
+##[debug]........=> 'get_version'
+##[debug]......=> Object
+##[debug]......Evaluating String:
+##[debug]......=> 'outputs'
+##[debug]....=> Object
+##[debug]....Evaluating String:
+##[debug]....=> 'VERSION'
+##[debug]..=> '2025.03.24-2bb660d'
+##[debug]..Evaluating Index:
+##[debug]....Evaluating matrix:
+##[debug]....=> Object
+##[debug]....Evaluating String:
+##[debug]....=> 'platform'
+##[debug]..=> 'x64'
+##[debug]..Evaluating Index:
+##[debug]....Evaluating matrix:
+##[debug]....=> Object
+##[debug]....Evaluating String:
+##[debug]....=> 'platform'
+##[debug]..=> 'x64'
+##[debug]=> '$artifactDir = "artifacts/QuickNotes-v2025.03.24-2bb660d-x64"
+##[debug]
+##[debug]# Create the artifact directory
+##[debug]New-Item -ItemType Directory -Force -Path $artifactDir
+##[debug]
+##[debug]# Create QuickNotes subfolder
+##[debug]New-Item -ItemType Directory -Force -Path "$artifactDir/QuickNotes"
+##[debug]
+##[debug]# Find the build output directory
+##[debug]$buildOutput = Get-ChildItem -Path "QuickNotes" -Recurse -Directory | 
+##[debug]               Where-Object { $_.Name -eq "Release" -and $_.FullName -like "*x64*" } | 
+##[debug]               Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found build output directory: $buildOutput"
+##[debug]
+##[debug]# Find the .NET runtime folder (net9.0-windows10.0.22621.0) inside the build output
+##[debug]$runtimeFolder = Get-ChildItem -Path $buildOutput -Directory | 
+##[debug]                 Where-Object { $_.Name -like "net*-windows*" } | 
+##[debug]                 Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found runtime folder: $runtimeFolder"
+##[debug]
+##[debug]# Copy all files from the runtime folder directly to the QuickNotes subfolder
+##[debug]if (Test-Path $runtimeFolder) {
+##[debug]  Copy-Item -Path "$runtimeFolder/*" -Destination "$artifactDir/QuickNotes" -Recurse
+##[debug]  Write-Host "Files copied successfully"
+##[debug]} else {
+##[debug]  Write-Error "Runtime folder not found"
+##[debug]  exit 1
+##[debug]}
+##[debug]'
+##[debug]Result: '$artifactDir = "artifacts/QuickNotes-v2025.03.24-2bb660d-x64"
+##[debug]
+##[debug]# Create the artifact directory
+##[debug]New-Item -ItemType Directory -Force -Path $artifactDir
+##[debug]
+##[debug]# Create QuickNotes subfolder
+##[debug]New-Item -ItemType Directory -Force -Path "$artifactDir/QuickNotes"
+##[debug]
+##[debug]# Find the build output directory
+##[debug]$buildOutput = Get-ChildItem -Path "QuickNotes" -Recurse -Directory | 
+##[debug]               Where-Object { $_.Name -eq "Release" -and $_.FullName -like "*x64*" } | 
+##[debug]               Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found build output directory: $buildOutput"
+##[debug]
+##[debug]# Find the .NET runtime folder (net9.0-windows10.0.22621.0) inside the build output
+##[debug]$runtimeFolder = Get-ChildItem -Path $buildOutput -Directory | 
+##[debug]                 Where-Object { $_.Name -like "net*-windows*" } | 
+##[debug]                 Select-Object -First 1 -ExpandProperty FullName
+##[debug]
+##[debug]Write-Host "Found runtime folder: $runtimeFolder"
+##[debug]
+##[debug]# Copy all files from the runtime folder directly to the QuickNotes subfolder
+##[debug]if (Test-Path $runtimeFolder) {
+##[debug]  Copy-Item -Path "$runtimeFolder/*" -Destination "$artifactDir/QuickNotes" -Recurse
+##[debug]  Write-Host "Files copied successfully"
+##[debug]} else {
+##[debug]  Write-Error "Runtime folder not found"
+##[debug]  exit 1
+##[debug]}
+##[debug]'
+##[debug]Loading env
+Run $artifactDir = "artifacts/QuickNotes-v2025.03.24-2bb660d-x64"
+##[debug]C:\Program Files\PowerShell\7\pwsh.EXE -command ". 'D:\a\_temp\cd6141f2-c507-496a-bca4-0ba9e0c1154a.ps1'"
+
+    Directory: D:\a\CommunityPowerToysRunPlugin-QuickNotes\CommunityPowerToysRunPlugin-QuickNotes\artifacts
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           3/24/2025 10:22 PM                QuickNotes-v2025.03.24-2bb660d-x64
+
+    Directory: D:\a\CommunityPowerToysRunPlugin-QuickNotes\CommunityPowerToysRunPlugin-QuickNotes\artifacts\QuickNotes-
+v2025.03.24-2bb660d-x64
+
+Mode                 LastWriteTime         Length Name
+----                 -------------         ------ ----
+d----           3/24/2025 10:22 PM                QuickNotes
+Found build output directory: D:\a\CommunityPowerToysRunPlugin-QuickNotes\CommunityPowerToysRunPlugin-QuickNotes\QuickNotes\Community.PowerToys.Run.Plugin.QuickNotes\bin\x64\Release
+Found runtime folder: 
+Test-Path: D:\a\_temp\cd6141f2-c507-496a-bca4-0ba9e0c1154a.ps1:25
+Line |
+  25 |  if (Test-Path $runtimeFolder) {
+     |      ~~~~~~~~~~~~~~~~~~~~~~~~
+     | Value cannot be null. (Parameter 'The provided Path argument was null or an empty collection.')
+Error: Process completed with exit code 1.
+##[debug]Finishing: Copy build output to artifacts directory

@@ -75,37 +75,33 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## 🎬 Demo Gallery
 
 <div align="center">
-  <details open>
-    <summary><b>📝 Creating Notes</b></summary>
-    <p><img src="assets/demo-1.gif" width="650" alt="Creating Notes Demo"/></p>
-    <p><i>Simply type <code>qq</code> followed by your note text to save it instantly</i></p>
-  </details>
-  <b>🔍 Searching Notes</b>
-  <p><img src="assets/demo-2.gif" width="650" alt="Searching Notes Demo"/></p>
+  <h3>📝 Creating Notes</h3>
+  <p><img src="assets/demo-create notes.gif" width="650" alt="Creating Notes Demo"/></p>
+  <p><i>Simply type <code>qq</code> followed by your note text to save it instantly</i></p>
+  
+  <h3>🔍 Searching Notes</h3>
+  <p><img src="assets/demo-qq search.gif" width="650" alt="Searching Notes Demo"/></p>
   <p><i>Use <code>qq search &lt;term&gt;</code> to find notes with highlighted matches</i></p>
 
+  <h3>✏️ Editing Notes</h3>
+  <p><img src="assets/demo.gif" width="650" alt="Editing Notes Demo"/></p>
+  <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
 
-  <b>✏️ Editing Notes</b>
-    <p><img src="assets/demo-3.gif" width="650" alt="Editing Notes Demo"/></p>
-    <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
+  <h3>🗑️ Deleting Notes</h3>
+  <p><img src="assets/demo-qq delete.gif" width="650" alt="Deleting Notes Demo"/></p>
+  <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
-  <details>
-    <summary><b>🗑️ Managing Notes</b></summary>
-    <p><img src="assets/demo-4.gif" width="650" alt="Managing Notes Demo"/></p>
-    <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
-  </details>
-
-  <details>
-    <summary><b>💾 Backing Up Notes</b></summary>
-    <p><img src="assets/demo-6.gif" width="650" alt="Backing Up Notes Demo"/></p>
-    <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
-  </details>
-
-  <details>
-    <summary><b>👀 Viewing Notes</b></summary>
-    <p><img src="assets/demo-7.gif" width="650" alt="Viewing Notes Demo"/></p>
-    <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
-  </details>
+  <h3>💾 Exporting Notes</h3>
+  <p><img src="assets/demo-qq exportgif" width="650" alt="Exporting Notes Demo"/></p>
+  <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
+  
+  <h3>👀 Viewing Notes</h3>
+  <p><img src="assets/demo-qq view.gif" width="650" alt="Viewing Notes Demo"/></p>
+  <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
+  
+  <h3>❓ Help Command</h3>
+  <p><img src="assets/demo-qq help.gif" width="650" alt="Help Command Demo"/></p>
+  <p><i>Get help on available commands with <code>qq help</code></i></p>
 </div>
 
 ## 🚀 Installation
