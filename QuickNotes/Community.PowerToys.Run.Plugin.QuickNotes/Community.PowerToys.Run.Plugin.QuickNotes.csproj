@@ -1,0 +1,43 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <!-- Enable Windows-specific targeting -->
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+
+    <!-- Target framework and Windows version -->
+    <TargetFramework>net9.0-windows10.0.22621.0</TargetFramework>
+
+    <!-- Enable WPF support -->
+    <UseWPF>true</UseWPF>
+
+    <!-- Define supported platforms -->
+    <Platforms>x64;ARM64</Platforms>
+
+    <!-- Dynamically set PlatformTarget based on the current platform -->
+    <PlatformTarget>$(Platform)</PlatformTarget>
+
+    <!-- Other important properties -->
+    <RootNamespace>Community.PowerToys.Run.Plugin.QuickNotes</RootNamespace>
+    <AssemblyName>Community.PowerToys.Run.Plugin.QuickNotes</AssemblyName>
+    <Version>0.89.0</Version>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <UseWindowsForms>false</UseWindowsForms>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <!-- Package references -->
+  <ItemGroup>
+     <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.89.0" />
+  </ItemGroup>
+
+  <!-- Additional files to include in the output -->
+  <ItemGroup>
+    <None Include="plugin.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Images\*.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

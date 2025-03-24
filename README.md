@@ -1,111 +1,187 @@
-# PowerToys Run: VideoDownloader Plugin
+# 📝 PowerToys Run: QuickNotes Plugin
 
 <div align="center">
-  <img src="VideoDownloader/Community.PowerToys.Run.Plugin.VideoDownloader/Images/logo.png" alt="VideoDownloader Logo" width="128" height="128">
+  <img src="assets/demo.gif" alt="QuickNotes Demo" width="650">
   
-  <h1>VideoDownloader for PowerToys Run</h1>
-  <h3>Download videos from popular platforms directly from PowerToys Run</h3>
+  <img src="QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
   
-  ![GitHub release (latest by date)](https://img.shields.io/github/v/release/ruslanlap/PowerToysRun-VideoDownloader)
-  ![GitHub issues](https://img.shields.io/github/issues/ruslanlap/PowerToysRun-VideoDownloader)
-  ![GitHub pull requests](https://img.shields.io/github/issues-pr/ruslanlap/PowerToysRun-VideoDownloader)
-  ![GitHub last commit](https://img.shields.io/github/last-commit/ruslanlap/PowerToysRun-VideoDownloader)
-  <br>
-  ![Build and Release](https://github.com/ruslanlap/PowerToysRun-VideoDownloader/workflows/Build%20and%20Release/badge.svg)
-  ![Maintenance](https://img.shields.io/maintenance/yes/2025)
-  ![Code Size](https://img.shields.io/github/languages/code-size/ruslanlap/PowerToysRun-VideoDownloader)
-  ![GitHub Repo stars](https://img.shields.io/github/stars/ruslanlap/PowerToysRun-VideoDownloader?style=social)
-  <br>
-  ![.NET Version](https://img.shields.io/badge/.NET-9.0-512BD4)
-  ![C#](https://img.shields.io/badge/C%23-8.0-239120)
+  <h1>✨ QuickNotes for PowerToys Run ✨</h1>
+  <h3>Create, manage, and search notes directly from PowerToys Run</h3>
+  
   ![PowerToys Compatible](https://img.shields.io/badge/PowerToys-Compatible-blue)
   ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  <br>
-  <a href="https://github.com/ruslanlap/PowerToysRun-VideoDownloader/releases/latest">
-    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
-  </a>
+  ![Maintenance](https://img.shields.io/maintenance/yes/2025)
+  ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
+  ![Version](https://img.shields.io/badge/version-0.1.0-brightgreen)
+  ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
+  ![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes?style=social)
+  ![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)
+  ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
+  ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
+
+## 📋 Table of Contents
+
+- [📋 Overview](#-overview)
+- [⚡ Easy Install](#-easy-install)
+- [✨ Features](#-features)
+- [🎬 Demo Gallery](#-demo-gallery)
+- [🚀 Installation](#-installation)
+- [🔧 Usage](#-usage)
+- [📁 Data Storage](#-data-storage)
+- [🛠️ Building from Source](#️-building-from-source)
+- [🤝 Contributing](#-contributing)
+- [❓ FAQ](#-faq)
+- [📄 License](#-license)
+- [🙏 Acknowledgements](#-acknowledgements)
 
 ## 📋 Overview
 
-PowerToysRun-VideoDownloader is a plugin for [Microsoft PowerToys Run](https://github.com/microsoft/PowerToys) that allows you to quickly download videos from various platforms (primarily YouTube) directly from your PowerToys Run interface. Simply type `dl` followed by a video URL to get started.
+QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsoft/PowerToys) that allows you to quickly create, manage, and search notes directly from your PowerToys Run interface. Simply type `qq` followed by your note text to save it, or use various commands to manage your notes collection.
 
 <div align="center">
   <img src="icon.png" alt="PowerToys" width="200">
 </div>
 
-### ✨ Features
+## ⚡ Easy Install
 
-- 🎯 Download videos from YouTube (including restricted content)
-- 🔄 Support for multiple video quality options
-- 💻 Compatible with x64 and ARM64 architectures
-- 🚀 Fast downloads using YoutubeExplode and yt-dlp
-- 📂 Customizable download location
-- 🔔 Notifications for download progress and completion
+<div align="">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes.zip">
+    <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
+  </a>
+  
+  <p>
+    <b>Quick Installation Steps:</b><br>
+    1. Download using the button above<br>
+    2. Extract to <code>%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\</code><br>
+    3. Restart PowerToys<br>
+    4. Start using with <code>Alt+Space</code> then type <code>qq</code>
+  </p>
+</div>
+
+## ✨ Features
+
+- 📝 **Quick Note Creation** - Instantly save notes with a simple command
+- 🔍 **Powerful Search** - Find notes with highlighted search terms
+- ✏️ **Easy Editing** - Modify existing notes with a simple interface
+- 🗑️ **Note Management** - Delete individual notes or clear all notes
+- 💾 **Backup & Export** - Create backups of your notes collection
+- 📋 **Clipboard Integration** - Copy notes to clipboard with a single click
+- 🌓 **Theme Support** - Works with both light and dark PowerToys themes
+- ⏱️ **Timestamp Recording** - Each note is saved with a timestamp for easy reference
+- 🔔 **Notification System** - Get confirmation when notes are saved, edited, or deleted
+
+## 🎬 Demo Gallery
+
+<div align="center">
+  <details open>
+    <summary><b>📝 Creating Notes</b></summary>
+    <p><img src="assets/demo-1.gif" width="650" alt="Creating Notes Demo"/></p>
+    <p><i>Simply type <code>qq</code> followed by your note text to save it instantly</i></p>
+  </details>
+  <b>🔍 Searching Notes</b>
+  <p><img src="assets/demo-2.gif" width="650" alt="Searching Notes Demo"/></p>
+  <p><i>Use <code>qq search &lt;term&gt;</code> to find notes with highlighted matches</i></p>
+
+
+  <b>✏️ Editing Notes</b>
+    <p><img src="assets/demo-3.gif" width="650" alt="Editing Notes Demo"/></p>
+    <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
+
+  <details>
+    <summary><b>🗑️ Managing Notes</b></summary>
+    <p><img src="assets/demo-4.gif" width="650" alt="Managing Notes Demo"/></p>
+    <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
+  </details>
+
+  <details>
+    <summary><b>💾 Backing Up Notes</b></summary>
+    <p><img src="assets/demo-6.gif" width="650" alt="Backing Up Notes Demo"/></p>
+    <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
+  </details>
+
+  <details>
+    <summary><b>👀 Viewing Notes</b></summary>
+    <p><img src="assets/demo-7.gif" width="650" alt="Viewing Notes Demo"/></p>
+    <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
+  </details>
+</div>
 
 ## 🚀 Installation
 
-### Prerequisites
+### 📋 Prerequisites
 
 - [Microsoft PowerToys](https://github.com/microsoft/PowerToys/releases) installed
-- Windows 10 version 10.0.22621.0 or higher
-- .NET 9.0 Runtime
+- Windows 10 or later
 
-### Installation Steps
+### 📥 Installation Steps
 
-1. Download the latest release for your architecture:
-   - [x64 version](https://github.com/ruslanlap/PowerToysRun-VideoDownloader/releases/latest/download/VideoDownloader-latest-x64.zip)
-   - [ARM64 version](https://github.com/ruslanlap/PowerToysRun-VideoDownloader/releases/latest/download/VideoDownloader-latest-arm64.zip)
-
+1. Download the latest release from the [Releases page](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest)
 2. Extract the ZIP file to:
    ```
    %LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\
    ```
-
 3. Restart PowerToys
+
+<div align="center">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
+    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
+  </a>
+</div>
 
 ## 🔧 Usage
 
 1. Open PowerToys Run (default: <kbd>Alt</kbd> + <kbd>Space</kbd>)
-2. Type `dl` followed by a space and a video URL:
-   ```
-   dl https://www.youtube.com/watch?v=dQw4w9WgXcQ
-   ```
-3. Press <kbd>Enter</kbd> to download with default settings or access additional options
+2. Use the following commands:
 
-### Advanced Options
+<div align="center">
 
-Right-click on a result to access additional options:
-- Select video quality
-- Choose download location
-- Copy video information
-- Open in browser
+| Command | Description | Example |
+|---------|-------------|---------|
+| `qq <text>` | Create a new note | `qq Buy milk and eggs` |
+| `qq help` | Show help information | `qq help` |
+| `qq del <number>` | Delete a specific note | `qq del 3` |
+| `qq delall` | Delete all notes | `qq delall` |
+| `qq search <word>` | Search notes (matched words highlighted) | `qq search milk` |
+| `qq edit <number>` | Edit a specific note | `qq edit 2` |
+| `qq view <number>` | View note details | `qq view 1` |
+| `qq backup` or `qq export` | Backup notes (opens folder and file) | `qq backup` |
 
-## 📁 Data Folder Structure
+</div>
 
+### 🎯 Quick Tips
+
+- Press <kbd>Enter</kbd> on a note to copy it to clipboard
+- Right-click on a note for additional options
+- Notes are automatically saved with timestamps
+- Use `qq help` anytime to see all available commands
+
+## 📁 Data Storage
+
+QuickNotes stores all your notes in a simple text file at:
 ```
-%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\VideoDownloader\
-├── Community.PowerToys.Run.Plugin.VideoDownloader.dll
-├── YoutubeExplode.dll
-├── Images/
-│   ├── videodownloader.dark.png
-│   └── videodownloader.light.png
-└── plugin.json
+%LOCALAPPDATA%\Microsoft\PowerToys\QuickNotes\notes.txt
 ```
+
+Each note is stored with a timestamp for easy reference in the format:
+```
+[YYYY-MM-DD HH:MM:SS] Your note text here
+```
+
 
 ## 🛠️ Building from Source
 
-### Prerequisites
+### 📋 Prerequisites
 
 - Visual Studio 2022 or later
-- .NET 9.0 SDK
+- .NET SDK
 
-### Build Steps
+### 🔨 Build Steps
 
 1. Clone the repository:
    ```
-   git clone https://github.com/ruslanlap/PowerToysRun-VideoDownloader.git
+   git clone https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes.git
    ```
 
 2. Open the solution in Visual Studio
@@ -127,13 +203,43 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
+
+## ❓ FAQ
+
+<details>
+  <summary><b>How do I update the plugin?</b></summary>
+  <p>Download the latest release and replace the files in your PowerToys Plugins directory. Restart PowerToys afterward.</p>
+</details>
+
+<details>
+  <summary><b>Can I sync my notes across devices?</b></summary>
+  <p>The plugin doesn't have built-in sync, but you can place the notes.txt file in a cloud-synced folder and create a symbolic link to it.</p>
+</details>
+
+<details>
+  <summary><b>What if I accidentally delete all my notes?</b></summary>
+  <p>If you've created backups using the <code>qq backup</code> command, you can restore from those. Otherwise, you might be able to recover from Windows File History if enabled.</p>
+</details>
+
+<details>
+  <summary><b>Can I change the storage location?</b></summary>
+  <p>Currently, the storage location is fixed. A future update may add customizable storage locations.</p>
+</details>
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgements
 
-- [Microsoft PowerToys](https://github.com/microsoft/PowerToys) team
-- [YoutubeExplode](https://github.com/Tyrrrz/YoutubeExplode) library
-- [yt-dlp](https://github.com/yt-dlp/yt-dlp) project
-# CommunityPowerToysRunPlugin-QuickNotes
+- [Microsoft PowerToys](https://github.com/microsoft/PowerToys) team for creating the extensible PowerToys Run platform
+- All contributors who have helped improve this plugin
+- Icons and visual elements from various open-source projects
+
+---
+
+<div align="center">
+  <p>Made with ❤️ by the community</p>
+  
+  <a href="#-powertoys-run-quicknotes-plugin">Back to top ⬆️</a>
+</div>
