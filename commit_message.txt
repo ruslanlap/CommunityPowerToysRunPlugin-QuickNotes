@@ -1,4 +1,4 @@
-git commit -m "✨ Enhance QuickNotes: PowerToys Run plugin for quick note-taking
+"✨ Enhance QuickNotes: PowerToys Run plugin for quick note-taking
 
 📝 QuickNotes is a powerful PowerToys Run plugin that lets you:
 - Create notes instantly with 'qq <text>'
