@@ -68,19 +68,24 @@ jobs:
           # Create QuickNotes subfolder
           New-Item -ItemType Directory -Force -Path "$artifactDir/QuickNotes"
           
-          # Find the build output directory - adjust path to match your project structure
+          # Define the direct path to the build output
           $buildOutput = "QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/bin/${{ matrix.platform }}/Release"
           
           Write-Host "Using build output directory: $buildOutput"
           
           # Check if the directory exists
           if (-not (Test-Path $buildOutput)) {
-            Write-Host "Build output directory not found. Searching for it..."
+            Write-Host "Build output directory not found at expected path. Searching for it..."
             $buildOutput = Get-ChildItem -Path "QuickNotes" -Recurse -Directory | 
                            Where-Object { $_.Name -eq "Release" -and $_.FullName -like "*${{ matrix.platform }}*" } | 
                            Select-Object -First 1 -ExpandProperty FullName
             
-            Write-Host "Found build output directory: $buildOutput"
+            if ($buildOutput) {
+              Write-Host "Found build output directory: $buildOutput"
+            } else {
+              Write-Error "Could not find any Release directory for platform ${{ matrix.platform }}"
+              exit 1
+            }
           }
           
           # Check if build output exists before proceeding
@@ -89,10 +94,36 @@ jobs:
             exit 1
           }
           
-          # Copy all files from the build output directly to the QuickNotes subfolder
-          Write-Host "Copying files from $buildOutput to $artifactDir/QuickNotes"
-          Copy-Item -Path "$buildOutput/*" -Destination "$artifactDir/QuickNotes" -Recurse -Force
-          Write-Host "Files copied successfully"
+          # Check for files directly in the build output directory
+          $files = Get-ChildItem -Path $buildOutput -File
+          if ($files.Count -gt 0) {
+            Write-Host "Found $($files.Count) files in build output directory. Copying directly..."
+            Copy-Item -Path "$buildOutput/*" -Destination "$artifactDir/QuickNotes" -Recurse -Force
+            Write-Host "Files copied successfully"
+          } else {
+            # Look for a .NET runtime folder
+            $runtimeFolder = Get-ChildItem -Path $buildOutput -Directory | 
+                             Where-Object { $_.Name -like "net*-windows*" } | 
+                             Select-Object -First 1 -ExpandProperty FullName
+            
+            if ($runtimeFolder) {
+              Write-Host "Found runtime folder: $runtimeFolder"
+              Copy-Item -Path "$runtimeFolder/*" -Destination "$artifactDir/QuickNotes" -Recurse -Force
+              Write-Host "Files copied successfully from runtime folder"
+            } else {
+              # If no runtime folder, check for any subdirectories
+              $subDirs = Get-ChildItem -Path $buildOutput -Directory
+              if ($subDirs.Count -gt 0) {
+                $firstSubDir = $subDirs[0].FullName
+                Write-Host "No runtime folder found, but found subdirectory: $firstSubDir"
+                Copy-Item -Path "$firstSubDir/*" -Destination "$artifactDir/QuickNotes" -Recurse -Force
+                Write-Host "Files copied from first subdirectory"
+              } else {
+                Write-Error "No files or subdirectories found in build output directory"
+                exit 1
+              }
+            }
+          }
         shell: pwsh
       
       - name: Create ZIP archive
