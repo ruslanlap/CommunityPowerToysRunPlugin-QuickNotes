@@ -1,0 +1,21 @@
+git commit -m "✨ Enhance QuickNotes: PowerToys Run plugin for quick note-taking
+
+📝 QuickNotes is a powerful PowerToys Run plugin that lets you:
+- Create notes instantly with 'qq <text>'
+- Search through your notes with 'qq search <term>'
+- Edit existing notes with 'qq edit <number>'
+- View note details with 'qq view <number>'
+- Manage and delete notes with 'qq del <number>'
+- Backup your notes with 'qq backup'
+
+🔧 Technical improvements:
+- Enhanced README with comprehensive documentation
+- Added GitHub Actions workflow for automated builds
+- Beautiful release notes template
+- Fixed line ending issues with proper .gitattributes
+- Optimized for both x64 and ARM64 platforms
+
+📋 Notes are stored in %LOCALAPPDATA%\Microsoft\PowerToys\QuickNotes\notes.txt
+for easy access and backup.
+
+🚀 Simple, fast, and efficient note-taking directly from PowerToys Run!"
