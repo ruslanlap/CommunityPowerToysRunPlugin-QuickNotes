@@ -3,7 +3,7 @@
 <div align="center">
   <img src="assets/demo.gif" alt="QuickNotes Demo" width="650">
   
-  <img src="QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
   
   <h1>✨ QuickNotes for PowerToys Run ✨</h1>
   <h3>Create, manage, and search notes directly from PowerToys Run</h3>
