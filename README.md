@@ -233,6 +233,23 @@ Contributions are welcome! Please feel free to submit a Pull Request.
   <p>Currently, the storage location is fixed. A future update may add customizable storage locations.</p>
 </details>
 
+## ✨ Why You'll Love QuickNotes
+
+- **⚡ Lightning Fast** - From thought to saved note in under 3 seconds
+- **🔍 Smart Search** - Find notes with highlighted search terms as you type
+- **🧠 Distraction-Free** - No need to switch applications or contexts
+- **🔄 Seamless Workflow** - Create, find, edit, and manage notes without leaving your keyboard
+- **📋 Clipboard Integration** - Copy any note to clipboard with a single keystroke
+- **🛠️ Powerfully Simple** - Sophisticated features hidden behind simple commands
+
+
+**Feature Ideas We'd Love to See:**
+- Tag system for notes
+- Rich text formatting
+- Cloud sync options
+- Note categories
+- Reminder functionality
+
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -246,7 +263,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Made with ❤️ by the community</p>
+  <p>Made with ❤️ by the <a href="https://github.com/ruslanlap">ruslanlap</a></p>
   
   <a href="#-powertoys-run-quicknotes-plugin">Back to top ⬆️</a>
 </div>
