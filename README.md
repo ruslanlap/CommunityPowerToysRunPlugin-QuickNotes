@@ -42,8 +42,10 @@
 - [🔧 Usage](#-usage)
 - [📁 Data Storage](#-data-storage)
 - [🛠️ Building from Source](#️-building-from-source)
+- [📊 Project Structure](#-project-structure)
 - [🤝 Contributing](#-contributing)
 - [❓ FAQ](#-faq)
+- [✨ Why You'll Love QuickNotes](#-why-youll-love-quicknotes)
 - [📄 License](#-license)
 - [🙏 Acknowledgements](#-acknowledgements)
 
@@ -103,7 +105,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
   <h3>💾 Exporting Notes</h3>
-  <p><img src="assets/demo-qq exportgif" width="650" alt="Exporting Notes Demo"/></p>
+  <p><img src="assets/demo-qq export.gif" width="650" alt="Exporting Notes Demo"/></p>
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
   
   <h3>👀 Viewing Notes</h3>
@@ -200,6 +202,20 @@ Each note is stored with a timestamp for easy reference in the format:
 
 4. Find the output in the `bin/Release` directory
 
+## 📊 Project Structure
+
+The QuickNotes plugin has a clean, modular architecture designed for maintainability and extensibility.
+
+<div align="center">
+  <img src="assets/structure-1.png" alt="QuickNotes Project Structure" width="650">
+  <p><i>High-level project structure overview</i></p>
+  
+  <img src="assets/structure-2.png" alt="QuickNotes Component Diagram" width="650">
+  <p><i>Component interaction diagram</i></p>
+</div>
+
+For a detailed breakdown of the project structure, see the [structure.md](structure.md) file.
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -263,7 +279,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 <div align="center">
-  <p>Made with ❤️ by the <a href="https://github.com/ruslanlap">ruslanlap</a></p>
+  <p>Made with ❤️ by <a href="https://github.com/ruslanlap">ruslanlap</a></p>
   
   <a href="#-powertoys-run-quicknotes-plugin">Back to top ⬆️</a>
 </div>
