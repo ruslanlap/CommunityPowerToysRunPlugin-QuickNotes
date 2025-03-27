@@ -116,8 +116,8 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
   
   <h3>👀 Viewing Notes</h3>
-  <p><img src="assets/demo-qq view.gif" width="650" alt="Viewing Notes Demo"/></p>
   <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
+    <p><img src="assets/demo-auto-suggestions-1.gif" width="650" alt="Auto-suggestions Demo"/></p>
   
   <h3>❓ Help Command</h3>
   <p><img src="assets/demo-qq help.gif" width="650" alt="Help Command Demo"/></p>
