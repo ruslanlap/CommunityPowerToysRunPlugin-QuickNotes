@@ -368,7 +368,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
 
         // Helper to create a standard result for a note
-        private Result CreateNoteResult(NoteEntry note, string subTitle, string displayText = null)
+        private Result CreateNoteResult(NoteEntry note, string subTitle, string? displayText = null)
         {
             string title = $"{(note.IsPinned ? "[P] " : "")}[{note.OriginalIndex + 1}] {displayText ?? note.Text}";
             return new Result
