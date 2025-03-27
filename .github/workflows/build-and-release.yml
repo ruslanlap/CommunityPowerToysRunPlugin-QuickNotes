@@ -1,10 +1,10 @@
 name: Build and Release QuickNotes
 
 on:
-  push:
-    branches:
-      - main
-      - master
+  # push:
+  #   branches:
+  #     - main
+  #     - master
     tags:
       - 'v*'
 

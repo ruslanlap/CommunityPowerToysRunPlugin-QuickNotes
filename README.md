@@ -106,7 +106,6 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
   <h3>✏️ Editing Notes</h3>
   <p><img src="assets/demo-qq-edit.gif" width="650" alt="Editing Notes Demo"/></p>
-   <p><img src="assets/demo.gif" width="650" alt="Editing Notes Demo"/></p>
   <p><img src="assets/demo.gif" width="650" alt="Editing Notes Demo"/></p>
   <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
 
