@@ -24,10 +24,10 @@
 </div>
 
 <div align="center">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.1/QuickNotes-v1.0.1-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.2/QuickNotes-v1.0.2-x64.zip">
     <img src="https://img.shields.io/badge/Download%20Latest%20Release-x64-blue?style=for-the-badge&logo=github" alt="Download Latest Release" />
   </a>
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.1/QuickNotes-v1.0.1-arm64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.2/QuickNotes-v1.0.2-arm64.zip">
     <img src="https://img.shields.io/badge/Download%20Latest%20Release-ARM64-blue?style=for-the-badge&logo=github" alt="Download Latest Release" />
   </a>
 </div>
@@ -60,7 +60,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.1/QuickNotes-v1.0.1-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.2/QuickNotes-v1.0.2-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
