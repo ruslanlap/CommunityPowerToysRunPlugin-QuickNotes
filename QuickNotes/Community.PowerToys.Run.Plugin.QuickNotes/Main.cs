@@ -69,7 +69,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
     }
 
-    public class Main : IPlugin, IContextMenu, IPluginI18n, IDisposable
+    public class Main : IPlugin, IContextMenu, IPluginI18n, IDisposable, IDelayedExecutionPlugin
     {
         // --- Constants ---
         public static string PluginID => "2083308C581F4D36B0C02E69A2FD91D7";
@@ -90,6 +90,49 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         // --- State for Undo ---
         private (string Text, int Index, bool WasPinned)? _lastDeletedNote;
+
+        // For text formatting
+        private bool _useItalicForTags = false; // Default: use bold formatting for tags
+
+        // List of available commands for autocomplete
+        private readonly List<string> _commands = new List<string>
+        {
+            "help",
+            "backup",
+            "export",
+            "edit",
+            "view",
+            "delall",
+            "del",
+            "delete",
+            "search",
+            "searchtag",
+            "pin",
+            "unpin",
+            "undo",
+            "sort",
+            "tagstyle"
+        };
+
+// Dictionary for command descriptions
+private readonly Dictionary<string, string> _commandDescriptions = new Dictionary<string, string>
+{
+    { "help", "Показати довідку з доступними командами ℹ️" },
+    { "backup", "Створити резервну копію нотаток 💾" },
+    { "export", "Експортувати нотатки у файл 💾" },
+    { "edit", "Редагувати нотатку за номером 📝" },
+    { "view", "Переглянути деталі нотатки 👁️" },
+    { "delall", "Видалити всі нотатки 💣" },
+    { "del", "Видалити нотатку за номером 🗑️" },
+    { "delete", "Видалити нотатку за номером 🗑️" },
+    { "search", "Пошук нотаток за текстом 🔍" },
+    { "searchtag", "Пошук нотаток за тегом 🏷️" },
+    { "pin", "Закріпити нотатку вгорі списку 📌" },
+    { "unpin", "Відкріпити нотатку 📎" },
+    { "undo", "Відмінити останнє видалення ↩️" },
+    { "sort", "Сортувати нотатки за датою або текстом 🔄" },
+    { "tagstyle", "Змінити стиль відображення тегів (жирний/курсив) ✨" }
+};
 
         // --- Initialization and Lifecycle ---
         public void Init(PluginInitContext context)
@@ -142,6 +185,105 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
+        // Replace the existing GetQuerySuggestions method with this improved version
+        public List<Result> GetQuerySuggestions(Query query, bool execute)
+        {
+            if (!_isInitialized)
+                return new List<Result>();
+
+            var searchText = query.Search?.Trim() ?? string.Empty;
+
+            // If query is empty or too short
+            if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 1)
+            {
+                return new List<Result>();
+            }
+
+            // Find matching commands
+            var suggestions = new List<Result>();
+
+            // Check if this could be a partial command
+            string[] parts = searchText.Split(new[] { ' ' }, 2);
+            string possibleCommand = parts[0].ToLowerInvariant();
+
+            // If the text includes spaces, it could be an actual note with a command word
+            // In that case, don't try to suggest commands
+            if (parts.Length == 1)
+            {
+                // Get all commands that start with the possible command prefix
+                var matchingCommands = _commands
+                    .Where(cmd => cmd.StartsWith(possibleCommand, StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(cmd => cmd.Length)  // Prioritize shorter matches first
+                    .ToList();
+
+                // If we have exact matches for commands, prioritize them
+                bool hasExactMatch = matchingCommands.Contains(possibleCommand, StringComparer.OrdinalIgnoreCase);
+
+                foreach (var command in matchingCommands)
+                {
+                    // Skip showing the exact match as a suggestion if we have other options
+                    if (hasExactMatch && command.Equals(possibleCommand, StringComparison.OrdinalIgnoreCase) && matchingCommands.Count > 1)
+                        continue;
+
+                    suggestions.Add(new Result
+                    {
+                        Title = $"qq {command}",
+                        SubTitle = _commandDescriptions.ContainsKey(command) 
+                            ? _commandDescriptions[command] 
+                            : $"Виконати команду '{command}'",
+                        IcoPath = IconPath,
+                        Score = 1000, // Very high score to ensure commands appear first
+                        Action = _ =>
+                        {
+                            if (execute)
+                            {
+                                // Execute the command with space after
+                                Context?.API.ChangeQuery($"qq {command} ", true);
+                                return true;
+                            }
+                            // Just replace the input text with the command
+                            Context?.API.ChangeQuery($"qq {command} ", false);
+                            return false;
+                        }
+                    });
+                }
+            }
+
+            // If we have suggestions for commands and this could be a command, don't show the "Add note" option
+            if (suggestions.Count > 0)
+                return suggestions;
+
+            // If no command suggestions or this is clearly a note, add the "Add note" option
+            if (!_commands.Contains(possibleCommand, StringComparer.OrdinalIgnoreCase) || parts.Length > 1)
+            {
+                suggestions.Add(new Result
+                {
+                    Title = $"Add note: {searchText}",
+                    SubTitle = "Press Enter to save this note (with timestamp)",
+                    IcoPath = IconPath,
+                    Score = 10, // Lower score than commands
+                    Action = _ =>
+                    {
+                        if (execute)
+                        {
+                            CreateNote(searchText);
+                            Context?.API.ShowMsg("Note saved", $"Saved: {searchText}");
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+            }
+
+            return suggestions;
+        }
+
+        // Define priority for results
+        public int GetPriority(Query query)
+        {
+            return 0; // Use 0 to not change priority
+        }
+
         public List<Result> Query(Query query)
         {
             if (!_isInitialized)
@@ -151,7 +293,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             // Get the text after "qq"
             var searchText = query.Search?.Trim() ?? string.Empty;
-            string lower = searchText.ToLowerInvariant();
 
             // If empty search, show instructions and notes
             if (string.IsNullOrEmpty(searchText))
@@ -160,11 +301,61 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
 
             // Parse the command and arguments
-            string[] parts = lower.Split(new[] { ' ' }, 2);
-            string command = parts[0];
+            string[] parts = searchText.Split(new[] { ' ' }, 2);
+            string possibleCommand = parts[0].ToLowerInvariant();
             string args = parts.Length > 1 ? parts[1].Trim() : string.Empty;
 
-            switch (command)
+            // Check if this is a partial command (not a full command but starts with valid command prefixes)
+            if (parts.Length == 1 && !_commands.Contains(possibleCommand))
+            {
+                var matchingCommands = _commands
+                    .Where(cmd => cmd.StartsWith(possibleCommand, StringComparison.OrdinalIgnoreCase))
+                    .OrderBy(cmd => cmd.Length)
+                    .ToList();
+
+                if (matchingCommands.Any())
+                {
+                    var results = new List<Result>();
+
+                    foreach (var command in matchingCommands)
+                    {
+                        results.Add(new Result
+                        {
+                            Title = $" {command}",
+                            SubTitle = _commandDescriptions.ContainsKey(command) 
+                                ? _commandDescriptions[command] 
+                                : $"Виконати команду '{command}'",
+                            IcoPath = IconPath,
+                            Score = 1000, // Very high score
+                            Action = _ =>
+                            {
+                                Context?.API.ChangeQuery($"qq {command} ", true);
+                                return false;
+                            }
+                        });
+                    }
+
+                    // Add the "add note" option with lower priority
+                    results.Add(new Result
+                    {
+                        Title = $"Add note: {searchText}",
+                        SubTitle = "Press Enter to save this note (with timestamp)",
+                        IcoPath = IconPath,
+                        Score = 50, // Lower score than commands
+                        Action = _ =>
+                        {
+                            CreateNote(searchText);
+                            Context?.API.ShowMsg("Note saved", $"Saved: {searchText}");
+                            return true;
+                        }
+                    });
+
+                    return results;
+                }
+            }
+
+            // Handle known commands
+            switch (possibleCommand)
             {
                 case "help":
                     return HelpCommand();
@@ -192,6 +383,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     return UndoDelete();
                 case "sort":
                     return SortNotes(args);
+                case "tagstyle":
+                    return ToggleTagStyle(args);
                 default:
                     return AddNoteCommand(searchText);
             }
@@ -220,6 +413,55 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     }
                 }
             };
+        }
+
+        // Add this method to your Main class for text formatting
+        private string FormatTextForDisplay(string text)
+        {
+            // Bold formatting: **text** or __text__
+            text = Regex.Replace(text, @"\*\*(.*?)\*\*|__(.*?)__", m => 
+                $"【{(m.Groups[1].Success ? m.Groups[1].Value : m.Groups[2].Value)}】");
+
+            // Italics formatting: *text* or _text_
+            text = Regex.Replace(text, @"(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)|(?<!_)_(?!_)(.*?)(?<!_)_(?!_)", m => 
+                $"〈{(m.Groups[1].Success ? m.Groups[1].Value : m.Groups[2].Value)}〉");
+
+            // Highlight: ==text==
+            text = Regex.Replace(text, @"==(.*?)==", m => $"《{m.Groups[1].Value}》");
+
+            // Make hashtags bold or italic
+            if (_useItalicForTags)
+                text = Regex.Replace(text, @"(#\w+)", m => $"〈{m.Groups[1].Value}〉");
+            else
+                text = Regex.Replace(text, @"(#\w+)", m => $"【{m.Groups[1].Value}】");
+
+            return text;
+        }
+
+        // Add this method to your Main class to implement the required interface method
+        public List<Result> Query(Query query, bool delayedExecution)
+        {
+
+            return Query(query);
+        }
+
+        // Add this method to the Main class
+        private List<Result> ToggleTagStyle(string style)
+        {
+            if (style.Equals("bold", StringComparison.OrdinalIgnoreCase))
+            {
+                _useItalicForTags = false;
+                return SingleInfoResult("Tag style set to bold", "Tags will now appear as 【#tag】", true);
+            }
+            else if (style.Equals("italic", StringComparison.OrdinalIgnoreCase))
+            {
+                _useItalicForTags = true;
+                return SingleInfoResult("Tag style set to italic", "Tags will now appear as 〈#tag〉", true);
+            }
+            else
+            {
+                return SingleInfoResult("Invalid tag style", "Use 'qq tagstyle bold' or 'qq tagstyle italic'");
+            }
         }
 
         private List<Result> SearchNotes(string searchTerm)
@@ -357,7 +599,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             if (!string.IsNullOrWhiteSpace(currentSearch))
             {
-                var commands = new[] { "help", "backup", "export", "edit", "view", "delall", "del", "delete", "search", "searchtag", "pin", "unpin", "undo", "sort" };
+                var commands = new[] { "help", "backup", "export", "edit", "view", "delall", "del", "delete", "search", "searchtag", "pin", "unpin", "undo", "sort", "tagstyle" };
                 if (!commands.Contains(currentSearch.Split(' ')[0].ToLowerInvariant()))
                 {
                     results.Insert(0, AddNoteCommand(currentSearch).First());
@@ -370,7 +612,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         // Helper to create a standard result for a note
         private Result CreateNoteResult(NoteEntry note, string subTitle, string? displayText = null)
         {
-            string title = $"{(note.IsPinned ? "[P] " : "")}[{note.OriginalIndex + 1}] {displayText ?? note.Text}";
+            // Apply text formatting for display
+            string noteText = displayText ?? note.Text;
+            string formattedText = FormatTextForDisplay(noteText);
+
+            string title = $"{(note.IsPinned ? "[P] " : "")}[{note.OriginalIndex + 1}] {formattedText}";
             return new Result
             {
                 Title = title,
@@ -688,7 +934,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 "qq view <N>            View note 👁️      | qq undo                Restore note ↩️\n" + 
                 "qq edit <N>            Edit note 📝      | qq delall              Delete ALL 💣\n" + 
                 "qq del <N>             Delete note 🗑️    | qq backup/export       Backup notes 💾\n" + 
-                "qq help                Show help ℹ️      | Enter = Copy to clipboard 📋";
+                "qq help                Show help ℹ️      | qq tagstyle bold/italic Tag style ✨\n" +
+                "\nFormatting: **bold** or __bold__, *italic* or _italic_, ==highlight==, #tag";
 
             return new Result
             {
@@ -811,111 +1058,111 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     PluginName = Name,
                     Title = "Edit Note...",
-                FontFamily = "Segoe MDL2 Assets",
-                                    Glyph = "\uE70F", // Edit icon
-                                    AcceleratorKey = Key.E,
-                                    AcceleratorModifiers = ModifierKeys.Control,
-                                    Action = _ =>
-                                    {
-                                        EditNoteInline(note);
-                                        return true;
-                                    }
-                                });
-
-                                contextMenuItems.Add(new ContextMenuResult
-                                {
-                                    PluginName = Name,
-                                    Title = "Delete Note",
-                                    FontFamily = "Segoe MDL2 Assets",
-                                    Glyph = "\uE74D", // Delete icon
-                                    AcceleratorKey = Key.Delete,
-                                    Action = _ =>
-                                    {
-                                        DeleteNote((note.OriginalIndex + 1).ToString());
-                                        return true;
-                                    }
-                                });
-
-                                contextMenuItems.Add(new ContextMenuResult
-                                {
-                                    PluginName = Name,
-                                    Title = note.IsPinned ? "Unpin Note" : "Pin Note",
-                                    FontFamily = "Segoe MDL2 Assets",
-                                    Glyph = note.IsPinned ? "\uE77A" : "\uE718", // Pin/Unpin icon
-                                    Action = _ =>
-                                    {
-                                        PinNote((note.OriginalIndex + 1).ToString(), !note.IsPinned);
-                                        return true;
-                                    }
-                                });
-
-                                // URL detection and opening
-                                Match urlMatch = UrlRegex.Match(note.Text);
-                                if (urlMatch.Success)
-                                {
-                                    string url = urlMatch.Value;
-                                    if (url.StartsWith("www.", StringComparison.OrdinalIgnoreCase) && !url.Contains("://"))
-                                    {
-                                        url = "http://" + url;
-                                    }
-
-                                    contextMenuItems.Add(new ContextMenuResult
-                                    {
-                                        PluginName = Name,
-                                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}...",
-                                        FontFamily = "Segoe MDL2 Assets",
-                                        Glyph = "\uE774", // Globe icon
-                                        AcceleratorKey = Key.U,
-                                        AcceleratorModifiers = ModifierKeys.Control,
-                                        Action = _ =>
-                                        {
-                                            try
-                                            {
-                                                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-                                                return true;
-                                            }
-                                            catch (Exception ex)
-                                            {
-                                                Context?.API.ShowMsg("Error", $"Could not open URL: {ex.Message}");
-                                                return false;
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                            return contextMenuItems;
-                        }
-
-                        // --- IPluginI18n & IDisposable ---
-                        public string GetTranslatedPluginTitle() => Name;
-                        public string GetTranslatedPluginDescription() => Description;
-
-                        public void Dispose()
-                        {
-                            Dispose(true);
-                            GC.SuppressFinalize(this);
-                        }
-
-                        protected virtual void Dispose(bool disposing)
-                        {
-                            if (Disposed || !disposing)
-                            {
-                                return;
-                            }
-                            if (Context?.API != null)
-                            {
-                                Context.API.ThemeChanged -= OnThemeChanged;
-                            }
-                            Disposed = true;
-                        }
-
-                        // --- Theme Handling ---
-                        private void UpdateIconPath(Theme theme) =>
-                            IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
-                                ? "Images/quicknotes.light.png"
-                                : "Images/quicknotes.dark.png";
-
-                        private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
-                            UpdateIconPath(newTheme);
+                    FontFamily = "Segoe MDL2 Assets",
+                    Glyph = "\uE70F", // Edit icon
+                    AcceleratorKey = Key.E,
+                    AcceleratorModifiers = ModifierKeys.Control,
+                    Action = _ =>
+                    {
+                        EditNoteInline(note);
+                        return true;
                     }
+                });
+
+                contextMenuItems.Add(new ContextMenuResult
+                {
+                    PluginName = Name,
+                    Title = "Delete Note",
+                    FontFamily = "Segoe MDL2 Assets",
+                    Glyph = "\uE74D", // Delete icon
+                    AcceleratorKey = Key.Delete,
+                    Action = _ =>
+                    {
+                        DeleteNote((note.OriginalIndex + 1).ToString());
+                        return true;
+                    }
+                });
+
+                contextMenuItems.Add(new ContextMenuResult
+                {
+                    PluginName = Name,
+                    Title = note.IsPinned ? "Unpin Note" : "Pin Note",
+                    FontFamily = "Segoe MDL2 Assets",
+                    Glyph = note.IsPinned ? "\uE77A" : "\uE718", // Pin/Unpin icon
+                    Action = _ =>
+                    {
+                        PinNote((note.OriginalIndex + 1).ToString(), !note.IsPinned);
+                        return true;
+                    }
+                });
+
+                // URL detection and opening
+                Match urlMatch = UrlRegex.Match(note.Text);
+                if (urlMatch.Success)
+                {
+                    string url = urlMatch.Value;
+                    if (url.StartsWith("www.", StringComparison.OrdinalIgnoreCase) && !url.Contains("://"))
+                    {
+                        url = "http://" + url;
+                    }
+
+                    contextMenuItems.Add(new ContextMenuResult
+                    {
+                        PluginName = Name,
+                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}...",
+                        FontFamily = "Segoe MDL2 Assets",
+                        Glyph = "\uE774", // Globe icon
+                        AcceleratorKey = Key.U,
+                        AcceleratorModifiers = ModifierKeys.Control,
+                        Action = _ =>
+                        {
+                            try
+                            {
+                                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                                return true;
+                            }
+                            catch (Exception ex)
+                            {
+                                Context?.API.ShowMsg("Error", $"Could not open URL: {ex.Message}");
+                                return false;
+                            }
+                        }
+                    });
                 }
+            }
+            return contextMenuItems;
+        }
+
+        // --- IPluginI18n & IDisposable ---
+        public string GetTranslatedPluginTitle() => Name;
+        public string GetTranslatedPluginDescription() => Description;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (Disposed || !disposing)
+            {
+                return;
+            }
+            if (Context?.API != null)
+            {
+                Context.API.ThemeChanged -= OnThemeChanged;
+            }
+            Disposed = true;
+        }
+
+        // --- Theme Handling ---
+        private void UpdateIconPath(Theme theme) =>
+            IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
+                ? "Images/quicknotes.light.png"
+                : "Images/quicknotes.dark.png";
+
+        private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
+            UpdateIconPath(newTheme);
+    }
+}
