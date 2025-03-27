@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics; // For Process.Start
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions; // For highlighting
+using System.Text; // For StringBuilder
+using System.Text.RegularExpressions; // For highlighting and URL detection
 using System.Windows;
 using System.Windows.Input;
 using Wox.Plugin;
@@ -13,13 +14,72 @@ using Microsoft.VisualBasic; // For InputBox
 
 namespace Community.PowerToys.Run.Plugin.QuickNotes
 {
+    // Note structure to handle metadata like pinning and original index
+    internal class NoteEntry
+    {
+        public string Text { get; set; } = string.Empty;
+        public bool IsPinned { get; set; } = false;
+        public int OriginalIndex { get; set; } // Index in the original file
+        public DateTime Timestamp { get; set; } = DateTime.MinValue; // Parsed timestamp
+
+        // Simple parsing for pinned marker and timestamp
+        internal static NoteEntry Parse(string line, int index)
+        {
+            var entry = new NoteEntry { OriginalIndex = index };
+            string remainingText = line;
+
+            // Check for pinned marker (e.g., "[PINNED] ")
+            const string pinnedMarker = "[PINNED] ";
+            if (remainingText.StartsWith(pinnedMarker, StringComparison.OrdinalIgnoreCase))
+            {
+                entry.IsPinned = true;
+                remainingText = remainingText.Substring(pinnedMarker.Length);
+            }
+
+            // Check for timestamp marker (e.g., "[YYYY-MM-DD HH:MM:SS] ")
+            if (remainingText.Length > 22 && remainingText[0] == '[' && remainingText[21] == ']')
+            {
+                if (DateTime.TryParse(remainingText.Substring(1, 19), out DateTime ts))
+                {
+                    entry.Timestamp = ts;
+                    entry.Text = remainingText;
+                }
+                else
+                {
+                    entry.Text = remainingText; // Parsing failed, keep original
+                }
+            }
+            else
+            {
+                entry.Text = remainingText; // No timestamp found
+            }
+
+            return entry;
+        }
+
+        internal string ToFileLine()
+        {
+            var sb = new StringBuilder();
+            if (IsPinned)
+            {
+                sb.Append("[PINNED] ");
+            }
+            sb.Append(Text);
+            return sb.ToString();
+        }
+    }
+
     public class Main : IPlugin, IContextMenu, IPluginI18n, IDisposable
     {
-        // Must match the ID in plugin.json
+        // --- Constants ---
         public static string PluginID => "2083308C581F4D36B0C02E69A2FD91D7";
+        private const string PinnedMarker = "[PINNED] ";
+        private static readonly Regex UrlRegex = new Regex(@"\b(https?://|www\.)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+        private const string NotesFileName = "notes.txt"; // Centralize filename
 
+        // --- Properties ---
         public string Name => "QuickNotes";
-        public string Description => "Save, view, manage, and search quick notes";
+        public string Description => "Save, view, manage, search, tag, and pin quick notes";
 
         private PluginInitContext? Context { get; set; }
         private string? IconPath { get; set; }
@@ -28,17 +88,18 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private string _notesPath = string.Empty;
         private bool _isInitialized = false;
 
+        // --- State for Undo ---
+        private (string Text, int Index, bool WasPinned)? _lastDeletedNote;
+
+        // --- Initialization and Lifecycle ---
         public void Init(PluginInitContext context)
         {
             try
             {
                 Context = context ?? throw new ArgumentNullException(nameof(context));
-
-                // Handle theme changes
                 UpdateIconPath(Context.API.GetCurrentTheme());
                 Context.API.ThemeChanged += OnThemeChanged;
 
-                // Create the QuickNotes folder in LocalAppData
                 var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
                 var powerToysPath = Path.Combine(appDataPath, "Microsoft", "PowerToys", "QuickNotes");
                 if (!Directory.Exists(powerToysPath))
@@ -46,16 +107,15 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     Directory.CreateDirectory(powerToysPath);
                 }
 
-                _notesPath = Path.Combine(powerToysPath, "notes.txt");
+                _notesPath = Path.Combine(powerToysPath, NotesFileName);
                 if (!File.Exists(_notesPath))
                 {
                     File.WriteAllText(_notesPath, string.Empty);
                 }
 
-                // Test file access
                 try
                 {
-                    File.AppendAllText(_notesPath, string.Empty);
+                    File.AppendAllText(_notesPath, string.Empty); // Test write access
                     _isInitialized = true;
                 }
                 catch (Exception ex)
@@ -86,176 +146,108 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             if (!_isInitialized)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "QuickNotes not initialized",
-                        SubTitle = "Plugin not initialized properly. Please restart PowerToys.",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("QuickNotes Error", "Plugin not initialized properly. Please restart PowerToys.");
-                            return true;
-                        }
-                    }
-                };
+                return ErrorResult("QuickNotes not initialized", "Plugin not initialized properly. Please restart PowerToys.");
             }
 
             // Get the text after "qq"
             var searchText = query.Search?.Trim() ?? string.Empty;
-            string lower = searchText.ToLower();
+            string lower = searchText.ToLowerInvariant();
 
-            // 1. Help command
-            if (lower.Equals("help"))
+            // If empty search, show instructions and notes
+            if (string.IsNullOrEmpty(searchText))
             {
-                return HelpCommand();
+                return GetInstructionsAndNotes(string.Empty);
             }
-            // 2. Backup/Export command
-            else if (lower.Equals("backup") || lower.Equals("export"))
+
+            // Parse the command and arguments
+            string[] parts = lower.Split(new[] { ' ' }, 2);
+            string command = parts[0];
+            string args = parts.Length > 1 ? parts[1].Trim() : string.Empty;
+
+            switch (command)
             {
-                return BackupNotes();
-            }
-            // 3. Edit command (edit note)
-            else if (lower.StartsWith("edit "))
-            {
-                var noteNumberStr = searchText.Substring("edit ".Length).Trim();
-                return EditNote(noteNumberStr);
-            }
-            // 4. View command (view note details)
-            else if (lower.StartsWith("view "))
-            {
-                var noteNumberStr = searchText.Substring("view ".Length).Trim();
-                return ViewNote(noteNumberStr);
-            }
-            // 5. Delete All command
-            else if (lower.Equals("delall"))
-            {
-                return DeleteAllNotes();
-            }
-            // 6. Delete individual note command
-            else if (lower.StartsWith("del "))
-            {
-                var noteNumberStr = searchText.Substring("del ".Length).Trim();
-                return DeleteNote(noteNumberStr);
-            }
-            // 7. Search command
-            else if (lower.StartsWith("search "))
-            {
-                var term = searchText.Substring("search ".Length).Trim();
-                if (string.IsNullOrEmpty(term))
-                {
-                    return new List<Result>
-                    {
-                        new Result
-                        {
-                            Title = "Search QuickNotes",
-                            SubTitle = "Type qq search <word> to find notes containing that word",
-                            IcoPath = IconPath,
-                            Action = _ => false
-                        }
-                    };
-                }
-                return SearchNotes(term);
-            }
-            // 8. Default – add new note
-            else
-            {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = $"Add note: {searchText}",
-                        SubTitle = "Press Enter to create your note, or type 'qq help' for command assistance ",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            CreateNote(searchText);
-                            Context?.API.ShowMsg("Note saved", $"Your note has been saved: {searchText}");
-                            return true;
-                        }
-                    }
-                };
+                case "help":
+                    return HelpCommand();
+                case "backup":
+                case "export":
+                    return BackupNotes();
+                case "edit":
+                    return EditNote(args);
+                case "view":
+                    return ViewNote(args);
+                case "delall":
+                    return DeleteAllNotes();
+                case "del":
+                case "delete":
+                    return DeleteNote(args);
+                case "search":
+                    return SearchNotes(args);
+                case "searchtag":
+                    return SearchTag(args);
+                case "pin":
+                    return PinNote(args, true);
+                case "unpin":
+                    return PinNote(args, false);
+                case "undo":
+                    return UndoDelete();
+                case "sort":
+                    return SortNotes(args);
+                default:
+                    return AddNoteCommand(searchText);
             }
         }
 
-        // ---------------------------
-        // Search command logic
-        // ---------------------------
+        // --- Command Implementations ---
+
+        private List<Result> AddNoteCommand(string noteText)
+        {
+            if (string.IsNullOrWhiteSpace(noteText))
+            {
+                return GetInstructionsAndNotes(string.Empty);
+            }
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = $"Add note: {noteText}",
+                    SubTitle = "Press Enter to save this note (with timestamp)",
+                    IcoPath = IconPath,
+                    Action = _ =>
+                    {
+                        CreateNote(noteText);
+                        Context?.API.ShowMsg("Note saved", $"Saved: {noteText}");
+                        return true;
+                    }
+                }
+            };
+        }
+
         private List<Result> SearchNotes(string searchTerm)
         {
-            var results = new List<Result>();
-
-            if (!File.Exists(_notesPath))
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
-                results.Add(new Result
-                {
-                    Title = "No notes found",
-                    SubTitle = "Your notes file does not exist or is empty.",
-                    IcoPath = IconPath,
-                    Action = _ => false
-                });
-                return results;
+                return SingleInfoResult("Search QuickNotes", "Usage: qq search <term>");
             }
 
-            // Read all notes
-            var notes = File.ReadAllLines(_notesPath)
-                            .Where(line => !string.IsNullOrWhiteSpace(line))
-                            .ToList();
-
-            // Filter notes that contain the search term (case-insensitive)
+            var notes = ReadNotes();
             var matchedNotes = notes
-                .Select((noteText, idx) => new { Text = noteText, Index = idx })
-                .Where(x => x.Text.IndexOf(searchTerm, StringComparison.OrdinalIgnoreCase) >= 0)
+                .Where(n => n.Text.Contains(searchTerm, StringComparison.OrdinalIgnoreCase))
                 .ToList();
 
             if (matchedNotes.Count == 0)
             {
-                results.Add(new Result
-                {
-                    Title = "No matches found",
-                    SubTitle = $"No notes contain the word \"{searchTerm}\".",
-                    IcoPath = IconPath,
-                    Action = _ => false
-                });
-                return results;
+                return SingleInfoResult("No matches found", $"No notes contain '{searchTerm}'.");
             }
 
-            // Build results for each matched note with highlighting
+            var results = new List<Result>();
             foreach (var match in matchedNotes)
             {
                 string highlighted = HighlightMatch(match.Text, searchTerm);
-                var result = new Result
-                {
-                    Title = $"[{match.Index + 1}] {highlighted}",
-                    SubTitle = "Press Enter to copy to clipboard | 'qq del " + (match.Index + 1) + "' to delete",
-                    IcoPath = IconPath,
-                    ToolTipData = new ToolTipData("Note", match.Text),
-                    Action = _ =>
-                    {
-                        try
-                        {
-                            Clipboard.SetText(match.Text);
-                            Context?.API.ShowMsg("Note copied", "Copied to clipboard");
-                            return true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Context?.API.ShowMsg("Error", "Failed to copy to clipboard: " + ex.Message);
-                            return false;
-                        }
-                    },
-                    ContextData = match.Text
-                };
-                results.Add(result);
+                results.Add(CreateNoteResult(match, $"Press Enter to copy | Ctrl+Click to Edit", highlighted));
             }
             return results;
         }
 
-        /// <summary>
-        /// Highlights the matched text by adding square brackets.
-        /// For example, if searchTerm = "milk", "Buy milk today" becomes "Buy [milk] today".
-        /// </summary>
         private string HighlightMatch(string noteText, string searchTerm)
         {
             var pattern = Regex.Escape(searchTerm);
@@ -265,20 +257,42 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             return highlighted;
         }
 
-        // ---------------------------
-        // Commands for adding, editing, viewing, and deleting notes
-        // ---------------------------
+        private List<Result> SearchTag(string tag)
+        {
+            if (string.IsNullOrWhiteSpace(tag))
+            {
+                return SingleInfoResult("Search by Tag", "Usage: qq searchtag <tag> (e.g., qq searchtag work)");
+            }
+
+            string tagSearch = tag.StartsWith('#') ? tag : "#" + tag;
+            var notes = ReadNotes();
+            var matchedNotes = notes
+                .Where(n => n.Text.Contains(tagSearch, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            if (matchedNotes.Count == 0)
+            {
+                return SingleInfoResult("No matches found", $"No notes found with tag '{tagSearch}'.");
+            }
+
+            var results = new List<Result>();
+            foreach (var match in matchedNotes)
+            {
+                string highlighted = HighlightMatch(match.Text, tagSearch);
+                results.Add(CreateNoteResult(match, $"Found note with tag '{tagSearch}'. Enter to copy.", highlighted));
+            }
+            return results;
+        }
+
         private void CreateNote(string note)
         {
-            if (string.IsNullOrEmpty(note))
-            {
-                return;
-            }
+            if (string.IsNullOrWhiteSpace(note)) return;
             try
             {
                 string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string entry = $"[{timestamp}] {note}";
+                string entry = $"[{timestamp}] {note.Trim()}";
                 File.AppendAllText(_notesPath, entry + Environment.NewLine);
+                _lastDeletedNote = null;
             }
             catch (Exception ex)
             {
@@ -286,397 +300,359 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
-        private List<Result> GetInstructionsAndNotes()
+        private List<Result> GetInstructionsAndNotes(string? currentSearch)
         {
-            var results = new List<Result>
+            var results = new List<Result>();
+            if (string.IsNullOrEmpty(currentSearch))
             {
-                new Result
+                results.Add(HelpResult());
+            }
+
+            var notes = ReadNotes();
+            var filteredNotes = string.IsNullOrWhiteSpace(currentSearch)
+                ? notes
+                : notes.Where(n => n.Text.Contains(currentSearch, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            var pinnedNotes = filteredNotes.Where(n => n.IsPinned).OrderByDescending(n => n.Timestamp).ToList();
+            var regularNotes = filteredNotes.Where(n => !n.IsPinned).OrderByDescending(n => n.Timestamp).ToList();
+
+            if (pinnedNotes.Any())
+            {
+                results.Add(new Result { Title = "--- Pinned Notes ---", IcoPath = IconPath, Action = _ => false });
+                foreach (var note in pinnedNotes)
                 {
-                    Title = "QuickNotes Commands",
-                    SubTitle = "Commands:\n" +
-                               "qq <text>             - Add note\n" +
-                               "qq del <N>            - Delete note\n" +
-                               "qq delall             - Delete all notes\n" +
-                               "qq search <word>      - Search notes (matched words highlighted)\n" +
-                               "qq edit <N>           - Edit note\n" +
-                               "qq view <N>           - View note details\n" +
-                               "qq backup/export      - Backup notes\n" +
-                               "qq help               - Show help",
-                    IcoPath = IconPath,
-                    Action = _ => false
+                    string highlighted = string.IsNullOrWhiteSpace(currentSearch) 
+                        ? note.Text 
+                        : HighlightMatch(note.Text, currentSearch);
+                    results.Add(CreateNoteResult(note, $"Pinned | Enter to copy | qq unpin {note.OriginalIndex + 1}", highlighted));
                 }
-            };
+            }
 
-            try
+            if (regularNotes.Any())
             {
-                if (File.Exists(_notesPath))
+                if (pinnedNotes.Any())
                 {
-                    var notes = File.ReadAllLines(_notesPath)
-                                    .Where(line => !string.IsNullOrWhiteSpace(line))
-                                    .ToList();
-                    for (int i = 0; i < notes.Count; i++)
-                    {
-                        int index = i;
-                        results.Add(new Result
-                        {
-                            Title = $"[{i + 1}] {notes[i]}",
-                            SubTitle = $"Press Enter to copy | 'qq del {i + 1}' to delete",
-                            IcoPath = IconPath,
-                            ToolTipData = new ToolTipData("Note", notes[i]),
-                            Action = _ =>
-                            {
-                                try
-                                {
-                                    Clipboard.SetText(notes[index]);
-                                    Context?.API.ShowMsg("Note copied", "Copied to clipboard");
-                                    return true;
-                                }
-                                catch (Exception ex)
-                                {
-                                    Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message);
-                                    return false;
-                                }
-                            },
-                            ContextData = notes[i]
-                        });
-                    }
+                    results.Add(new Result { Title = "--- Notes ---", IcoPath = IconPath, Action = _ => false });
+                }
+                foreach (var note in regularNotes)
+                {
+                    string highlighted = string.IsNullOrWhiteSpace(currentSearch) 
+                        ? note.Text 
+                        : HighlightMatch(note.Text, currentSearch);
+                    results.Add(CreateNoteResult(note, $"Enter to copy | qq pin {note.OriginalIndex + 1}", highlighted));
+                }
+            }
 
-                    if (notes.Count == 0)
-                    {
-                        results.Add(new Result
-                        {
-                            Title = "No notes found",
-                            SubTitle = "Type qq <note> to create your first note",
-                            IcoPath = IconPath,
-                            Action = _ => false
-                        });
-                    }
+            if (!pinnedNotes.Any() && !regularNotes.Any())
+            {
+                if (string.IsNullOrEmpty(currentSearch))
+                {
+                    results.Add(SingleInfoResult("No notes found", "Type 'qq <your note>' to add one, or 'qq help' for commands.").First());
                 }
                 else
                 {
-                    File.WriteAllText(_notesPath, string.Empty);
-                    results.Add(new Result
-                    {
-                        Title = "No notes found",
-                        SubTitle = "Type qq <note> to create your first note",
-                        IcoPath = IconPath,
-                        Action = _ => false
-                    });
+                    results.Add(SingleInfoResult($"No notes match '{currentSearch}'", "Try a different search or add a new note.").First());
                 }
             }
-            catch (Exception ex)
+
+            if (!string.IsNullOrWhiteSpace(currentSearch))
             {
-                results.Add(new Result
+                var commands = new[] { "help", "backup", "export", "edit", "view", "delall", "del", "delete", "search", "searchtag", "pin", "unpin", "undo", "sort" };
+                if (!commands.Contains(currentSearch.Split(' ')[0].ToLowerInvariant()))
                 {
-                    Title = "Error reading notes",
-                    SubTitle = ex.Message,
-                    IcoPath = IconPath,
-                    Action = _ => false
-                });
+                    results.Insert(0, AddNoteCommand(currentSearch).First());
+                }
             }
+
             return results;
+        }
+
+        // Helper to create a standard result for a note
+        private Result CreateNoteResult(NoteEntry note, string subTitle, string displayText = null)
+        {
+            string title = $"{(note.IsPinned ? "[P] " : "")}[{note.OriginalIndex + 1}] {displayText ?? note.Text}";
+            return new Result
+            {
+                Title = title,
+                SubTitle = subTitle,
+                IcoPath = IconPath,
+                ToolTipData = new ToolTipData("Note Details", 
+                    $"Index: {note.OriginalIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}"),
+                ContextData = note,
+                Action = c =>
+                {
+                    try
+                    {
+                        Clipboard.SetText(note.Text);
+                        Context?.API.ShowMsg("Note copied", $"Copied: {note.Text.Substring(0, Math.Min(note.Text.Length, 50))}...");
+                        return true;
+                    }
+                    catch (Exception ex)
+                    {
+                        Context?.API.ShowMsg("Error", "Failed to copy note to clipboard: " + ex.Message);
+                        return false;
+                    }
+                }
+            };
         }
 
         private List<Result> DeleteNote(string indexStr)
         {
-            if (!File.Exists(_notesPath))
+            if (!TryParseNoteIndex(indexStr, out int index, out var errorResult))
+                return errorResult;
+
+            var notes = ReadNotes();
+            if (index < 0 || index >= notes.Count)
             {
-                return GetInstructionsAndNotes();
+                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
             }
-            if (!int.TryParse(indexStr, out int index) || index <= 0)
-            {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Invalid note number",
-                        SubTitle = "Please specify a valid positive integer",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", "Invalid note number. Use a positive integer.");
-                            return true;
-                        }
-                    }
-                };
-            }
+
             try
             {
-                var notes = File.ReadAllLines(_notesPath)
-                                .Where(line => !string.IsNullOrWhiteSpace(line))
-                                .ToList();
-                if (index > notes.Count)
-                {
-                    return new List<Result>
-                    {
-                        new Result
-                        {
-                            Title = "Note not found",
-                            SubTitle = $"The last note is #{notes.Count}",
-                            IcoPath = IconPath,
-                            Action = _ =>
-                            {
-                                Context?.API.ShowMsg("Error", $"Note #{index} not found. The last note is #{notes.Count}.");
-                                return true;
-                            }
-                        }
-                    };
-                }
-                string deletedNote = notes[index - 1];
-                notes.RemoveAt(index - 1);
-                File.WriteAllLines(_notesPath, notes);
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Note deleted",
-                        SubTitle = deletedNote,
-                        IcoPath = IconPath,
-                        ToolTipData = new ToolTipData("Note deleted", deletedNote),
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Note deleted", "The note has been removed.");
-                            return true;
-                        }
-                    }
-                };
+                var noteToRemove = notes[index];
+                _lastDeletedNote = (noteToRemove.ToFileLine(), noteToRemove.OriginalIndex, noteToRemove.IsPinned);
+                var updatedNotes = notes.Where((note, i) => i != index).Select(n => n.ToFileLine()).ToList();
+                WriteNotes(updatedNotes);
+                return SingleInfoResult("Note deleted", $"Removed: [{index + 1}] {noteToRemove.Text}\nTip: Use 'qq undo' to restore.", true);
             }
             catch (Exception ex)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Error deleting note",
-                        SubTitle = ex.Message,
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", "Failed to delete note: " + ex.Message);
-                            return false;
-                        }
-                    }
-                };
+                return ErrorResult("Error deleting note", ex.Message);
             }
         }
 
         private List<Result> DeleteAllNotes()
         {
-            if (!File.Exists(_notesPath))
-            {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "No notes file found",
-                        SubTitle = "It may already be empty or missing.",
-                        IcoPath = IconPath,
-                        Action = _ => false
-                    }
-                };
-            }
             try
             {
-                File.WriteAllText(_notesPath, string.Empty);
-                return new List<Result>
+                var notes = ReadNotes();
+                if (!notes.Any())
                 {
-                    new Result
-                    {
-                        Title = "All notes deleted",
-                        SubTitle = "Your QuickNotes file is now empty.",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("All notes deleted", "Your QuickNotes file is now empty.");
-                            return true;
-                        }
-                    }
-                };
+                    return SingleInfoResult("No notes to delete", "Your notes file is already empty.");
+                }
+
+                _lastDeletedNote = null;
+                WriteNotes(new List<string>());
+                return SingleInfoResult("All notes deleted", $"Removed {notes.Count} notes. This action cannot be undone with 'qq undo'.", true);
             }
             catch (Exception ex)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Error deleting all notes",
-                        SubTitle = ex.Message,
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", "Failed to delete all notes: " + ex.Message);
-                            return false;
-                        }
-                    }
-                };
+                return ErrorResult("Error deleting all notes", ex.Message);
             }
         }
 
-        // ---------------------------
-        // Edit note command: qq edit [number]
-        // ---------------------------
+        private List<Result> UndoDelete()
+        {
+            if (_lastDeletedNote == null)
+            {
+                return SingleInfoResult("Nothing to undo", "No note has been deleted recently.");
+            }
+
+            try
+            {
+                var notes = ReadNotesRaw();
+                var (text, index, _) = _lastDeletedNote.Value;
+
+                if (index >= 0 && index <= notes.Count)
+                {
+                    notes.Insert(index, text);
+                }
+                else
+                {
+                    notes.Add(text);
+                }
+
+                WriteNotes(notes);
+                _lastDeletedNote = null;
+                return SingleInfoResult("Note restored", $"Restored note at index ~{index + 1}.", true);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error undoing delete", ex.Message);
+            }
+        }
+
+        private List<Result> PinNote(string indexStr, bool pin)
+        {
+            if (!TryParseNoteIndex(indexStr, out int index, out var errorResult))
+                return errorResult;
+
+            var notes = ReadNotes();
+            if (index < 0 || index >= notes.Count)
+            {
+                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
+            }
+
+            try
+            {
+                var noteToUpdate = notes[index];
+                if (noteToUpdate.IsPinned == pin)
+                {
+                    return SingleInfoResult($"Note {index + 1} already {(pin ? "pinned" : "unpinned")}", noteToUpdate.Text);
+                }
+
+                noteToUpdate.IsPinned = pin;
+                WriteNotes(notes.Select(n => n.ToFileLine()).ToList());
+                _lastDeletedNote = null;
+                return SingleInfoResult($"Note {(pin ? "pinned" : "unpinned")}", $"[{index + 1}] {noteToUpdate.Text}", true);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult($"Error {(pin ? "pinning" : "unpinning")} note", ex.Message);
+            }
+        }
+
+        private List<Result> SortNotes(string args)
+        {
+            var notes = ReadNotes();
+            if (!notes.Any()) return SingleInfoResult("No notes to sort", "");
+
+            string sortType = args.ToLowerInvariant().Trim();
+            bool descending = sortType.EndsWith(" desc");
+            if (descending) sortType = sortType.Substring(0, sortType.Length - 5).Trim();
+            bool ascending = sortType.EndsWith(" asc");
+            if (ascending) sortType = sortType.Substring(0, sortType.Length - 4).Trim();
+
+            IEnumerable<NoteEntry> sortedNotes;
+            switch (sortType)
+            {
+                case "date":
+                    sortedNotes = descending
+                        ? notes.OrderByDescending(n => n.Timestamp == DateTime.MinValue ? DateTime.MaxValue : n.Timestamp)
+                               .ThenBy(n => n.OriginalIndex)
+                        : notes.OrderBy(n => n.Timestamp == DateTime.MinValue ? DateTime.MaxValue : n.Timestamp)
+                               .ThenBy(n => n.OriginalIndex);
+                    break;
+                case "alpha":
+                case "text":
+                    sortedNotes = descending
+                        ? notes.OrderByDescending(n => n.Text, StringComparer.OrdinalIgnoreCase)
+                               .ThenBy(n => n.OriginalIndex)
+                        : notes.OrderBy(n => n.Text, StringComparer.OrdinalIgnoreCase)
+                               .ThenBy(n => n.OriginalIndex);
+                    break;
+                default:
+                    return SingleInfoResult("Invalid sort type", "Use 'qq sort date [asc|desc]' or 'qq sort alpha [asc|desc]'");
+            }
+
+            try
+            {
+                WriteNotes(sortedNotes.Select(n => n.ToFileLine()).ToList());
+                _lastDeletedNote = null;
+                return SingleInfoResult("Notes sorted", $"Sorted by {sortType} {(descending ? "descending" : (ascending ? "ascending" : "(default asc)"))}", true);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error sorting notes", ex.Message);
+            }
+        }
+
         private List<Result> EditNote(string noteNumberStr)
         {
-            if (!int.TryParse(noteNumberStr, out int noteIndex) || noteIndex <= 0)
+            if (!TryParseNoteIndex(noteNumberStr, out int index, out var errorResult))
+                return errorResult;
+
+            var notes = ReadNotes();
+            if (index < 0 || index >= notes.Count)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Invalid note number",
-                        SubTitle = "Please provide a valid positive integer",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", "Invalid note number.");
-                            return true;
-                        }
-                    }
-                };
+                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
             }
-            var notes = File.ReadAllLines(_notesPath)
-                            .Where(line => !string.IsNullOrWhiteSpace(line))
-                            .ToList();
-            if (noteIndex > notes.Count)
+
+            var noteToEdit = notes[index];
+            string oldNoteText = noteToEdit.Text;
+            string newNoteText = Interaction.InputBox($"Edit note #{noteToEdit.OriginalIndex + 1}", "Edit QuickNote", oldNoteText);
+
+            if (string.IsNullOrEmpty(newNoteText) || newNoteText == oldNoteText)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Note not found",
-                        SubTitle = $"Last note is #{notes.Count}",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", $"Note #{noteIndex} not found. The last note is #{notes.Count}.");
-                            return true;
-                        }
-                    }
-                };
+                return SingleInfoResult("Edit cancelled", "Note was not changed.");
             }
-            string oldNote = notes[noteIndex - 1];
-            // Use InputBox for editing
-            string newNote = Interaction.InputBox("Edit note", "Edit Note", oldNote);
-            if (string.IsNullOrEmpty(newNote) || newNote == oldNote)
+
+            string timestampPrefix = "";
+            if (noteToEdit.Timestamp != DateTime.MinValue && noteToEdit.Text.StartsWith("["))
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Note unchanged",
-                        SubTitle = "No modifications made.",
-                        IcoPath = IconPath,
-                        Action = _ => false
-                    }
-                };
+                timestampPrefix = noteToEdit.Text.Substring(0, 22);
             }
-            notes[noteIndex - 1] = newNote;
-            File.WriteAllLines(_notesPath, notes);
-            return new List<Result>
+            noteToEdit.Text = timestampPrefix + newNoteText.Trim();
+
+            try
             {
-                new Result
-                {
-                    Title = "Note edited",
-                    SubTitle = newNote,
-                    IcoPath = IconPath,
-                    Action = _ =>
-                    {
-                        Context?.API.ShowMsg("Note edited", "The note has been updated.");
-                        return true;
-                    }
-                }
-            };
+                WriteNotes(notes.Select(n => n.ToFileLine()).ToList());
+                _lastDeletedNote = null;
+                return SingleInfoResult("Note edited", $"Updated note #{index + 1}: {newNoteText}", true);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error saving edited note", ex.Message);
+            }
         }
 
-        // ---------------------------
-        // View note command: qq view [number]
-        // ---------------------------
+        // Helper for inline editing (no modifier actions, since they are not supported)
+        private void EditNoteInline(NoteEntry note)
+        {
+            string oldNoteText = note.Text;
+            string newNoteText = Interaction.InputBox($"Edit note #{note.OriginalIndex + 1}", "Edit QuickNote", oldNoteText);
+
+            if (string.IsNullOrEmpty(newNoteText) || newNoteText == oldNoteText)
+            {
+                Context?.API.ShowMsg("Edit cancelled", "Note was not changed.", IconPath);
+                return;
+            }
+
+            string timestampPrefix = "";
+            if (note.Timestamp != DateTime.MinValue && note.Text.StartsWith("["))
+            {
+                timestampPrefix = note.Text.Substring(0, 22);
+            }
+            note.Text = timestampPrefix + newNoteText.Trim();
+
+            try
+            {
+                var allNotes = ReadNotes();
+                var noteInCurrentList = allNotes.FirstOrDefault(n => n.OriginalIndex == note.OriginalIndex);
+                if (noteInCurrentList != null)
+                {
+                    noteInCurrentList.Text = note.Text;
+                    WriteNotes(allNotes.Select(n => n.ToFileLine()).ToList());
+                    _lastDeletedNote = null;
+                    Context?.API.ShowMsg("Note edited", $"Updated note #{note.OriginalIndex + 1}", IconPath);
+                }
+                else
+                {
+                    Context?.API.ShowMsg("Error", "Could not find the note to save the edit.", IconPath);
+                }
+            }
+            catch (Exception ex)
+            {
+                Context?.API.ShowMsg("Error saving note", ex.Message, IconPath);
+            }
+        }
+
         private List<Result> ViewNote(string noteNumberStr)
         {
-            if (!int.TryParse(noteNumberStr, out int noteIndex) || noteIndex <= 0)
+            if (!TryParseNoteIndex(noteNumberStr, out int index, out var errorResult))
+                return errorResult;
+
+            var notes = ReadNotes();
+            if (index < 0 || index >= notes.Count)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Invalid note number",
-                        SubTitle = "Please provide a valid positive integer",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", "Invalid note number.");
-                            return true;
-                        }
-                    }
-                };
+                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
             }
-            var notes = File.ReadAllLines(_notesPath)
-                            .Where(line => !string.IsNullOrWhiteSpace(line))
-                            .ToList();
-            if (noteIndex > notes.Count)
-            {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Note not found",
-                        SubTitle = $"Last note is #{notes.Count}",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", $"Note #{noteIndex} not found. The last note is #{notes.Count}.");
-                            return true;
-                        }
-                    }
-                };
-            }
-            string note = notes[noteIndex - 1];
-            return new List<Result>
-            {
-                new Result
-                {
-                    Title = $"Note #{noteIndex}",
-                    SubTitle = note,
-                    IcoPath = IconPath,
-                    Action = _ =>
-                    {
-                        try
-                        {
-                            Clipboard.SetText(note);
-                            Context?.API.ShowMsg("Note copied", "The note has been copied to clipboard.");
-                            return true;
-                        }
-                        catch (Exception ex)
-                        {
-                            Context?.API.ShowMsg("Error", "Failed to copy note: " + ex.Message);
-                            return false;
-                        }
-                    }
-                }
-            };
+
+            var note = notes[index];
+            return new List<Result> { CreateNoteResult(note, "Press Enter to copy this note's text.") };
         }
 
-        // ---------------------------
-        // Backup/Export command: qq backup or qq export
-        // ---------------------------
         private List<Result> BackupNotes()
         {
             try
             {
                 if (!File.Exists(_notesPath))
                 {
-                    return new List<Result>
-                    {
-                        new Result
-                        {
-                            Title = "No notes file",
-                            SubTitle = "Notes file does not exist.",
-                            IcoPath = IconPath,
-                            Action = _ => false
-                        }
-                    };
+                    return SingleInfoResult("No notes file to backup", "The notes file doesn't exist.");
                 }
-                string backupFileName = Path.Combine(Path.GetDirectoryName(_notesPath)!, "notes_backup_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".txt");
+
+                string notesDir = Path.GetDirectoryName(_notesPath)!;
+                string backupFileName = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 File.Copy(_notesPath, backupFileName, true);
 
                 // Open Windows Explorer with the backup file selected
@@ -689,131 +665,257 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     UseShellExecute = true
                 });
 
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Backup created",
-                        SubTitle = $"Backup file: {Path.GetFileName(backupFileName)}",
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Backup", $"Backup created: {backupFileName}");
-                            return true;
-                        }
-                    }
-                };
+                return SingleInfoResult("Backup created", $"Backup saved to {Path.GetFileName(backupFileName)} in QuickNotes folder.", true);
             }
             catch (Exception ex)
             {
-                return new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Error creating backup",
-                        SubTitle = ex.Message,
-                        IcoPath = IconPath,
-                        Action = _ =>
-                        {
-                            Context?.API.ShowMsg("Error", "Failed to create backup: " + ex.Message);
-                            return false;
-                        }
-                    }
-                };
+                return ErrorResult("Error creating backup", ex.Message);
             }
         }
 
-        // ---------------------------
-        // Help command: qq help
-        // ---------------------------
         private List<Result> HelpCommand()
         {
-            string helpText = "Available commands:\n" +
-                              "qq <text>             - ✅ Add note \n" +
-                              "qq del <number>       - ❌ Delete note \n" +
-                              "qq delall             - ⛔ Delete all notes \n" +
-                              "qq search <word>      - 🔎 Search notes  (matched words highlighted)\n" +
-                              "qq edit <number>      - ✏️ Edit note \n" +
-                              "qq view <number>      - 👀 View note details \n" +
-                              "qq backup/export      - 💾 Backup notes  (opens folder and file)\n" +
-                              "qq help               - Show help ";
+            return new List<Result> { HelpResult() };
+        }
+
+        // Centralized Help Result
+        private Result HelpResult()
+        {
+            string helpText = 
+                "qq <text>              Add note ✏️       | qq pin <N>             Pin note 📌\n" + 
+                "qq search <term>       Search notes 🔍   | qq unpin <N>           Unpin note 📎\n" + 
+                "qq searchtag <tag>     Search #tags 🏷️   | qq sort date|alpha     Sort notes 🔄\n" + 
+                "qq view <N>            View note 👁️      | qq undo                Restore note ↩️\n" + 
+                "qq edit <N>            Edit note 📝      | qq delall              Delete ALL 💣\n" + 
+                "qq del <N>             Delete note 🗑️    | qq backup/export       Backup notes 💾\n" + 
+                "qq help                Show help ℹ️      | Enter = Copy to clipboard 📋";
+
+            return new Result
+            {
+                Title = "QuickNotes Help",
+                SubTitle = helpText,
+                IcoPath = IconPath,
+                Action = _ => false
+            };
+        }
+
+        // --- File I/O Helpers ---
+        private List<NoteEntry> ReadNotes()
+        {
+            try
+            {
+                if (!File.Exists(_notesPath)) return new List<NoteEntry>();
+                return File.ReadAllLines(_notesPath)
+                           .Select((line, index) => NoteEntry.Parse(line, index))
+                           .Where(entry => !string.IsNullOrWhiteSpace(entry.Text))
+                           .ToList();
+            }
+            catch (Exception ex)
+            {
+                Context?.API.ShowMsg("Error reading notes", ex.Message);
+                return new List<NoteEntry>();
+            }
+        }
+
+        private List<string> ReadNotesRaw()
+        {
+            try
+            {
+                if (!File.Exists(_notesPath)) return new List<string>();
+                return File.ReadAllLines(_notesPath).ToList();
+            }
+            catch (Exception ex)
+            {
+                Context?.API.ShowMsg("Error reading notes", ex.Message);
+                return new List<string>();
+            }
+        }
+
+        private void WriteNotes(IEnumerable<string> lines)
+        {
+            try
+            {
+                File.WriteAllLines(_notesPath, lines);
+            }
+            catch (Exception ex)
+            {
+                Context?.API.ShowMsg("Error saving notes", $"Failed to write to notes file: {ex.Message}");
+                throw;
+            }
+        }
+
+        // --- Utility Helpers ---
+        private bool TryParseNoteIndex(string indexStr, out int index, out List<Result> errorResult)
+        {
+            if (!int.TryParse(indexStr, out int oneBasedIndex) || oneBasedIndex <= 0)
+            {
+                errorResult = SingleInfoResult("Invalid note number", "Please specify a valid positive number corresponding to the note.");
+                index = -1;
+                return false;
+            }
+            index = oneBasedIndex - 1;
+            errorResult = new List<Result>();
+            return true;
+        }
+
+        private List<Result> SingleInfoResult(string title, string subTitle, bool closeWindow = false)
+        {
             return new List<Result>
             {
                 new Result
                 {
-                    Title = "QuickNotes Help",
-                    SubTitle = helpText,
+                    Title = title,
+                    SubTitle = subTitle,
                     IcoPath = IconPath,
-                    Action = _ => false
+                    Action = _ => closeWindow
                 }
             };
         }
 
-        // ---------------------------
-        // Context menu, localization, and Dispose
-        // ---------------------------
+        private List<Result> ErrorResult(string title, string subTitle)
+        {
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = title,
+                    SubTitle = subTitle,
+                    IcoPath = IconPath,
+                    Action = _ => { Context?.API.ShowMsg(title, subTitle); return false; }
+                }
+            };
+        }
+
+        // --- Context Menu ---
         public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
         {
-            if (selectedResult.ContextData is string noteText)
+            var contextMenuItems = new List<ContextMenuResult>();
+            if (selectedResult.ContextData is NoteEntry note)
             {
-                return new List<ContextMenuResult>
+                contextMenuItems.Add(new ContextMenuResult
                 {
-                    new ContextMenuResult
+                    PluginName = Name,
+                    Title = "Copy Note Text",
+                    FontFamily = "Segoe MDL2 Assets",
+                    Glyph = "\uE8C8", // Copy icon
+                    AcceleratorKey = Key.C,
+                    AcceleratorModifiers = ModifierKeys.Control,
+                    Action = _ =>
                     {
-                        PluginName = Name,
-                        Title = "Copy to clipboard",
-                        FontFamily = "Segoe MDL2 Assets",
-                        Glyph = "\uE8C8", // Copy icon
-                        AcceleratorKey = Key.C,
-                        AcceleratorModifiers = ModifierKeys.Control,
-                        Action = _ =>
-                        {
-                            try
-                            {
-                                Clipboard.SetText(noteText);
-                                Context?.API.ShowMsg("Note copied", "Copied to clipboard");
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Context?.API.ShowMsg("Error", "Failed to copy to clipboard: " + ex.Message);
-                                return false;
-                            }
-                        }
+                        try { Clipboard.SetText(note.Text); return true; }
+                        catch (Exception ex) { Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message); return false; }
                     }
-                };
-            }
-            return new List<ContextMenuResult>();
-        }
+                });
 
-        public string GetTranslatedPluginTitle() => "QuickNotes";
-        public string GetTranslatedPluginDescription() => "Save, view, manage, and search quick notes";
+                contextMenuItems.Add(new ContextMenuResult
+                {
+                    PluginName = Name,
+                    Title = "Edit Note...",
+                FontFamily = "Segoe MDL2 Assets",
+                                    Glyph = "\uE70F", // Edit icon
+                                    AcceleratorKey = Key.E,
+                                    AcceleratorModifiers = ModifierKeys.Control,
+                                    Action = _ =>
+                                    {
+                                        EditNoteInline(note);
+                                        return true;
+                                    }
+                                });
 
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+                                contextMenuItems.Add(new ContextMenuResult
+                                {
+                                    PluginName = Name,
+                                    Title = "Delete Note",
+                                    FontFamily = "Segoe MDL2 Assets",
+                                    Glyph = "\uE74D", // Delete icon
+                                    AcceleratorKey = Key.Delete,
+                                    Action = _ =>
+                                    {
+                                        DeleteNote((note.OriginalIndex + 1).ToString());
+                                        return true;
+                                    }
+                                });
 
-        protected virtual void Dispose(bool disposing)
-        {
-            if (Disposed || !disposing)
-            {
-                return;
-            }
-            if (Context?.API != null)
-            {
-                Context.API.ThemeChanged -= OnThemeChanged;
-            }
-            Disposed = true;
-        }
+                                contextMenuItems.Add(new ContextMenuResult
+                                {
+                                    PluginName = Name,
+                                    Title = note.IsPinned ? "Unpin Note" : "Pin Note",
+                                    FontFamily = "Segoe MDL2 Assets",
+                                    Glyph = note.IsPinned ? "\uE77A" : "\uE718", // Pin/Unpin icon
+                                    Action = _ =>
+                                    {
+                                        PinNote((note.OriginalIndex + 1).ToString(), !note.IsPinned);
+                                        return true;
+                                    }
+                                });
 
-        private void UpdateIconPath(Theme theme) =>
-            IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
-                ? "Images/quicknotes.light.png"
-                : "Images/quicknotes.dark.png";
+                                // URL detection and opening
+                                Match urlMatch = UrlRegex.Match(note.Text);
+                                if (urlMatch.Success)
+                                {
+                                    string url = urlMatch.Value;
+                                    if (url.StartsWith("www.", StringComparison.OrdinalIgnoreCase) && !url.Contains("://"))
+                                    {
+                                        url = "http://" + url;
+                                    }
 
-        private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
-            UpdateIconPath(newTheme);
-    }
-}
+                                    contextMenuItems.Add(new ContextMenuResult
+                                    {
+                                        PluginName = Name,
+                                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}...",
+                                        FontFamily = "Segoe MDL2 Assets",
+                                        Glyph = "\uE774", // Globe icon
+                                        AcceleratorKey = Key.U,
+                                        AcceleratorModifiers = ModifierKeys.Control,
+                                        Action = _ =>
+                                        {
+                                            try
+                                            {
+                                                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                                                return true;
+                                            }
+                                            catch (Exception ex)
+                                            {
+                                                Context?.API.ShowMsg("Error", $"Could not open URL: {ex.Message}");
+                                                return false;
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                            return contextMenuItems;
+                        }
+
+                        // --- IPluginI18n & IDisposable ---
+                        public string GetTranslatedPluginTitle() => Name;
+                        public string GetTranslatedPluginDescription() => Description;
+
+                        public void Dispose()
+                        {
+                            Dispose(true);
+                            GC.SuppressFinalize(this);
+                        }
+
+                        protected virtual void Dispose(bool disposing)
+                        {
+                            if (Disposed || !disposing)
+                            {
+                                return;
+                            }
+                            if (Context?.API != null)
+                            {
+                                Context.API.ThemeChanged -= OnThemeChanged;
+                            }
+                            Disposed = true;
+                        }
+
+                        // --- Theme Handling ---
+                        private void UpdateIconPath(Theme theme) =>
+                            IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
+                                ? "Images/quicknotes.light.png"
+                                : "Images/quicknotes.dark.png";
+
+                        private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
+                            UpdateIconPath(newTheme);
+                    }
+                }

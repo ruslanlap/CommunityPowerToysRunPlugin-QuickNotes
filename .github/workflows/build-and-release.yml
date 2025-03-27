@@ -196,7 +196,7 @@ jobs:
           
           Thank you for using QuickNotes! If you encounter any issues or have suggestions, please [open an issue](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues).
           
-          Made with ❤️ by the community
+          Made with ❤️ by <a href="https://github.com/ruslanlap">ruslanlap</a>
           EOL
           
           RELEASE_NOTES=$(cat release_notes.md)

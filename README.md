@@ -77,13 +77,18 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 - 📝 **Quick Note Creation** - Instantly save notes with a simple command
 - 🔍 **Powerful Search** - Find notes with highlighted search terms
+- 🏷️ **Tag Support** - Add #tags to notes and search by tag
+- 📌 **Pin Important Notes** - Pin critical notes to keep them at the top
+- 🔄 **Sorting Options** - Sort notes by date or alphabetically
 - ✏️ **Easy Editing** - Modify existing notes with a simple interface
 - 🗑️ **Note Management** - Delete individual notes or clear all notes
+- ↩️ **Undo Delete** - Restore recently deleted notes
 - 💾 **Backup & Export** - Create backups of your notes collection
 - 📋 **Clipboard Integration** - Copy notes to clipboard with a single click
 - 🌓 **Theme Support** - Works with both light and dark PowerToys themes
 - ⏱️ **Timestamp Recording** - Each note is saved with a timestamp for easy reference
 - 🔔 **Notification System** - Get confirmation when notes are saved, edited, or deleted
+- 🔗 **URL Detection** - Automatically detects and allows opening URLs in notes
 
 ## 🎬 Demo Gallery
 
@@ -150,11 +155,17 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 |---------|-------------|---------|
 | `qq <text>` | Create a new note | `qq Buy milk and eggs` |
 | `qq help` | Show help information | `qq help` |
+| `qq search <term>` | Search notes (matched words highlighted) | `qq search milk` |
+| `qq searchtag <tag>` | Search notes by tag | `qq searchtag work` |
+| `qq view <number>` | View note details | `qq view 1` |
+| `qq edit <number>` | Edit a specific note | `qq edit 2` |
 | `qq del <number>` | Delete a specific note | `qq del 3` |
 | `qq delall` | Delete all notes | `qq delall` |
-| `qq search <word>` | Search notes (matched words highlighted) | `qq search milk` |
-| `qq edit <number>` | Edit a specific note | `qq edit 2` |
-| `qq view <number>` | View note details | `qq view 1` |
+| `qq undo` | Restore last deleted note | `qq undo` |
+| `qq pin <number>` | Pin a note to the top | `qq pin 4` |
+| `qq unpin <number>` | Unpin a note | `qq unpin 4` |
+| `qq sort date` | Sort notes by date | `qq sort date` |
+| `qq sort alpha` | Sort notes alphabetically | `qq sort alpha` |
 | `qq backup` or `qq export` | Backup notes (opens folder and file) | `qq backup` |
 
 </div>
@@ -162,8 +173,15 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ### 🎯 Quick Tips
 
 - Press <kbd>Enter</kbd> on a note to copy it to clipboard
-- Right-click on a note for additional options
+- Right-click on a note for additional options (copy, edit, delete, pin/unpin)
+- Add #tags to your notes (e.g., `qq Meeting with John #work #important`)
+- Use `qq searchtag work` to find all notes with the #work tag
 - Notes are automatically saved with timestamps
+- Pinned notes always appear at the top of your notes list
+- Sort notes with `qq sort date` (newest first) or `qq sort alpha` (A-Z)
+- Add `desc` to sort in reverse order (e.g., `qq sort date desc`)
+- Use `qq undo` to restore the last deleted note
+- URLs in notes are automatically detected and can be opened via the context menu
 - Use `qq help` anytime to see all available commands
 
 ## 📁 Data Storage
@@ -178,6 +196,10 @@ Each note is stored with a timestamp for easy reference in the format:
 [YYYY-MM-DD HH:MM:SS] Your note text here
 ```
 
+Pinned notes are stored with a special prefix:
+```
+[PINNED] [YYYY-MM-DD HH:MM:SS] Your important note here
+```
 
 ## 🛠️ Building from Source
 
@@ -258,9 +280,17 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - **📋 Clipboard Integration** - Copy any note to clipboard with a single keystroke
 - **🛠️ Powerfully Simple** - Sophisticated features hidden behind simple commands
 
+<div align="center">
+  <img src="assets/new-features.png" alt="QuickNotes New Features" width="650">
+</div>
+
+<div align="center">
+  <img src="assets/functions.png" alt="QuickNotes Functions" width="650">
+  <p><i>**Powerful context menu features: Edit notes, Copy to clipboard, Pin important items, Delete notes, and Detect URL and Open URLs directly from your notes in your browser**</i></p>
+</div>
 
 **Feature Ideas We'd Love to See:**
-- Tag system for notes
+- ~~Tag system for notes~~
 - Rich text formatting
 - Cloud sync options
 - Note categories
