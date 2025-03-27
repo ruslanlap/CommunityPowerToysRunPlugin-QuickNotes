@@ -13,7 +13,7 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.1-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.2-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
