@@ -113,7 +113,6 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
   <h3>💾 Exporting Notes</h3>
-  <p><img src="assets/demo-qq export.gif" width="650" alt="Exporting Notes Demo"/></p>
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
   
   <h3>👀 Viewing Notes</h3>
@@ -125,7 +124,6 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Get help on available commands with <code>qq help</code></i></p>
   
   <h3>✨ Text Formatting</h3>
-  <p><img src="assets/demo-text-formatting.gif" width="650" alt="Text Formatting Demo"/></p>
   <p><i>Format your notes with <code>**bold**</code>, <code>*italic*</code>, <code>==highlight==</code>, and <code>#tags</code></i></p>
   
   <h3>💡 Command Auto-suggestions</h3>
