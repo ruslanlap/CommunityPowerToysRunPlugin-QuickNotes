@@ -13,7 +13,7 @@
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.2-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.3-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -24,10 +24,10 @@
 </div>
 
 <div align="center">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.2/QuickNotes-v1.0.2-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.3/QuickNotes-v1.0.3-x64.zip">
     <img src="https://img.shields.io/badge/Download%20Latest%20Release-x64-blue?style=for-the-badge&logo=github" alt="Download Latest Release" />
   </a>
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.2/QuickNotes-v1.0.2-arm64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.3/QuickNotes-v1.0.3-arm64.zip">
     <img src="https://img.shields.io/badge/Download%20Latest%20Release-ARM64-blue?style=for-the-badge&logo=github" alt="Download Latest Release" />
   </a>
 </div>
@@ -60,7 +60,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.2/QuickNotes-v1.0.2-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.3/QuickNotes-v1.0.3-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
@@ -89,6 +89,9 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 - ⏱️ **Timestamp Recording** - Each note is saved with a timestamp for easy reference
 - 🔔 **Notification System** - Get confirmation when notes are saved, edited, or deleted
 - 🔗 **URL Detection** - Automatically detects and allows opening URLs in notes
+- ✨ **Text Formatting** - Format notes with Markdown-style syntax for bold, italic, and highlights
+- 🏷️ **Customizable Tag Style** - Toggle between bold or italic formatting for tags
+- 💡 **Command Auto-suggestions** - Get real-time command suggestions as you type use Tab key it's easy
 
 ## 🎬 Demo Gallery
 
@@ -120,6 +123,14 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <h3>❓ Help Command</h3>
   <p><img src="assets/demo-qq help.gif" width="650" alt="Help Command Demo"/></p>
   <p><i>Get help on available commands with <code>qq help</code></i></p>
+  
+  <h3>✨ Text Formatting</h3>
+  <p><img src="assets/demo-text-formatting.gif" width="650" alt="Text Formatting Demo"/></p>
+  <p><i>Format your notes with <code>**bold**</code>, <code>*italic*</code>, <code>==highlight==</code>, and <code>#tags</code></i></p>
+  
+  <h3>💡 Command Auto-suggestions</h3>
+  <p><img src="assets/demo-auto-suggestions.gif" width="650" alt="Auto-suggestions Demo"/></p>
+  <p><i>Get command suggestions as you type for faster note-taking</i></p>
 </div>
 
 ## 🚀 Installation
@@ -167,6 +178,8 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 | `qq sort date` | Sort notes by date | `qq sort date` |
 | `qq sort alpha` | Sort notes alphabetically | `qq sort alpha` |
 | `qq backup` or `qq export` | Backup notes (opens folder and file) | `qq backup` |
+| `qq tagstyle bold` | Set tag style to bold | `qq tagstyle bold` |
+| `qq tagstyle italic` | Set tag style to italic | `qq tagstyle italic` |
 
 </div>
 
@@ -183,6 +196,13 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 - Use `qq undo` to restore the last deleted note
 - URLs in notes are automatically detected and can be opened via the context menu
 - Use `qq help` anytime to see all available commands
+- Type any command partially to see auto-suggestions (e.g., type `qq s` to see `search`, `sort`, etc.)
+- Format your notes with Markdown-style syntax:
+  - **Bold text**: Use `**text**` or `__text__`
+  - *Italic text*: Use `*text*` or `_text_`
+  - ==Highlighted text==: Use `==text==`
+  - #tags are automatically formatted based on your tag style setting
+- Toggle tag formatting style with `qq tagstyle bold` or `qq tagstyle italic`
 
 ## 📁 Data Storage
 
