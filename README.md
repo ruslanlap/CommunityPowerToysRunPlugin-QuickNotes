@@ -268,6 +268,8 @@ The QuickNotes plugin has a clean, modular architecture designed for maintainabi
 
 For a detailed breakdown of the project structure, see the [structure.md](structure.md) file.
 
+</div>
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
@@ -321,10 +323,15 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 **Feature Ideas We'd Love to See:**
 - ~~Tag system for notes~~
-- Rich text formatting
+- ~~Easy copy notes~~
+- ~~Autosuggestions commands~~
+- ~~Rich text formatting~~
 - Cloud sync options
-- Note categories
 - Reminder functionality
+- Git integration
+- More effect 
+- More styled
+- ~~Notes to be pinned~~
 
 ## 📄 License
 
