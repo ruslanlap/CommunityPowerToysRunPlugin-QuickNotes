@@ -265,10 +265,6 @@ The QuickNotes plugin has a clean, modular architecture designed for maintainabi
 <div align="center">
   <img src="assets/structure-1.png" alt="QuickNotes Project Structure" width="650">
   <p><i>High-level project structure overview</i></p>
-  
-  <img src="assets/structure-2.png" alt="QuickNotes Component Diagram" width="650">
-  <p><i>Component interaction diagram</i></p>
-</div>
 
 For a detailed breakdown of the project structure, see the [structure.md](structure.md) file.
 
