@@ -48,6 +48,7 @@
 - [✨ Why You'll Love QuickNotes](#-why-youll-love-quicknotes)
 - [📄 License](#-license)
 - [🙏 Acknowledgements](#-acknowledgements)
+- [🛠️ Implementation Details](#-implementation-details)
 
 ## 📋 Overview
 
@@ -203,6 +204,12 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   - #tags are automatically formatted based on your tag style setting
 - Toggle tag formatting style with `qq tagstyle bold` or `qq tagstyle italic`
 
+- **Intelligent Copy Options**:
+  - Press <kbd>Enter</kbd> on a note to copy clean content (without timestamp and tags)
+  - Use <kbd>Ctrl</kbd>+<kbd>C</kbd> to copy the full note with timestamp
+  - Use <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>C</kbd> for clean content (alternative to Enter)
+  - Right-click menu provides all copy options with clear descriptions
+
 ## 📁 Data Storage
 
 QuickNotes stores all your notes in a simple text file at:
@@ -324,6 +331,44 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Microsoft PowerToys](https://github.com/microsoft/PowerToys) team for creating the extensible PowerToys Run platform
 - All contributors who have helped improve this plugin
 - Icons and visual elements from various open-source projects
+
+## 🛠️ Implementation Details
+
+The QuickNotes plugin is built around a robust and well-structured implementation in the `Main.cs` file, which serves as the heart of the plugin. Here's what makes it special:
+
+### 🏗️ Architecture
+
+- **Modular Design**: The code follows a clean, modular approach with well-defined responsibilities
+- **NoteEntry Structure**: Uses a dedicated class to handle note metadata (timestamps, pinning status, etc.)
+- **Command Pattern**: Implements a command-based architecture for all operations
+
+### 🔑 Key Components
+
+- **Command Processing**: Centralized command handling via the `GetCommandResults` method
+- **Text Formatting**: Rich text formatting with support for bold, italic, highlighting, and tags
+- **Context Menu**: Comprehensive right-click options for each note
+- **File I/O**: Robust file operations with proper error handling
+- **Theme Support**: Adapts to PowerToys light/dark themes automatically
+
+### 🧩 Notable Features
+
+- **Timestamp Management**: Automatically adds timestamps to notes and provides options to display or hide them
+- **Tag Detection**: Identifies and formats #tags with customizable styling (bold or italic)
+- **URL Detection**: Uses regex to find and make URLs clickable in notes
+- **Undo Functionality**: Tracks deleted notes to enable undo operations
+- **Sort Capabilities**: Implements flexible sorting by date or alphabetically
+- **Autocomplete**: Provides intelligent command suggestions as you type
+
+
+
+The implementation prioritizes user experience with features like:
+- Clean content copying (stripping timestamps and tags)
+- Intelligent display of pinned vs. regular notes
+- Comprehensive error handling
+- Helpful tooltips and notifications
+- Flexible search capabilities
+
+This robust architecture makes QuickNotes not just a simple note-taking plugin, but a powerful productivity tool that seamlessly integrates with PowerToys Run.
 
 ---
 

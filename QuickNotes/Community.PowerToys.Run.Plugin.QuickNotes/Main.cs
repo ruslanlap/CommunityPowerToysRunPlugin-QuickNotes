@@ -114,25 +114,25 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             "tagstyle"
         };
 
-// Dictionary for command descriptions
-private readonly Dictionary<string, string> _commandDescriptions = new Dictionary<string, string>
-{
-    { "help", "Показати довідку з доступними командами ℹ️" },
-    { "backup", "Створити резервну копію нотаток 💾" },
-    { "export", "Експортувати нотатки у файл 💾" },
-    { "edit", "Редагувати нотатку за номером 📝" },
-    { "view", "Переглянути деталі нотатки 👁️" },
-    { "delall", "Видалити всі нотатки 💣" },
-    { "del", "Видалити нотатку за номером 🗑️" },
-    { "delete", "Видалити нотатку за номером 🗑️" },
-    { "search", "Пошук нотаток за текстом 🔍" },
-    { "searchtag", "Пошук нотаток за тегом 🏷️" },
-    { "pin", "Закріпити нотатку вгорі списку 📌" },
-    { "unpin", "Відкріпити нотатку 📎" },
-    { "undo", "Відмінити останнє видалення ↩️" },
-    { "sort", "Сортувати нотатки за датою або текстом 🔄" },
-    { "tagstyle", "Змінити стиль відображення тегів (жирний/курсив) ✨" }
-};
+        // Dictionary for command descriptions
+        private readonly Dictionary<string, string> _commandDescriptions = new Dictionary<string, string>
+        {
+            { "help", "Show help with available commands ℹ️" },
+            { "backup", "Create a backup of notes 💾" },
+            { "export", "Export notes to a file 💾" },
+            { "edit", "Edit note by number 📝" },
+            { "view", "View note details 👁️" },
+            { "delall", "Delete all notes 💣" },
+            { "del", "Delete note by number 🗑️" },
+            { "delete", "Delete note by number 🗑️" },
+            { "search", "Search notes by text 🔍" },
+            { "searchtag", "Search notes by tag 🏷️" },
+            { "pin", "Pin note to top of list 📌" },
+            { "unpin", "Unpin note 📎" },
+            { "undo", "Undo last deletion ↩️" },
+            { "sort", "Sort notes by date or text 🔄" },
+            { "tagstyle", "Change tag display style (bold/italic) ✨" }
+        };
 
         // --- Initialization and Lifecycle ---
         public void Init(PluginInitContext context)
@@ -185,13 +185,37 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
             }
         }
 
-        // Replace the existing GetQuerySuggestions method with this improved version
+        // Add this helper method to strip timestamp from note text
+        private string StripTimestamp(string noteText)
+        {
+            // Timestamp format: [YYYY-MM-DD HH:MM:SS] 
+            if (noteText.Length >= 22 && noteText[0] == '[' && noteText[20] == ']' && noteText[21] == ' ')
+            {
+                return noteText.Substring(22).Trim(); // Remove timestamp prefix
+            }
+            return noteText.Trim();
+        }
+
+        // Add this new helper method to strip both timestamp and hashtags
+        private string StripTimestampAndTags(string noteText)
+        {
+            // First remove timestamp
+            string textWithoutTimestamp = StripTimestamp(noteText);
+
+            // Then remove hashtags using regex
+            string textWithoutTags = Regex.Replace(textWithoutTimestamp, @"#\w+\s*", "");
+
+            // Trim any extra spaces
+            return textWithoutTags.Trim();
+        }
+
+        // Method for providing autocomplete suggestions
         public List<Result> GetQuerySuggestions(Query query, bool execute)
         {
             if (!_isInitialized)
                 return new List<Result>();
 
-            var searchText = query.Search?.Trim() ?? string.Empty;
+            var searchText = CleanupQuery(query.Search?.Trim() ?? string.Empty);
 
             // If query is empty or too short
             if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 1)
@@ -230,7 +254,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                         Title = $"qq {command}",
                         SubTitle = _commandDescriptions.ContainsKey(command) 
                             ? _commandDescriptions[command] 
-                            : $"Виконати команду '{command}'",
+                            : $"Execute command '{command}'",
                         IcoPath = IconPath,
                         Score = 1000, // Very high score to ensure commands appear first
                         Action = _ =>
@@ -284,6 +308,22 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
             return 0; // Use 0 to not change priority
         }
 
+        // Method to clean up query text and handle duplicate "qq" prefixes
+        private string CleanupQuery(string query)
+        {
+            // Check for duplicate "qq" prefixes
+            if (query.StartsWith("qq qq ", StringComparison.OrdinalIgnoreCase))
+            {
+                return query.Substring(3).Trim(); // Remove the first "qq "
+            }
+            return query.Trim();
+        }
+
+        public List<Result> Query(Query query, bool delayedExecution)
+        {
+            return Query(query);
+        }
+
         public List<Result> Query(Query query)
         {
             if (!_isInitialized)
@@ -291,8 +331,9 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                 return ErrorResult("QuickNotes not initialized", "Plugin not initialized properly. Please restart PowerToys.");
             }
 
-            // Get the text after "qq"
-            var searchText = query.Search?.Trim() ?? string.Empty;
+            // Get the text after "qq" and clean it up
+            var originalSearch = query.Search?.Trim() ?? string.Empty;
+            var searchText = CleanupQuery(originalSearch);
 
             // If empty search, show instructions and notes
             if (string.IsNullOrEmpty(searchText))
@@ -302,14 +343,34 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
 
             // Parse the command and arguments
             string[] parts = searchText.Split(new[] { ' ' }, 2);
-            string possibleCommand = parts[0].ToLowerInvariant();
+            string command = parts[0].ToLowerInvariant();
             string args = parts.Length > 1 ? parts[1].Trim() : string.Empty;
 
+            // If we detected and cleaned up a duplicate "qq", show a hint result at the top
+            if (originalSearch != searchText && originalSearch.StartsWith("qq qq", StringComparison.OrdinalIgnoreCase))
+            {
+                var results = new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "Duplicate 'qq' detected",
+                        SubTitle = "Using '" + searchText + "' instead. No need to type 'qq' twice.",
+                        IcoPath = IconPath,
+                        Score = 5000,
+                        Action = _ => false
+                    }
+                };
+
+                // Add regular results after the hint
+                results.AddRange(GetCommandResults(command, args, searchText));
+                return results;
+            }
+
             // Check if this is a partial command (not a full command but starts with valid command prefixes)
-            if (parts.Length == 1 && !_commands.Contains(possibleCommand))
+            if (parts.Length == 1 && !_commands.Contains(command))
             {
                 var matchingCommands = _commands
-                    .Where(cmd => cmd.StartsWith(possibleCommand, StringComparison.OrdinalIgnoreCase))
+                    .Where(cmd => cmd.StartsWith(command, StringComparison.OrdinalIgnoreCase))
                     .OrderBy(cmd => cmd.Length)
                     .ToList();
 
@@ -317,19 +378,19 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                 {
                     var results = new List<Result>();
 
-                    foreach (var command in matchingCommands)
+                    foreach (var matchCommand in matchingCommands)
                     {
                         results.Add(new Result
                         {
-                            Title = $" {command}",
-                            SubTitle = _commandDescriptions.ContainsKey(command) 
-                                ? _commandDescriptions[command] 
-                                : $"Виконати команду '{command}'",
+                            Title = $"qq {matchCommand}",
+                            SubTitle = _commandDescriptions.ContainsKey(matchCommand) 
+                                ? _commandDescriptions[matchCommand] 
+                                : $"Execute command '{matchCommand}'",
                             IcoPath = IconPath,
                             Score = 1000, // Very high score
                             Action = _ =>
                             {
-                                Context?.API.ChangeQuery($"qq {command} ", true);
+                                Context?.API.ChangeQuery($"qq {matchCommand} ", true);
                                 return false;
                             }
                         });
@@ -354,8 +415,14 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                 }
             }
 
-            // Handle known commands
-            switch (possibleCommand)
+            // Regular processing
+            return GetCommandResults(command, args, searchText);
+        }
+
+        // Helper method to centralize command processing
+        private List<Result> GetCommandResults(string command, string args, string searchText)
+        {
+            switch (command)
             {
                 case "help":
                     return HelpCommand();
@@ -415,7 +482,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
             };
         }
 
-        // Add this method to your Main class for text formatting
+        // Text formatting for display
         private string FormatTextForDisplay(string text)
         {
             // Bold formatting: **text** or __text__
@@ -438,14 +505,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
             return text;
         }
 
-        // Add this method to your Main class to implement the required interface method
-        public List<Result> Query(Query query, bool delayedExecution)
-        {
-
-            return Query(query);
-        }
-
-        // Add this method to the Main class
+        // Tag style toggling
         private List<Result> ToggleTagStyle(string style)
         {
             if (style.Equals("bold", StringComparison.OrdinalIgnoreCase))
@@ -485,7 +545,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
             foreach (var match in matchedNotes)
             {
                 string highlighted = HighlightMatch(match.Text, searchTerm);
-                results.Add(CreateNoteResult(match, $"Press Enter to copy | Ctrl+Click to Edit", highlighted));
+                results.Add(CreateNoteResult(match, $"Press Enter to copy | Shift+Enter for content only | Ctrl+Click to Edit", highlighted));
             }
             return results;
         }
@@ -566,7 +626,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                     string highlighted = string.IsNullOrWhiteSpace(currentSearch) 
                         ? note.Text 
                         : HighlightMatch(note.Text, currentSearch);
-                    results.Add(CreateNoteResult(note, $"Pinned | Enter to copy | qq unpin {note.OriginalIndex + 1}", highlighted));
+                    results.Add(CreateNoteResult(note, $"Pinned | Enter to copy clean content (no timestamp/tags) | Ctrl+C for full note | qq unpin {note.OriginalIndex + 1}", highlighted));
                 }
             }
 
@@ -581,7 +641,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                     string highlighted = string.IsNullOrWhiteSpace(currentSearch) 
                         ? note.Text 
                         : HighlightMatch(note.Text, currentSearch);
-                    results.Add(CreateNoteResult(note, $"Enter to copy | qq pin {note.OriginalIndex + 1}", highlighted));
+                    results.Add(CreateNoteResult(note, $"Press Enter to copy without timestamp | Ctrl+C for full note | Ctrl+Click to Edit", highlighted));
                 }
             }
 
@@ -623,14 +683,17 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                 SubTitle = subTitle,
                 IcoPath = IconPath,
                 ToolTipData = new ToolTipData("Note Details", 
-                    $"Index: {note.OriginalIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}"),
+                    $"Index: {note.OriginalIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."),
                 ContextData = note,
                 Action = c =>
                 {
                     try
                     {
-                        Clipboard.SetText(note.Text);
-                        Context?.API.ShowMsg("Note copied", $"Copied: {note.Text.Substring(0, Math.Min(note.Text.Length, 50))}...");
+
+                        string contentOnly = StripTimestampAndTags(note.Text);  
+                        Clipboard.SetText(contentOnly);
+                        Context?.API.ShowMsg("Clean content copied", 
+                            $"Copied without timestamp and tags: {contentOnly.Substring(0, Math.Min(contentOnly.Length, 50))}{(contentOnly.Length > 50 ? "..." : "")}");
                         return true;
                     }
                     catch (Exception ex)
@@ -885,7 +948,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
             }
 
             var note = notes[index];
-            return new List<Result> { CreateNoteResult(note, "Press Enter to copy this note's text.") };
+            return new List<Result> { CreateNoteResult(note, "Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for more options") };
         }
 
         private List<Result> BackupNotes()
@@ -935,7 +998,8 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                 "qq edit <N>            Edit note 📝      | qq delall              Delete ALL 💣\n" + 
                 "qq del <N>             Delete note 🗑️    | qq backup/export       Backup notes 💾\n" + 
                 "qq help                Show help ℹ️      | qq tagstyle bold/italic Tag style ✨\n" +
-                "\nFormatting: **bold** or __bold__, *italic* or _italic_, ==highlight==, #tag";
+                "\nFormatting: **bold** or __bold__, *italic* or _italic_, ==highlight==, #tag\n" +
+                "TIP: Right-click on a note for copy options (with/without timestamp)";
 
             return new Result
             {
@@ -1034,25 +1098,63 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
         }
 
         // --- Context Menu ---
-        public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
-        {
-            var contextMenuItems = new List<ContextMenuResult>();
-            if (selectedResult.ContextData is NoteEntry note)
-            {
-                contextMenuItems.Add(new ContextMenuResult
+                public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
                 {
-                    PluginName = Name,
-                    Title = "Copy Note Text",
-                    FontFamily = "Segoe MDL2 Assets",
-                    Glyph = "\uE8C8", // Copy icon
-                    AcceleratorKey = Key.C,
-                    AcceleratorModifiers = ModifierKeys.Control,
-                    Action = _ =>
+                    var contextMenuItems = new List<ContextMenuResult>();
+                    if (selectedResult.ContextData is NoteEntry note)
                     {
-                        try { Clipboard.SetText(note.Text); return true; }
-                        catch (Exception ex) { Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message); return false; }
-                    }
-                });
+                        // CHANGED: Make this the primary shortcut (Ctrl+C)
+                        contextMenuItems.Add(new ContextMenuResult
+                        {
+                            PluginName = Name,
+                            Title = "Copy Full Note (with timestamp)",
+                            FontFamily = "Segoe MDL2 Assets",
+                            Glyph = "\uE8C8", // Copy icon
+                            AcceleratorKey = Key.C,
+                            AcceleratorModifiers = ModifierKeys.Control,
+                            Action = _ =>
+                            {
+                                try 
+                                { 
+                                    Clipboard.SetText(note.Text); 
+                                    Context?.API.ShowMsg("Full note copied", 
+                                        $"Copied with timestamp: {note.Text.Substring(0, Math.Min(note.Text.Length, 50))}{(note.Text.Length > 50 ? "..." : "")}");
+                                    return true; 
+                                }
+                                catch (Exception ex) 
+                                { 
+                                    Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message); 
+                                    return false; 
+                                }
+                            }
+                        });
+
+                        // Less prominent second option with Ctrl+Shift+C 
+                        string contentOnly = StripTimestampAndTags(note.Text);
+                        contextMenuItems.Add(new ContextMenuResult
+                        {
+                            PluginName = Name,
+                            Title = "Copy Clean Content (no timestamp, no tags) (already default on Enter)",
+                            FontFamily = "Segoe MDL2 Assets",
+                            Glyph = "\uE8C9", // Document icon
+                            AcceleratorKey = Key.C,
+                            AcceleratorModifiers = ModifierKeys.Control | ModifierKeys.Shift,
+                            Action = _ =>
+                            {
+                                try 
+                                { 
+                                    Clipboard.SetText(contentOnly); 
+                                    Context?.API.ShowMsg("Content copied", 
+                                        $"Copied without timestamp: {contentOnly.Substring(0, Math.Min(contentOnly.Length, 50))}{(contentOnly.Length > 50 ? "..." : "")}");
+                                    return true; 
+                                }
+                                catch (Exception ex) 
+                                { 
+                                    Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message);
+                                    return false; 
+                                }
+                            }
+                        });
 
                 contextMenuItems.Add(new ContextMenuResult
                 {
@@ -1109,7 +1211,7 @@ private readonly Dictionary<string, string> _commandDescriptions = new Dictionar
                     contextMenuItems.Add(new ContextMenuResult
                     {
                         PluginName = Name,
-                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}...",
+                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}{(url.Length > 40 ? "..." : "")}",
                         FontFamily = "Segoe MDL2 Assets",
                         Glyph = "\uE774", // Globe icon
                         AcceleratorKey = Key.U,
