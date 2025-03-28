@@ -115,7 +115,15 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
   <h3>💾 Exporting Notes</h3>
+  <p><img src="assets/demo-qq export.gif" width="650" alt="Exporting Notes Demo"/></p>
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
+  
+  <h3>📋 Copying Notes</h3>
+  <p><img src="assets/copy with timestamp.png" width="650" alt="Copy with Timestamp"/></p>
+  <p><i>Copy notes with timestamp included</i></p>
+  
+  <p><img src="assets/copy-without timestamp and tag.png" width="650" alt="Copy without Timestamp and Tags"/></p>
+  <p><i>Copy notes without timestamp and tags</i></p>
   
   <h3>👀 Viewing Notes</h3>
   <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
