@@ -18,7 +18,7 @@
     <!-- Other important properties -->
     <RootNamespace>Community.PowerToys.Run.Plugin.QuickNotes</RootNamespace>
     <AssemblyName>Community.PowerToys.Run.Plugin.QuickNotes</AssemblyName>
-    <Version>1.0.3</Version>
+    <Version>0.90.0</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -28,7 +28,7 @@
 
   <!-- Package references -->
   <ItemGroup>
-     <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.89.0" />
+     <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.90.0" />
   </ItemGroup>
 
   <!-- Additional files to include in the output -->
