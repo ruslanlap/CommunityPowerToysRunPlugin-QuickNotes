@@ -215,7 +215,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (!_isInitialized)
                 return new List<Result>();
 
-            var searchText = CleanupQuery(query.Search?.Trim() ?? string.Empty);
+            var originalSearch = query.Search?.Trim() ?? string.Empty;
+            var searchText = CleanupQuery(originalSearch);
 
             // If query is empty or too short
             if (string.IsNullOrWhiteSpace(searchText) || searchText.Length < 1)
@@ -251,7 +252,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
                     suggestions.Add(new Result
                     {
-                        Title = $"qq {command}",
+                        Title = $"{command}",
                         SubTitle = _commandDescriptions.ContainsKey(command) 
                             ? _commandDescriptions[command] 
                             : $"Execute command '{command}'",
@@ -311,10 +312,18 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         // Method to clean up query text and handle duplicate "qq" prefixes
         private string CleanupQuery(string query)
         {
-            // Check for duplicate "qq" prefixes
-            if (query.StartsWith("qq qq ", StringComparison.OrdinalIgnoreCase))
+            // Check for duplicate "qq" prefixes (more aggressive pattern matching)
+            if (query.StartsWith("qq ", StringComparison.OrdinalIgnoreCase) && 
+                query.Length > 3 && 
+                query.Substring(3).TrimStart().StartsWith("qq", StringComparison.OrdinalIgnoreCase))
             {
-                return query.Substring(3).Trim(); // Remove the first "qq "
+                // Find the position after the second "qq"
+                int pos = query.IndexOf("qq", 3, StringComparison.OrdinalIgnoreCase);
+                if (pos >= 0)
+                {
+                    // Return everything after the first "qq "
+                    return query.Substring(3).Trim();
+                }
             }
             return query.Trim();
         }
@@ -382,7 +391,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     {
                         results.Add(new Result
                         {
-                            Title = $"qq {matchCommand}",
+                            Title = $"{matchCommand}",
                             SubTitle = _commandDescriptions.ContainsKey(matchCommand) 
                                 ? _commandDescriptions[matchCommand] 
                                 : $"Execute command '{matchCommand}'",
