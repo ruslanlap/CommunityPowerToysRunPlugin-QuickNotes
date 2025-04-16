@@ -142,7 +142,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 ### 📋 Prerequisites
 
-- [Microsoft PowerToys](https://github.com/microsoft/PowerToys/releases) installed
+- [Microsoft PowerToys](https://github.com/microsoft/PowerToys) installed
 - Windows 10 or later
 
 ### 📥 Installation Steps
@@ -266,6 +266,8 @@ The QuickNotes plugin has a clean, modular architecture designed for maintainabi
 For a detailed breakdown of the project structure, see the [structure.md](structure.md) file.
 
 </div>
+
+> **ℹ️ Learn more about PowerToys Run plugins and discover other third-party plugins in the official [PowerToys Third-Party Plugins Directory](https://github.com/microsoft/PowerToys/blob/main/doc/thirdPartyRunPlugins.md).**
 
 ## 🤝 Contributing
 
