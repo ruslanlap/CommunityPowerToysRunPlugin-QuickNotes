@@ -28,6 +28,17 @@
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
 
+## 📚 Documentation & Wiki
+
+Looking for detailed documentation, usage examples, or troubleshooting? Check out the full [QuickNotes Wiki](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki) for:
+
+- Installation instructions
+- Main commands & usage
+- Features
+- FAQ
+- Troubleshooting
+- Contributing guidelines
+
 ## 📋 Table of Contents
 
 - [📋 Overview](#-overview)
