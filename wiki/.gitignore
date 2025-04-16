@@ -1,0 +1,11 @@
+# Ignore everything in this directory
+*
+# Except these files
+!.gitignore
+!Home.md
+!Installation.md
+!Commands.md
+!Features.md
+!FAQ.md
+!Troubleshooting.md
+!Contributing.md
