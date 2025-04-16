@@ -16,6 +16,7 @@
   ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
   [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
+  [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
   ![Version](https://img.shields.io/badge/version-1.0.4-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
@@ -41,6 +42,7 @@
 - [🤝 Contributing](#-contributing)
 - [❓ FAQ](#-faq)
 - [✨ Why You'll Love QuickNotes](#-why-youll-love-quicknotes)
+- [☕ Support & Donate](#-support--donate)
 - [📄 License](#-license)
 - [🙏 Acknowledgements](#-acknowledgements)
 - [🛠️ Implementation Details](#-implementation-details)
@@ -327,6 +329,18 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - More effect 
 - More styled
 - ~~Notes to be pinned~~
+
+## ☕ Support & Donate
+
+If you find QuickNotes useful and want to support further development, you can buy me a coffee!
+
+<p align="center">
+  <a href="https://ruslanlap.github.io/ruslanlap_buymeacoffe/" target="_blank">
+    <img src="https://img.shields.io/badge/Buy%20me%20a%20coffee-%E2%98%95%EF%B8%8F-yellow?style=for-the-badge" alt="Buy Me a Coffee">
+  </a>
+</p>
+
+Thank you for your support! ❤️
 
 ## 📄 License
 
