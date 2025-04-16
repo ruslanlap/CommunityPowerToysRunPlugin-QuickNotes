@@ -32,12 +32,12 @@
 
 Looking for detailed documentation, usage examples, or troubleshooting? Check out the full [QuickNotes Wiki](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki) for:
 
-- Installation instructions
-- Main commands & usage
-- Features
-- FAQ
-- Troubleshooting
-- Contributing guidelines
+- [Installation instructions](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Installation)
+- [Main commands & usage](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Commands)
+- [Features](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Features)
+- [FAQ](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/FAQ)
+- [Troubleshooting](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Troubleshooting)
+- [Contributing guidelines](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Contributing)
 
 ## 📋 Table of Contents
 
