@@ -1,10 +1,14 @@
 # 📝 PowerToys Run: QuickNotes Plugin
 
 <div align="center">
-  <img src="assets/demo.gif" alt="QuickNotes Demo" width="650">
-  
+  <!-- Centered Logo -->
   <img src="https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
-  
+</div>
+
+<div align="center">
+  <!-- Full-width GIF -->
+  <img src="assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
+
   <h1>✨ QuickNotes for PowerToys Run ✨</h1>
   <h3>Create, manage, and search notes directly from PowerToys Run</h3>
   
@@ -21,15 +25,6 @@
   [![GitHub all releases](https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases)
   ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
-</div>
-
-<div align="center">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.4/QuickNotes-v1.0.4-x64.zip">
-    <img src="https://img.shields.io/badge/Download%20Latest%20Release-x64-blue?style=for-the-badge&logo=github" alt="Download Latest Release" />
-  </a>
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.4/QuickNotes-v1.0.4-arm64.zip">
-    <img src="https://img.shields.io/badge/Download%20Latest%20Release-ARM64-blue?style=for-the-badge&logo=github" alt="Download Latest Release" />
-  </a>
 </div>
 
 ## 📋 Table of Contents
