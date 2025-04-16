@@ -1,14 +1,14 @@
 # 📝 PowerToys Run: QuickNotes Plugin
 
 <div align="center">
+  <!-- Full-width GIF -->
+  <img src="assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
+
   <!-- Centered Logo -->
   <img src="https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
 </div>
 
 <div align="center">
-  <!-- Full-width GIF -->
-  <img src="assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
-
   <h1>✨ QuickNotes for PowerToys Run ✨</h1>
   <h3>Create, manage, and search notes directly from PowerToys Run</h3>
   
