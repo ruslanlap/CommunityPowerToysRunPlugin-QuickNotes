@@ -973,15 +973,18 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 string backupFileName = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 File.Copy(_notesPath, backupFileName, true);
 
-                // Open only one Windows Explorer with the backup file selected
-                // Use ProcessStartInfo for better control over the process
-                var startInfo = new ProcessStartInfo
+                // Simply open the folder that contains the backup file
+                // This is a simpler approach that should avoid multiple windows
+                var process = new Process
                 {
-                    FileName = "explorer.exe",
-                    Arguments = $"/select,\"{backupFileName}\"",
-                    UseShellExecute = false
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = notesDir,
+                        UseShellExecute = true,
+                        Verb = "open"
+                    }
                 };
-                Process.Start(startInfo);
+                process.Start();
                 
                 return SingleInfoResult("Backup created", $"Backup saved to {Path.GetFileName(backupFileName)} in QuickNotes folder.", true);
             }
