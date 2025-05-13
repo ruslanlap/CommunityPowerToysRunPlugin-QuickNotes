@@ -18,7 +18,7 @@
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.4-brightgreen)
+  ![Version](https://img.shields.io/badge/version-0.1.0-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -91,8 +91,9 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 - 🔄 **Sorting Options** - Sort notes by date or alphabetically
 - ✏️ **Easy Editing** - Modify existing notes with a simple interface
 - 🗑️ **Note Management** - Delete individual notes or clear all notes
+- 💾 **Flexible Backup** - Choose between interactive backup (with windows) or silent export
 - ↩️ **Undo Delete** - Restore recently deleted notes
-- 💾 **Backup & Export** - Create backups of your notes collection
+- 💾 **Backup & Export** - Create backups of your notes collection with options for interactive or silent mode
 - 📋 **Clipboard Integration** - Copy notes to clipboard with a single click
 - 🌓 **Theme Support** - Works with both light and dark PowerToys themes
 - ⏱️ **Timestamp Recording** - Each note is saved with a timestamp for easy reference
@@ -193,7 +194,8 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 | `qq unpin <number>` | Unpin a note | `qq unpin 4` |
 | `qq sort date` | Sort notes by date | `qq sort date` |
 | `qq sort alpha` | Sort notes alphabetically | `qq sort alpha` |
-| `qq backup` or `qq export` | Backup notes (opens folder and file) | `qq backup` |
+| `qq backup` | Backup notes (opens folder and file) | `qq backup` |
+| `qq export` | Export notes (silent backup, no windows) | `qq export` |
 | `qq tagstyle bold` | Set tag style to bold | `qq tagstyle bold` |
 | `qq tagstyle italic` | Set tag style to italic | `qq tagstyle italic` |
 
