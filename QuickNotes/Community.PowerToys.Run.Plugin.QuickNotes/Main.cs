@@ -436,9 +436,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "help":
                     return HelpCommand();
                 case "backup":
-                    return BackupNotes(true); // Open windows for backup command
-                case "export":
-                    return BackupNotes(false); // Don't open windows for export command
+                case "export": // Keep export as an alias for backward compatibility
+                    return BackupNotes();
                 case "edit":
                     return EditNote(args);
                 case "view":
@@ -961,7 +960,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             return new List<Result> { CreateNoteResult(note, "Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for more options") };
         }
 
-        private List<Result> BackupNotes(bool openWindows = true)
+        private List<Result> BackupNotes()
         {
             try
             {
@@ -974,19 +973,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 string backupFileName = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 File.Copy(_notesPath, backupFileName, true);
 
-                if (openWindows)
-                {
-                    // Open Windows Explorer with the backup file selected
-                    Process.Start("explorer.exe", $"/select,\"{backupFileName}\"");
-
-                    // Open the backup file in the default application
-                    Process.Start(new ProcessStartInfo
-                    {
-                        FileName = backupFileName,
-                        UseShellExecute = true
-                    });
-                }
-
+                // No windows are opened, just create the backup silently
+        
                 return SingleInfoResult("Backup created", $"Backup saved to {Path.GetFileName(backupFileName)} in QuickNotes folder.", true);
             }
             catch (Exception ex)

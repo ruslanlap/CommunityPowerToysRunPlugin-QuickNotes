@@ -91,9 +91,8 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 - 🔄 **Sorting Options** - Sort notes by date or alphabetically
 - ✏️ **Easy Editing** - Modify existing notes with a simple interface
 - 🗑️ **Note Management** - Delete individual notes or clear all notes
-- 💾 **Flexible Backup** - Choose between interactive backup (with windows) or silent export
 - ↩️ **Undo Delete** - Restore recently deleted notes
-- 💾 **Backup & Export** - Create backups of your notes collection with options for interactive or silent mode
+- 💾 **Simple Backup** - Create backups of your notes collection with a single command
 - 📋 **Clipboard Integration** - Copy notes to clipboard with a single click
 - 🌓 **Theme Support** - Works with both light and dark PowerToys themes
 - ⏱️ **Timestamp Recording** - Each note is saved with a timestamp for easy reference
@@ -194,8 +193,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 | `qq unpin <number>` | Unpin a note | `qq unpin 4` |
 | `qq sort date` | Sort notes by date | `qq sort date` |
 | `qq sort alpha` | Sort notes alphabetically | `qq sort alpha` |
-| `qq backup` | Backup notes (opens folder and file) | `qq backup` |
-| `qq export` | Export notes (silent backup, no windows) | `qq export` |
+| `qq backup` or `qq export` | Create a backup of your notes | `qq backup` |
 | `qq tagstyle bold` | Set tag style to bold | `qq tagstyle bold` |
 | `qq tagstyle italic` | Set tag style to italic | `qq tagstyle italic` |
 

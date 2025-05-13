@@ -22,8 +22,7 @@
 | `qq unpin <number>`           | Unpin a note                           | `qq unpin 4`           |
 | `qq sort date`                | Sort notes by date                     | `qq sort date`         |
 | `qq sort alpha`               | Sort notes alphabetically              | `qq sort alpha`        |
-| `qq backup`                   | Backup notes (opens folder and file)   | `qq backup`            |
-| `qq export`                   | Export notes (silent backup, no windows)| `qq export`            |
+| `qq backup` or `qq export`    | Create a backup of your notes          | `qq backup`            |
 | `qq tagstyle bold`            | Set tag style to bold                  | `qq tagstyle bold`     |
 | `qq tagstyle italic`          | Set tag style to italic                | `qq tagstyle italic`   |
 
