@@ -973,9 +973,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 string backupFileName = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 File.Copy(_notesPath, backupFileName, true);
 
-                // Simply open the folder that contains the backup file
-                // This is a simpler approach that should avoid multiple windows
-                var process = new Process
+                // Open the folder in Explorer
+                var folderProcess = new Process
                 {
                     StartInfo = new ProcessStartInfo
                     {
@@ -984,7 +983,18 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         Verb = "open"
                     }
                 };
-                process.Start();
+                folderProcess.Start();
+                
+                // Also open the backup file itself in default text editor
+                var fileProcess = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = backupFileName,
+                        UseShellExecute = true
+                    }
+                };
+                fileProcess.Start();
                 
                 return SingleInfoResult("Backup created", $"Backup saved to {Path.GetFileName(backupFileName)} in QuickNotes folder.", true);
             }
