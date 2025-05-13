@@ -436,8 +436,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "help":
                     return HelpCommand();
                 case "backup":
+                    return BackupNotes(true); // Open windows for backup command
                 case "export":
-                    return BackupNotes();
+                    return BackupNotes(false); // Don't open windows for export command
                 case "edit":
                     return EditNote(args);
                 case "view":
@@ -960,7 +961,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             return new List<Result> { CreateNoteResult(note, "Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for more options") };
         }
 
-        private List<Result> BackupNotes()
+        private List<Result> BackupNotes(bool openWindows = true)
         {
             try
             {
@@ -973,15 +974,18 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 string backupFileName = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
                 File.Copy(_notesPath, backupFileName, true);
 
-                // Open Windows Explorer with the backup file selected
-                Process.Start("explorer.exe", $"/select,\"{backupFileName}\"");
-
-                // Open the backup file in the default application
-                Process.Start(new ProcessStartInfo
+                if (openWindows)
                 {
-                    FileName = backupFileName,
-                    UseShellExecute = true
-                });
+                    // Open Windows Explorer with the backup file selected
+                    Process.Start("explorer.exe", $"/select,\"{backupFileName}\"");
+
+                    // Open the backup file in the default application
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = backupFileName,
+                        UseShellExecute = true
+                    });
+                }
 
                 return SingleInfoResult("Backup created", $"Backup saved to {Path.GetFileName(backupFileName)} in QuickNotes folder.", true);
             }
