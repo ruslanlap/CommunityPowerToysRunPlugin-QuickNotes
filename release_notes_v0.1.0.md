@@ -4,10 +4,10 @@
 
 ## ✨ What's New
 
-- 🔄 Simplified backup functionality:
-  - Both `qq backup` and `qq export` now create silent backups without opening windows
+- 🔄 Improved backup functionality:
   - Fixed the issue with multiple windows popping up during backup
-- 📚 Updated documentation to reflect the simplified approach
+  - Both `qq backup` and `qq export` now open only one window (File Explorer) with the backup file selected
+- 📚 Updated documentation to reflect the improved backup experience
 
 ## 📥 Installation
 
@@ -25,7 +25,7 @@
 | `qq search <word>` | Search notes |
 | `qq edit <number>` | Edit a specific note |
 | `qq view <number>` | View note details |
-| `qq backup` or `qq export` | Create a backup of your notes |
+| `qq backup` or `qq export` | Backup notes (opens file explorer) |
 
 ## 🙏 Thank You
 
