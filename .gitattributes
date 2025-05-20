@@ -1,6 +1,10 @@
 # Auto detect text files and perform LF normalization
 * text=auto eol=lf
-
+   * text=auto
+   * text eol=lf
+   *.png binary
+   *.gif binary
+   *.jpg binary
 # Explicitly declare text files to be normalized
 *.cs     text diff=csharp eol=lf
 *.ps1    text eol=lf
