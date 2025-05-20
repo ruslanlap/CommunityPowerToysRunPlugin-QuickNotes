@@ -5,7 +5,7 @@
   <img src="assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
 
   <!-- Centered Logo -->
-  <img src="https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
+  <img src="assets/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
 </div>
 
 <div align="center">
