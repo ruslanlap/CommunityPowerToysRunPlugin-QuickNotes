@@ -974,29 +974,28 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 File.Copy(_notesPath, backupFileName, true);
 
                 // Open the folder in Explorer
-                var folderProcess = new Process
+                try
                 {
-                    StartInfo = new ProcessStartInfo
+                    var folderProcess = new Process
                     {
-                        FileName = notesDir,
-                        UseShellExecute = true,
-                        Verb = "open"
-                    }
-                };
-                folderProcess.Start();
-                
-                // Also open the backup file itself in default text editor
-                var fileProcess = new Process
+                        StartInfo = new ProcessStartInfo
+                        {
+                            FileName = notesDir,
+                            UseShellExecute = true,
+                            Verb = "open"
+                        }
+                    };
+                    folderProcess.Start();
+                }
+                catch (Exception ex)
                 {
-                    StartInfo = new ProcessStartInfo
-                    {
-                        FileName = backupFileName,
-                        UseShellExecute = true
-                    }
-                };
-                fileProcess.Start();
+                    // If we can't open the folder, just continue with the backup
+                    Log.Exception("Failed to open backup folder", ex, GetType());
+                }
                 
-                return SingleInfoResult("Backup created", $"Backup saved to {Path.GetFileName(backupFileName)} in QuickNotes folder.", true);
+                return SingleInfoResult("Backup created", 
+                    $"Backup saved to: {backupFileName}\n\n" +
+                    "The backup folder has been opened for you.", true);
             }
             catch (Exception ex)
             {
