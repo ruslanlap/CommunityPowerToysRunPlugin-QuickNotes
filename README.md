@@ -106,7 +106,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 <div align="center">
   <h3>📝 Creating Notes</h3>
-  <p><img src="assets/demo-create notes.gif" width="650" alt="Creating Notes Demo"/></p>
+  <p><img src="assets/demo-create-notes.gif" width="650" alt="Creating Notes Demo"/></p>
   <p><i>Simply type <code>qq</code> followed by your note text to save it instantly</i></p>
   
   <h3>🔍 Searching Notes</h3>
@@ -127,15 +127,15 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
   
   <h3>📋 Copying Notes</h3>
-  <p><img src="assets/copy with timestamp.png" width="650" alt="Copy with Timestamp"/></p>
+  <p><img src="assets/copy-with-timestamp.png" width="650" alt="Copy with Timestamp"/></p>
   <p><i>Copy notes with timestamp included</i></p>
   
-  <p><img src="assets/copy-without timestamp and tag.png" width="650" alt="Copy without Timestamp and Tags"/></p>
+  <p><img src="assets/copy-without-timestamp-and-tag.png" width="650" alt="Copy without Timestamp and Tags"/></p>
   <p><i>Copy notes without timestamp and tags</i></p>
   
   <h3>👀 Viewing Notes</h3>
   <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
-    <p><img src="assets/demo-auto-suggestions-1.gif" width="650" alt="Auto-suggestions Demo"/></p>
+    <p><img src="assets/demo-qq-view.gif" width="650" alt="Auto-suggestions Demo"/></p>
   
   <h3>❓ Help Command</h3>
   <p><img src="assets/demo-qq help.gif" width="650" alt="Help Command Demo"/></p>
