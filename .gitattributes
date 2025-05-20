@@ -1,10 +1,18 @@
 # Auto detect text files and perform LF normalization
 * text=auto eol=lf
-   * text=auto
-   * text eol=lf
-   *.png binary
-   *.gif binary
-   *.jpg binary
+
+# Binary files (should not be modified)
+*.png binary
+*.gif binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.svg binary
+*.woff binary
+*.woff2 binary
+*.ttf binary
+*.eot binary
+
 # Explicitly declare text files to be normalized
 *.cs     text diff=csharp eol=lf
 *.ps1    text eol=lf
