@@ -2,10 +2,10 @@
 
 <div align="center">
   <!-- Full-width GIF -->
-  <img src="assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
+  <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
 
   <!-- Centered Logo -->
-  <img src="assets/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
+  <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
 </div>
 
 <div align="center">
@@ -106,24 +106,24 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 <div align="center">
   <h3>📝 Creating Notes</h3>
-  <p><img src="assets/demo-create-notes.gif" width="650" alt="Creating Notes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-create-notes.gif" width="650" alt="Creating Notes Demo"/></p>
   <p><i>Simply type <code>qq</code> followed by your note text to save it instantly</i></p>
   
   <h3>🔍 Searching Notes</h3>
-  <p><img src="assets/demo-qq-search.gif" width="650" alt="Searching Notes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-search.gif" width="650" alt="Searching Notes Demo"/></p>
   <p><i>Use <code>qq search &lt;term&gt;</code> to find notes with highlighted matches</i></p>
 
   <h3>✏️ Editing Notes</h3>
-  <p><img src="assets/demo-qq-edit.gif" width="650" alt="Editing Notes Demo"/></p>
-  <p><img src="assets/demo.gif" width="650" alt="QuickNotes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-edit.gif" width="650" alt="Editing Notes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo.gif" width="650" alt="QuickNotes Demo"/></p>
   <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
 
   <h3>🗑️ Deleting Notes</h3>
-  <p><img src="assets/demo-qq-delete.gif" width="650" alt="Deleting Notes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-delete.gif" width="650" alt="Deleting Notes Demo"/></p>
   <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
   <h3>💾 Exporting Notes</h3>
-  <p><img src="assets/demo-qq-export.gif" width="650" alt="Exporting Notes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-export.gif" width="650" alt="Exporting Notes Demo"/></p>
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
   
 
@@ -132,17 +132,17 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   
   <h3>👀 Viewing Notes</h3>
   <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
-    <p><img src="assets/demo-qq-view.gif" width="650" alt="View Note Details Demo"/></p>
+    <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-view.gif" width="650" alt="View Note Details Demo"/></p>
   
   <h3>❓ Help Command</h3>
-  <p><img src="assets/demo-qq-help.gif" width="650" alt="Help Command Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-help.gif" width="650" alt="Help Command Demo"/></p>
   <p><i>Get help on available commands with <code>qq help</code></i></p>
   
   <h3>✨ Text Formatting</h3>
   <p><i>Format your notes with <code>**bold**</code>, <code>*italic*</code>, <code>==highlight==</code>, and <code>#tags</code></i></p>
   
   <h3>💡 Command Auto-suggestions</h3>
-  <p><img src="assets/demo-auto-suggestions-1.gif" width="650" alt="Auto-suggestions Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-auto-suggestions-1.gif" width="650" alt="Auto-suggestions Demo"/></p>
   <p><i>Get command suggestions as you type for faster note-taking</i></p>
 </div>
 
