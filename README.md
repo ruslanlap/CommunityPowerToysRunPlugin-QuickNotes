@@ -2,10 +2,10 @@
 
 <div align="center">
   <!-- Full-width GIF -->
-  <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
+  <img src="assets/demo.gif" alt="QuickNotes Demo" style="width:100%;max-width:900px;">
 
   <!-- Centered Logo -->
-  <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
+  <img src="https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
 </div>
 
 <div align="center">
@@ -18,7 +18,7 @@
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-0.1.1-brightgreen)
+  ![Version](https://img.shields.io/badge/version-0.1.0-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -63,13 +63,13 @@ Looking for detailed documentation, usage examples, or troubleshooting? Check ou
 QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsoft/PowerToys) that allows you to quickly create, manage, and search notes directly from your PowerToys Run interface. Simply type `qq` followed by your note text to save it, or use various commands to manage your notes collection.
 
 <div align="center">
-  <img src="/icon.png" alt="PowerToys" width="200">
+  <img src="icon.png" alt="PowerToys" width="200">
 </div>
 
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v0.1.1/QuickNotes-v0.1.1-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v0.1.0/QuickNotes-v0.1.0-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
@@ -106,43 +106,46 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 <div align="center">
   <h3>📝 Creating Notes</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-create-notes.gif" width="650" alt="Creating Notes Demo"/></p>
+  <p><img src="assets/demo-create notes.gif" width="650" alt="Creating Notes Demo"/></p>
   <p><i>Simply type <code>qq</code> followed by your note text to save it instantly</i></p>
   
   <h3>🔍 Searching Notes</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-search.gif" width="650" alt="Searching Notes Demo"/></p>
+  <p><img src="assets/demo-qq search.gif" width="650" alt="Searching Notes Demo"/></p>
   <p><i>Use <code>qq search &lt;term&gt;</code> to find notes with highlighted matches</i></p>
 
   <h3>✏️ Editing Notes</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-edit.gif" width="650" alt="Editing Notes Demo"/></p>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo.gif" width="650" alt="QuickNotes Demo"/></p>
+  <p><img src="assets/demo-qq-edit.gif" width="650" alt="Editing Notes Demo"/></p>
+  <p><img src="assets/demo.gif" width="650" alt="Editing Notes Demo"/></p>
   <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
 
   <h3>🗑️ Deleting Notes</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-delete.gif" width="650" alt="Deleting Notes Demo"/></p>
+  <p><img src="assets/demo-qq delete.gif" width="650" alt="Deleting Notes Demo"/></p>
   <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
   <h3>💾 Exporting Notes</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-export.gif" width="650" alt="Exporting Notes Demo"/></p>
+  <p><img src="assets/demo-qq export.gif" width="650" alt="Exporting Notes Demo"/></p>
   <p><i>Create backups with <code>qq backup</code> or <code>qq export</code></i></p>
   
-
+  <h3>📋 Copying Notes</h3>
+  <p><img src="assets/copy-with-timestamp.png" width="650" alt="Copy with Timestamp"/></p>
+  <p><i>Copy notes with timestamp included</i></p>
   
-
+  <p><img src="assets/copy-without-timestamp-and-tag.png" width="650" alt="Copy without Timestamp and Tags"/></p>
+  <p><i>Copy notes without timestamp and tags</i></p>
   
   <h3>👀 Viewing Notes</h3>
   <p><i>View note details with <code>qq view &lt;number&gt;</code></i></p>
-    <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-view.gif" width="650" alt="View Note Details Demo"/></p>
+    <p><img src="assets/demo-auto-suggestions-1.gif" width="650" alt="Auto-suggestions Demo"/></p>
   
   <h3>❓ Help Command</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-qq-help.gif" width="650" alt="Help Command Demo"/></p>
+  <p><img src="assets/demo-qq help.gif" width="650" alt="Help Command Demo"/></p>
   <p><i>Get help on available commands with <code>qq help</code></i></p>
   
   <h3>✨ Text Formatting</h3>
   <p><i>Format your notes with <code>**bold**</code>, <code>*italic*</code>, <code>==highlight==</code>, and <code>#tags</code></i></p>
   
   <h3>💡 Command Auto-suggestions</h3>
-  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/raw/master/assets/demo-auto-suggestions-1.gif" width="650" alt="Auto-suggestions Demo"/></p>
+  <p><img src="assets/demo-auto-suggestions.gif" width="650" alt="Auto-suggestions Demo"/></p>
   <p><i>Get command suggestions as you type for faster note-taking</i></p>
 </div>
 
@@ -163,11 +166,8 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 3. Restart PowerToys
 
 <div align="center">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v0.1.1/QuickNotes-v0.1.1-x64.zip">
-    <img src="https://img.shields.io/badge/⬇️_Download-x64_64_%E2%80%A2_Windows_10%2B-blue?style=for-the-badge&logo=github&logoColor=white" alt="Download x64">
-  </a>
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v0.1.1/QuickNotes-v0.1.1-arm64.zip">
-    <img src="https://img.shields.io/badge/⬇️_Download-ARM64_%E2%80%A2_Windows_11%2B-blue?style=for-the-badge&logo=github&logoColor=white" alt="Download ARM64">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
+    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
   </a>
 </div>
 
