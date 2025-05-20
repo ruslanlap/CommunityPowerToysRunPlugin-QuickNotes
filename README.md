@@ -119,7 +119,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   <p><i>Edit existing notes with <code>qq edit &lt;number&gt;</code></i></p>
 
   <h3>🗑️ Deleting Notes</h3>
-  <p><img src="assets/demo-qq-delete.gif" width="650" alt="Deleting Notes Demo"/></p>
+  <p><img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/assets/demo-qq-delete.gif" width="650" alt="Deleting Notes Demo"/></p>
   <p><i>Delete notes with <code>qq del &lt;number&gt;</code> or all notes with <code>qq delall</code></i></p>
 
   <h3>💾 Exporting Notes</h3>
