@@ -28,7 +28,7 @@
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
 
-> 🐛 **Critical Bug Fix in v1.0.5**: Fixed an important issue where notes were being deleted incorrectly due to index mismatch. All note operations (delete, edit, view, pin) now correctly target the intended notes. Update recommended for all users!
+> 🐛 **Critical Bug Fix in v1.0.6**: Fixed an important issue where notes were being deleted incorrectly due to index mismatch. All note operations (delete, edit, view, pin) now correctly target the intended notes. Update recommended for all users!
 
 ## 📚 Documentation & Wiki
 
@@ -71,7 +71,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.5/QuickNotes-v1.0.5-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.6/QuickNotes-v1.0.6-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
@@ -88,7 +88,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 <div align="center">
   <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
-    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release_(v1.0.5)-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
+    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release_(v1.0.6)-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
   </a>
 </div>
 
