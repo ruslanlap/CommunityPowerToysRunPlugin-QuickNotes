@@ -720,18 +720,24 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return errorResult;
 
             var notes = ReadNotes();
-            if (index < 0 || index >= notes.Count)
+            
+            
+            var noteToRemove = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            if (noteToRemove == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
+                var maxDisplayIndex = notes.Any() ? notes.Max(n => n.OriginalIndex) + 1 : 0;
+                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
             }
 
             try
             {
-                var noteToRemove = notes[index];
                 _lastDeletedNote = (noteToRemove.ToFileLine(), noteToRemove.OriginalIndex, noteToRemove.IsPinned);
-                var updatedNotes = notes.Where((note, i) => i != index).Select(n => n.ToFileLine()).ToList();
-                WriteNotes(updatedNotes);
-                return SingleInfoResult("Note deleted", $"Removed: [{index + 1}] {noteToRemove.Text}\nTip: Use 'qq undo' to restore.", true);
+                
+                // Remove the note and rebuild the file
+                var remainingNotes = notes.Where(n => n.OriginalIndex != noteToRemove.OriginalIndex).Select(n => n.ToFileLine()).ToList();
+                WriteNotes(remainingNotes);
+                
+                return SingleInfoResult("Note deleted", $"Removed: [{noteToRemove.OriginalIndex + 1}] {noteToRemove.Text}\nTip: Use 'qq undo' to restore.", true);
             }
             catch (Exception ex)
             {
@@ -796,14 +802,16 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return errorResult;
 
             var notes = ReadNotes();
-            if (index < 0 || index >= notes.Count)
+            
+            
+            var noteToUpdate = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            if (noteToUpdate == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
+                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
             }
 
             try
             {
-                var noteToUpdate = notes[index];
                 if (noteToUpdate.IsPinned == pin)
                 {
                     return SingleInfoResult($"Note {index + 1} already {(pin ? "pinned" : "unpinned")}", noteToUpdate.Text);
@@ -871,12 +879,14 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return errorResult;
 
             var notes = ReadNotes();
-            if (index < 0 || index >= notes.Count)
+            
+            
+            var noteToEdit = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            if (noteToEdit == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
+                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
             }
 
-            var noteToEdit = notes[index];
             string oldNoteText = noteToEdit.Text;
             string newNoteText = Interaction.InputBox($"Edit note #{noteToEdit.OriginalIndex + 1}", "Edit QuickNote", oldNoteText);
 
@@ -951,12 +961,14 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return errorResult;
 
             var notes = ReadNotes();
-            if (index < 0 || index >= notes.Count)
+            
+           
+            var note = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            if (note == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} is invalid. Max index is {notes.Count}.");
+                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
             }
 
-            var note = notes[index];
             return new List<Result> { CreateNoteResult(note, "Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for more options") };
         }
 
@@ -1037,10 +1049,19 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             try
             {
                 if (!File.Exists(_notesPath)) return new List<NoteEntry>();
-                return File.ReadAllLines(_notesPath)
-                           .Select((line, index) => NoteEntry.Parse(line, index))
-                           .Where(entry => !string.IsNullOrWhiteSpace(entry.Text))
-                           .ToList();
+                
+                var entries = File.ReadAllLines(_notesPath)
+                                  .Select((line, index) => NoteEntry.Parse(line, index))
+                                  .Where(entry => !string.IsNullOrWhiteSpace(entry.Text))
+                                  .ToList();
+                
+
+                for (int i = 0; i < entries.Count; i++)
+                {
+                    entries[i].OriginalIndex = i;
+                }
+                
+                return entries;
             }
             catch (Exception ex)
             {
