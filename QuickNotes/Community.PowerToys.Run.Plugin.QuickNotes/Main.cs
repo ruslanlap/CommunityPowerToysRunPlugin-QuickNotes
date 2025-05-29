@@ -914,7 +914,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
-        // Helper for inline editing (no modifier actions, since they are not supported)
+        
         private void EditNoteInline(NoteEntry note)
         {
             string oldNoteText = note.Text;
