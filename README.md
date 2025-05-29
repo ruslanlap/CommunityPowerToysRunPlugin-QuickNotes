@@ -18,7 +18,7 @@
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-0.1.0-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.5-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -27,6 +27,8 @@
   ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
+
+> 🐛 **Critical Bug Fix in v1.0.5**: Fixed an important issue where notes were being deleted incorrectly due to index mismatch. All note operations (delete, edit, view, pin) now correctly target the intended notes. Update recommended for all users!
 
 ## 📚 Documentation & Wiki
 
@@ -69,7 +71,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v0.1.0/QuickNotes-v0.1.0-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.5/QuickNotes-v1.0.5-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
@@ -82,6 +84,14 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   </p>
 </div>
 
+### Quick Installation
+
+<div align="center">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
+    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release_(v1.0.5)-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
+  </a>
+</div>
+
 ## ✨ Features
 
 - 📝 **Quick Note Creation** - Instantly save notes with a simple command
@@ -90,7 +100,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 - 📌 **Pin Important Notes** - Pin critical notes to keep them at the top
 - 🔄 **Sorting Options** - Sort notes by date or alphabetically
 - ✏️ **Easy Editing** - Modify existing notes with a simple interface
-- 🗑️ **Note Management** - Delete individual notes or clear all notes
+- 🗑️ **Note Management** - Delete individual notes or clear all notes (with fixed index matching!)
 - ↩️ **Undo Delete** - Restore recently deleted notes
 - 💾 **Simple Backup** - Create backups of your notes collection and view them in File Explorer
 - 📋 **Clipboard Integration** - Copy notes to clipboard with a single click
@@ -164,12 +174,6 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
    %LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\
    ```
 3. Restart PowerToys
-
-<div align="center">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
-    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
-  </a>
-</div>
 
 ## 🔧 Usage
 
