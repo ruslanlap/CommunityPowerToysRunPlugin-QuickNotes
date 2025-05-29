@@ -19,13 +19,14 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
     {
         public string Text { get; set; } = string.Empty;
         public bool IsPinned { get; set; } = false;
-        public int OriginalIndex { get; set; } // Index in the original file
+        public int FileLineIndex { get; set; } // Реальний індекс рядка у файлі
+        public int DisplayIndex { get; set; } // Індекс для відображення користувачу
         public DateTime Timestamp { get; set; } = DateTime.MinValue; // Parsed timestamp
 
         // Simple parsing for pinned marker and timestamp
-        internal static NoteEntry Parse(string line, int index)
+        internal static NoteEntry Parse(string line, int fileLineIndex)
         {
-            var entry = new NoteEntry { OriginalIndex = index };
+            var entry = new NoteEntry { FileLineIndex = fileLineIndex };
             string remainingText = line;
 
             // Check for pinned marker (e.g., "[PINNED] ")
@@ -89,7 +90,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private bool _isInitialized = false;
 
         // --- State for Undo ---
-        private (string Text, int Index, bool WasPinned)? _lastDeletedNote;
+        private (string Text, int FileLineIndex, bool WasPinned)? _lastDeletedNote;
 
         // For text formatting
         private bool _useItalicForTags = false; // Default: use bold formatting for tags
@@ -605,12 +606,17 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private void CreateNote(string note)
         {
             if (string.IsNullOrWhiteSpace(note)) return;
+            
             try
             {
-                string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                string entry = $"[{timestamp}] {note.Trim()}";
-                File.AppendAllText(_notesPath, entry + Environment.NewLine);
-                _lastDeletedNote = null;
+                // Використовуємо lock для запобігання race conditions
+                lock (this)
+                {
+                    string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                    string entry = $"[{timestamp}] {note.Trim()}";
+                    File.AppendAllText(_notesPath, entry + Environment.NewLine);
+                    _lastDeletedNote = null;
+                }
             }
             catch (Exception ex)
             {
@@ -642,7 +648,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     string highlighted = string.IsNullOrWhiteSpace(currentSearch) 
                         ? note.Text 
                         : HighlightMatch(note.Text, currentSearch);
-                    results.Add(CreateNoteResult(note, $"Pinned | Enter to copy clean content (no timestamp/tags) | Ctrl+C for full note | qq unpin {note.OriginalIndex + 1}", highlighted));
+                    results.Add(CreateNoteResult(note, $"Pinned | Enter to copy clean content (no timestamp/tags) | Ctrl+C for full note | qq unpin {note.DisplayIndex}", highlighted));
                 }
             }
 
@@ -692,14 +698,14 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             string noteText = displayText ?? note.Text;
             string formattedText = FormatTextForDisplay(noteText);
 
-            string title = $"{(note.IsPinned ? "[P] " : "")}[{note.OriginalIndex + 1}] {formattedText}";
+            string title = $"{(note.IsPinned ? "[P] " : "")}[{note.DisplayIndex}] {formattedText}";
             return new Result
             {
                 Title = title,
                 SubTitle = subTitle,
                 IcoPath = IconPath,
                 ToolTipData = new ToolTipData("Note Details", 
-                    $"Index: {note.OriginalIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."),
+                    $"Display Index: {note.DisplayIndex}\nFile Line: {note.FileLineIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."),
                 ContextData = note,
                 Action = customAction ?? (c =>
                 {
@@ -724,15 +730,14 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             var notes = ReadNotes();
             
-            // First, try to parse as an index
-            if (int.TryParse(indexOrText, out int oneBasedIndex) && oneBasedIndex > 0)
+            // First, try to parse as a display index
+            if (int.TryParse(indexOrText, out int displayIndex) && displayIndex > 0)
             {
-                int index = oneBasedIndex - 1;
-                var noteToRemove = notes.FirstOrDefault(n => n.OriginalIndex == index);
+                var noteToRemove = notes.FirstOrDefault(n => n.DisplayIndex == displayIndex);
                 if (noteToRemove == null)
                 {
-                    var maxDisplayIndex = notes.Any() ? notes.Max(n => n.OriginalIndex) + 1 : 0;
-                    return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
+                    var availableIndices = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
+                    return SingleInfoResult("Note not found", $"Note number {displayIndex} does not exist. Available note numbers: {string.Join(", ", availableIndices)}");
                 }
                 
                 // Show confirmation dialog if not already confirmed
@@ -749,7 +754,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             Action = _ => 
                             {
                                 // Call DeleteNote again with confirmed=true
-                                string query = $"qq del {oneBasedIndex} --confirm";
+                                string query = $"qq del {displayIndex} --confirm";
                                 Context?.API.ChangeQuery(query, true);
                                 return false;
                             }
@@ -803,13 +808,24 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             try
             {
-                _lastDeletedNote = (noteToRemove.ToFileLine(), noteToRemove.OriginalIndex, noteToRemove.IsPinned);
-                
-                // Remove the note and rebuild the file
-                var remainingNotes = notes.Where(n => n.OriginalIndex != noteToRemove.OriginalIndex).Select(n => n.ToFileLine()).ToList();
-                WriteNotes(remainingNotes);
-                
-                return SingleInfoResult("Note deleted", $"Removed: [{noteToRemove.OriginalIndex + 1}] {noteToRemove.Text}\nTip: Use 'qq undo' to restore.", true);
+                lock (this)
+                {
+                    _lastDeletedNote = (noteToRemove.ToFileLine(), noteToRemove.FileLineIndex, noteToRemove.IsPinned);
+                    
+                    // Читаємо весь файл і видаляємо конкретний рядок за його індексом
+                    var allLines = ReadNotesRaw();
+                    if (noteToRemove.FileLineIndex >= 0 && noteToRemove.FileLineIndex < allLines.Count)
+                    {
+                        allLines.RemoveAt(noteToRemove.FileLineIndex);
+                        WriteNotes(allLines);
+                        
+                        return SingleInfoResult("Note deleted", $"Removed: [{noteToRemove.DisplayIndex}] {noteToRemove.Text}\nTip: Use 'qq undo' to restore.", true);
+                    }
+                    else
+                    {
+                        return ErrorResult("Error deleting note", "Note position in file is invalid. File may have been modified externally.");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -821,15 +837,18 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             try
             {
-                var notes = ReadNotes();
-                if (!notes.Any())
+                lock (this)
                 {
-                    return SingleInfoResult("No notes to delete", "Your notes file is already empty.");
-                }
+                    var notes = ReadNotes();
+                    if (!notes.Any())
+                    {
+                        return SingleInfoResult("No notes to delete", "Your notes file is already empty.");
+                    }
 
-                _lastDeletedNote = null;
-                WriteNotes(new List<string>());
-                return SingleInfoResult("All notes deleted", $"Removed {notes.Count} notes. This action cannot be undone with 'qq undo'.", true);
+                    _lastDeletedNote = null;
+                    WriteNotes(new List<string>());
+                    return SingleInfoResult("All notes deleted", $"Removed {notes.Count} notes. This action cannot be undone with 'qq undo'.", true);
+                }
             }
             catch (Exception ex)
             {
@@ -846,21 +865,26 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             try
             {
-                var notes = ReadNotesRaw();
-                var (text, index, _) = _lastDeletedNote.Value;
-
-                if (index >= 0 && index <= notes.Count)
+                lock (this)
                 {
-                    notes.Insert(index, text);
-                }
-                else
-                {
-                    notes.Add(text);
-                }
+                    var notes = ReadNotesRaw();
+                    var (text, fileLineIndex, _) = _lastDeletedNote.Value;
 
-                WriteNotes(notes);
-                _lastDeletedNote = null;
-                return SingleInfoResult("Note restored", $"Restored note at index ~{index + 1}.", true);
+                    // Вставляємо нотатку на оригінальну позицію, якщо можливо
+                    if (fileLineIndex >= 0 && fileLineIndex <= notes.Count)
+                    {
+                        notes.Insert(fileLineIndex, text);
+                    }
+                    else
+                    {
+                        // Якщо оригінальна позиція недоступна, додаємо в кінець
+                        notes.Add(text);
+                    }
+
+                    WriteNotes(notes);
+                    _lastDeletedNote = null;
+                    return SingleInfoResult("Note restored", $"Restored note at original position (line {fileLineIndex + 1}).", true);
+                }
             }
             catch (Exception ex)
             {
@@ -870,29 +894,42 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         private List<Result> PinNote(string indexStr, bool pin)
         {
-            if (!TryParseNoteIndex(indexStr, out int index, out var errorResult))
+            if (!TryParseNoteIndex(indexStr, out int displayIndex, out var errorResult))
                 return errorResult;
 
             var notes = ReadNotes();
             
-            
-            var noteToUpdate = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            var noteToUpdate = notes.FirstOrDefault(n => n.DisplayIndex == displayIndex);
             if (noteToUpdate == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
+                var availableIndices = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
+                return SingleInfoResult("Note not found", $"Note number {displayIndex} does not exist. Available note numbers: {string.Join(", ", availableIndices)}");
             }
 
             try
             {
-                if (noteToUpdate.IsPinned == pin)
+                lock (this)
                 {
-                    return SingleInfoResult($"Note {index + 1} already {(pin ? "pinned" : "unpinned")}", noteToUpdate.Text);
-                }
+                    if (noteToUpdate.IsPinned == pin)
+                    {
+                        return SingleInfoResult($"Note {displayIndex} already {(pin ? "pinned" : "unpinned")}", noteToUpdate.Text);
+                    }
 
-                noteToUpdate.IsPinned = pin;
-                WriteNotes(notes.Select(n => n.ToFileLine()).ToList());
-                _lastDeletedNote = null;
-                return SingleInfoResult($"Note {(pin ? "pinned" : "unpinned")}", $"[{index + 1}] {noteToUpdate.Text}", true);
+                    // Оновлюємо стан pin в файлі
+                    var allLines = ReadNotesRaw();
+                    if (noteToUpdate.FileLineIndex >= 0 && noteToUpdate.FileLineIndex < allLines.Count)
+                    {
+                        noteToUpdate.IsPinned = pin;
+                        allLines[noteToUpdate.FileLineIndex] = noteToUpdate.ToFileLine();
+                        WriteNotes(allLines);
+                        _lastDeletedNote = null;
+                        return SingleInfoResult($"Note {(pin ? "pinned" : "unpinned")}", $"[{displayIndex}] {noteToUpdate.Text}", true);
+                    }
+                    else
+                    {
+                        return ErrorResult($"Error {(pin ? "pinning" : "unpinning")} note", "Note position in file is invalid.");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -917,17 +954,17 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "date":
                     sortedNotes = descending
                         ? notes.OrderByDescending(n => n.Timestamp == DateTime.MinValue ? DateTime.MaxValue : n.Timestamp)
-                               .ThenBy(n => n.OriginalIndex)
+                               .ThenBy(n => n.FileLineIndex)
                         : notes.OrderBy(n => n.Timestamp == DateTime.MinValue ? DateTime.MaxValue : n.Timestamp)
-                               .ThenBy(n => n.OriginalIndex);
+                               .ThenBy(n => n.FileLineIndex);
                     break;
                 case "alpha":
                 case "text":
                     sortedNotes = descending
                         ? notes.OrderByDescending(n => n.Text, StringComparer.OrdinalIgnoreCase)
-                               .ThenBy(n => n.OriginalIndex)
+                               .ThenBy(n => n.FileLineIndex)
                         : notes.OrderBy(n => n.Text, StringComparer.OrdinalIgnoreCase)
-                               .ThenBy(n => n.OriginalIndex);
+                               .ThenBy(n => n.FileLineIndex);
                     break;
                 default:
                     return SingleInfoResult("Invalid sort type", "Use 'qq sort date [asc|desc]' or 'qq sort alpha [asc|desc]'");
@@ -935,9 +972,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             try
             {
-                WriteNotes(sortedNotes.Select(n => n.ToFileLine()).ToList());
-                _lastDeletedNote = null;
-                return SingleInfoResult("Notes sorted", $"Sorted by {sortType} {(descending ? "descending" : (ascending ? "ascending" : "(default asc)"))}", true);
+                lock (this)
+                {
+                    WriteNotes(sortedNotes.Select(n => n.ToFileLine()).ToList());
+                    _lastDeletedNote = null;
+                    return SingleInfoResult("Notes sorted", $"Sorted by {sortType} {(descending ? "descending" : (ascending ? "ascending" : "(default asc)"))}", true);
+                }
             }
             catch (Exception ex)
             {
@@ -947,38 +987,53 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         private List<Result> EditNote(string noteNumberStr)
         {
-            if (!TryParseNoteIndex(noteNumberStr, out int index, out var errorResult))
+            if (!TryParseNoteIndex(noteNumberStr, out int displayIndex, out var errorResult))
                 return errorResult;
 
             var notes = ReadNotes();
             
-            
-            var noteToEdit = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            var noteToEdit = notes.FirstOrDefault(n => n.DisplayIndex == displayIndex);
             if (noteToEdit == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
+                var availableIndices = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
+                return SingleInfoResult("Note not found", $"Note number {displayIndex} does not exist. Available note numbers: {string.Join(", ", availableIndices)}");
             }
 
             string oldNoteText = noteToEdit.Text;
-            string newNoteText = Interaction.InputBox($"Edit note #{noteToEdit.OriginalIndex + 1}", "Edit QuickNote", oldNoteText);
+            string newNoteText = Interaction.InputBox($"Edit note #{noteToEdit.DisplayIndex}", "Edit QuickNote", oldNoteText);
 
             if (string.IsNullOrEmpty(newNoteText) || newNoteText == oldNoteText)
             {
                 return SingleInfoResult("Edit cancelled", "Note was not changed.");
             }
 
-            string timestampPrefix = "";
-            if (noteToEdit.Timestamp != DateTime.MinValue && noteToEdit.Text.StartsWith("["))
-            {
-                timestampPrefix = noteToEdit.Text.Substring(0, 22);
-            }
-            noteToEdit.Text = timestampPrefix + newNoteText.Trim();
-
             try
             {
-                WriteNotes(notes.Select(n => n.ToFileLine()).ToList());
-                _lastDeletedNote = null;
-                return SingleInfoResult("Note edited", $"Updated note #{index + 1}: {newNoteText}", true);
+                lock (this)
+                {
+                    // Зберігаємо timestamp prefix якщо він є
+                    string timestampPrefix = "";
+                    if (noteToEdit.Timestamp != DateTime.MinValue && noteToEdit.Text.StartsWith("["))
+                    {
+                        timestampPrefix = noteToEdit.Text.Substring(0, 22);
+                    }
+                    
+                    noteToEdit.Text = timestampPrefix + newNoteText.Trim();
+
+                    // Оновлюємо в файлі
+                    var allLines = ReadNotesRaw();
+                    if (noteToEdit.FileLineIndex >= 0 && noteToEdit.FileLineIndex < allLines.Count)
+                    {
+                        allLines[noteToEdit.FileLineIndex] = noteToEdit.ToFileLine();
+                        WriteNotes(allLines);
+                        _lastDeletedNote = null;
+                        return SingleInfoResult("Note edited", $"Updated note #{displayIndex}: {newNoteText}", true);
+                    }
+                    else
+                    {
+                        return ErrorResult("Error saving edited note", "Note position in file is invalid.");
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -986,11 +1041,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
-        
         private void EditNoteInline(NoteEntry note)
         {
             string oldNoteText = note.Text;
-            string newNoteText = Interaction.InputBox($"Edit note #{note.OriginalIndex + 1}", "Edit QuickNote", oldNoteText);
+            string newNoteText = Interaction.InputBox($"Edit note #{note.DisplayIndex}", "Edit QuickNote", oldNoteText);
 
             if (string.IsNullOrEmpty(newNoteText) || newNoteText == oldNoteText)
             {
@@ -998,27 +1052,32 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return;
             }
 
-            string timestampPrefix = "";
-            if (note.Timestamp != DateTime.MinValue && note.Text.StartsWith("["))
-            {
-                timestampPrefix = note.Text.Substring(0, 22);
-            }
-            note.Text = timestampPrefix + newNoteText.Trim();
-
             try
             {
-                var allNotes = ReadNotes();
-                var noteInCurrentList = allNotes.FirstOrDefault(n => n.OriginalIndex == note.OriginalIndex);
-                if (noteInCurrentList != null)
+                lock (this)
                 {
-                    noteInCurrentList.Text = note.Text;
-                    WriteNotes(allNotes.Select(n => n.ToFileLine()).ToList());
-                    _lastDeletedNote = null;
-                    Context?.API.ShowMsg("Note edited", $"Updated note #{note.OriginalIndex + 1}", IconPath);
-                }
-                else
-                {
-                    Context?.API.ShowMsg("Error", "Could not find the note to save the edit.", IconPath);
+                    // Зберігаємо timestamp prefix якщо він є
+                    string timestampPrefix = "";
+                    if (note.Timestamp != DateTime.MinValue && note.Text.StartsWith("["))
+                    {
+                        timestampPrefix = note.Text.Substring(0, 22);
+                    }
+                    
+                    note.Text = timestampPrefix + newNoteText.Trim();
+
+                    // Оновлюємо в файлі
+                    var allLines = ReadNotesRaw();
+                    if (note.FileLineIndex >= 0 && note.FileLineIndex < allLines.Count)
+                    {
+                        allLines[note.FileLineIndex] = note.ToFileLine();
+                        WriteNotes(allLines);
+                        _lastDeletedNote = null;
+                        Context?.API.ShowMsg("Note edited", $"Updated note #{note.DisplayIndex}", IconPath);
+                    }
+                    else
+                    {
+                        Context?.API.ShowMsg("Error", "Could not find the note to save the edit.", IconPath);
+                    }
                 }
             }
             catch (Exception ex)
@@ -1029,16 +1088,16 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         private List<Result> ViewNote(string noteNumberStr)
         {
-            if (!TryParseNoteIndex(noteNumberStr, out int index, out var errorResult))
+            if (!TryParseNoteIndex(noteNumberStr, out int displayIndex, out var errorResult))
                 return errorResult;
 
             var notes = ReadNotes();
             
-           
-            var note = notes.FirstOrDefault(n => n.OriginalIndex == index);
+            var note = notes.FirstOrDefault(n => n.DisplayIndex == displayIndex);
             if (note == null)
             {
-                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
+                var availableIndices = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
+                return SingleInfoResult("Note not found", $"Note number {displayIndex} does not exist. Available note numbers: {string.Join(", ", availableIndices)}");
             }
 
             return new List<Result> { CreateNoteResult(note, "Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for more options") };
@@ -1122,18 +1181,21 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 if (!File.Exists(_notesPath)) return new List<NoteEntry>();
                 
-                var entries = File.ReadAllLines(_notesPath)
-                                  .Select((line, index) => NoteEntry.Parse(line, index))
-                                  .Where(entry => !string.IsNullOrWhiteSpace(entry.Text))
-                                  .ToList();
-                
-
-                for (int i = 0; i < entries.Count; i++)
+                lock (this)
                 {
-                    entries[i].OriginalIndex = i;
+                    var entries = File.ReadAllLines(_notesPath)
+                                      .Select((line, index) => NoteEntry.Parse(line, index))
+                                      .Where(entry => !string.IsNullOrWhiteSpace(entry.Text))
+                                      .ToList();
+                    
+                    // ВИПРАВЛЕННЯ: НЕ перезаписуємо FileLineIndex, натомість створюємо DisplayIndex
+                    for (int i = 0; i < entries.Count; i++)
+                    {
+                        entries[i].DisplayIndex = i + 1; // DisplayIndex починається з 1 для користувача
+                    }
+                    
+                    return entries;
                 }
-                
-                return entries;
             }
             catch (Exception ex)
             {
@@ -1147,7 +1209,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             try
             {
                 if (!File.Exists(_notesPath)) return new List<string>();
-                return File.ReadAllLines(_notesPath).ToList();
+                
+                lock (this)
+                {
+                    return File.ReadAllLines(_notesPath).ToList();
+                }
             }
             catch (Exception ex)
             {
@@ -1160,7 +1226,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             try
             {
-                File.WriteAllLines(_notesPath, lines);
+                lock (this)
+                {
+                    File.WriteAllLines(_notesPath, lines);
+                }
             }
             catch (Exception ex)
             {
@@ -1176,15 +1245,13 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
         }
 
-        private bool TryParseNoteIndex(string indexStr, out int index, out List<Result> errorResult)
+        private bool TryParseNoteIndex(string indexStr, out int displayIndex, out List<Result> errorResult)
         {
-            if (!int.TryParse(indexStr, out int oneBasedIndex) || oneBasedIndex <= 0)
+            if (!int.TryParse(indexStr, out displayIndex) || displayIndex <= 0)
             {
                 errorResult = SingleInfoResult("Invalid note number", "Please specify a valid positive number corresponding to the note.");
-                index = -1;
                 return false;
             }
-            index = oneBasedIndex - 1;
             errorResult = new List<Result>();
             return true;
         }
@@ -1218,173 +1285,173 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
 
         // --- Context Menu ---
-                public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
-                {
-                    var contextMenuItems = new List<ContextMenuResult>();
-                    if (selectedResult.ContextData is NoteEntry note)
-                    {
-                        // CHANGED: Make this the primary shortcut (Ctrl+C)
-                        contextMenuItems.Add(new ContextMenuResult
-                        {
-                            PluginName = Name,
-                            Title = "Copy Full Note (with timestamp)",
-                            FontFamily = "Segoe MDL2 Assets",
-                            Glyph = "\uE8C8", // Copy icon
-                            AcceleratorKey = Key.C,
-                            AcceleratorModifiers = ModifierKeys.Control,
-                            Action = _ =>
-                            {
-                                try 
-                                { 
-                                    Clipboard.SetText(note.Text); 
-                                    Context?.API.ShowMsg("Full note copied", 
-                                        $"Copied with timestamp: {note.Text.Substring(0, Math.Min(note.Text.Length, 50))}{(note.Text.Length > 50 ? "..." : "")}");
-                                    return true; 
-                                }
-                                catch (Exception ex) 
-                                { 
-                                    Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message); 
-                                    return false; 
-                                }
-                            }
-                        });
-
-                        // Less prominent second option with Ctrl+Shift+C 
-                        string contentOnly = StripTimestampAndTags(note.Text);
-                        contextMenuItems.Add(new ContextMenuResult
-                        {
-                            PluginName = Name,
-                            Title = "Copy Clean Content (no timestamp, no tags) (already default on Enter)",
-                            FontFamily = "Segoe MDL2 Assets",
-                            Glyph = "\uE8C9", // Document icon
-                            AcceleratorKey = Key.C,
-                            AcceleratorModifiers = ModifierKeys.Control | ModifierKeys.Shift,
-                            Action = _ =>
-                            {
-                                try 
-                                { 
-                                    Clipboard.SetText(contentOnly); 
-                                    Context?.API.ShowMsg("Content copied", 
-                                        $"Copied without timestamp: {contentOnly.Substring(0, Math.Min(contentOnly.Length, 50))}{(contentOnly.Length > 50 ? "..." : "")}");
-                                    return true; 
-                                }
-                                catch (Exception ex) 
-                                { 
-                                    Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message);
-                                    return false; 
-                                }
-                            }
-                        });
-
+        public List<ContextMenuResult> LoadContextMenus(Result selectedResult)
+        {
+            var contextMenuItems = new List<ContextMenuResult>();
+            if (selectedResult.ContextData is NoteEntry note)
+            {
+                // CHANGED: Make this the primary shortcut (Ctrl+C)
                 contextMenuItems.Add(new ContextMenuResult
                 {
                     PluginName = Name,
-                    Title = "Edit Note...",
+                    Title = "Copy Full Note (with timestamp)",
                     FontFamily = "Segoe MDL2 Assets",
-                    Glyph = "\uE70F", // Edit icon
-                    AcceleratorKey = Key.E,
+                    Glyph = "\uE8C8", // Copy icon
+                    AcceleratorKey = Key.C,
                     AcceleratorModifiers = ModifierKeys.Control,
                     Action = _ =>
                     {
-                        EditNoteInline(note);
-                        return true;
-                    }
-                });
-
-                contextMenuItems.Add(new ContextMenuResult
-                {
-                    PluginName = Name,
-                    Title = "Delete Note",
-                    FontFamily = "Segoe MDL2 Assets",
-                    Glyph = "\uE74D", // Delete icon
-                    AcceleratorKey = Key.Delete,
-                    Action = _ =>
-                    {
-                        DeleteNote((note.OriginalIndex + 1).ToString());
-                        return true;
-                    }
-                });
-
-                contextMenuItems.Add(new ContextMenuResult
-                {
-                    PluginName = Name,
-                    Title = note.IsPinned ? "Unpin Note" : "Pin Note",
-                    FontFamily = "Segoe MDL2 Assets",
-                    Glyph = note.IsPinned ? "\uE77A" : "\uE718", // Pin/Unpin icon
-                    Action = _ =>
-                    {
-                        PinNote((note.OriginalIndex + 1).ToString(), !note.IsPinned);
-                        return true;
-                    }
-                });
-
-                // URL detection and opening
-                Match urlMatch = UrlRegex.Match(note.Text);
-                if (urlMatch.Success)
-                {
-                    string url = urlMatch.Value;
-                    if (url.StartsWith("www.", StringComparison.OrdinalIgnoreCase) && !url.Contains("://"))
-                    {
-                        url = "http://" + url;
-                    }
-
-                    contextMenuItems.Add(new ContextMenuResult
-                    {
-                        PluginName = Name,
-                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}{(url.Length > 40 ? "..." : "")}",
-                        FontFamily = "Segoe MDL2 Assets",
-                        Glyph = "\uE774", // Globe icon
-                        AcceleratorKey = Key.U,
-                        AcceleratorModifiers = ModifierKeys.Control,
-                        Action = _ =>
-                        {
-                            try
-                            {
-                                Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
-                                return true;
-                            }
-                            catch (Exception ex)
-                            {
-                                Context?.API.ShowMsg("Error", $"Could not open URL: {ex.Message}");
-                                return false;
-                            }
+                        try 
+                        { 
+                            Clipboard.SetText(note.Text); 
+                            Context?.API.ShowMsg("Full note copied", 
+                                $"Copied with timestamp: {note.Text.Substring(0, Math.Min(note.Text.Length, 50))}{(note.Text.Length > 50 ? "..." : "")}");
+                            return true; 
                         }
-                    });
+                        catch (Exception ex) 
+                        { 
+                            Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message); 
+                            return false; 
+                        }
+                    }
+                });
+
+                // Less prominent second option with Ctrl+Shift+C 
+                string contentOnly = StripTimestampAndTags(note.Text);
+                contextMenuItems.Add(new ContextMenuResult
+                {
+                    PluginName = Name,
+                    Title = "Copy Clean Content (no timestamp, no tags) (already default on Enter)",
+                    FontFamily = "Segoe MDL2 Assets",
+                    Glyph = "\uE8C9", // Document icon
+                    AcceleratorKey = Key.C,
+                    AcceleratorModifiers = ModifierKeys.Control | ModifierKeys.Shift,
+                    Action = _ =>
+                    {
+                        try 
+                        { 
+                            Clipboard.SetText(contentOnly); 
+                            Context?.API.ShowMsg("Content copied", 
+                                $"Copied without timestamp: {contentOnly.Substring(0, Math.Min(contentOnly.Length, 50))}{(contentOnly.Length > 50 ? "..." : "")}");
+                            return true; 
+                        }
+                        catch (Exception ex) 
+                        { 
+                            Context?.API.ShowMsg("Error", "Failed to copy: " + ex.Message);
+                            return false; 
+                        }
+                    }
+                });
+
+            contextMenuItems.Add(new ContextMenuResult
+            {
+                PluginName = Name,
+                Title = "Edit Note...",
+                FontFamily = "Segoe MDL2 Assets",
+                Glyph = "\uE70F", // Edit icon
+                AcceleratorKey = Key.E,
+                AcceleratorModifiers = ModifierKeys.Control,
+                Action = _ =>
+                {
+                    EditNoteInline(note);
+                    return true;
                 }
-            }
-            return contextMenuItems;
-        }
+            });
 
-        // --- IPluginI18n & IDisposable ---
-        public string GetTranslatedPluginTitle() => Name;
-        public string GetTranslatedPluginDescription() => Description;
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (Disposed || !disposing)
+            contextMenuItems.Add(new ContextMenuResult
             {
-                return;
-            }
-            if (Context?.API != null)
+                PluginName = Name,
+                Title = "Delete Note",
+                FontFamily = "Segoe MDL2 Assets",
+                Glyph = "\uE74D", // Delete icon
+                AcceleratorKey = Key.Delete,
+                Action = _ =>
+                {
+                    DeleteNote(note.DisplayIndex.ToString());
+                    return true;
+                }
+            });
+
+            contextMenuItems.Add(new ContextMenuResult
             {
-                Context.API.ThemeChanged -= OnThemeChanged;
+                PluginName = Name,
+                Title = note.IsPinned ? "Unpin Note" : "Pin Note",
+                FontFamily = "Segoe MDL2 Assets",
+                Glyph = note.IsPinned ? "\uE77A" : "\uE718", // Pin/Unpin icon
+                Action = _ =>
+                {
+                    PinNote(note.DisplayIndex.ToString(), !note.IsPinned);
+                    return true;
+                }
+            });
+
+            // URL detection and opening
+            Match urlMatch = UrlRegex.Match(note.Text);
+            if (urlMatch.Success)
+            {
+                string url = urlMatch.Value;
+                if (url.StartsWith("www.", StringComparison.OrdinalIgnoreCase) && !url.Contains("://"))
+                {
+                    url = "http://" + url;
+                }
+
+                contextMenuItems.Add(new ContextMenuResult
+                {
+                    PluginName = Name,
+                    Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}{(url.Length > 40 ? "..." : "")}",
+                    FontFamily = "Segoe MDL2 Assets",
+                    Glyph = "\uE774", // Globe icon
+                    AcceleratorKey = Key.U,
+                    AcceleratorModifiers = ModifierKeys.Control,
+                    Action = _ =>
+                    {
+                        try
+                        {
+                            Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Context?.API.ShowMsg("Error", $"Could not open URL: {ex.Message}");
+                            return false;
+                        }
+                    }
+                });
             }
-            Disposed = true;
         }
+        return contextMenuItems;
+    }
 
-        // --- Theme Handling ---
-        private void UpdateIconPath(Theme theme) =>
-            IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
-                ? "Images/quicknotes.light.png"
-                : "Images/quicknotes.dark.png";
+    // --- IPluginI18n & IDisposable ---
+    public string GetTranslatedPluginTitle() => Name;
+    public string GetTranslatedPluginDescription() => Description;
 
-        private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
-            UpdateIconPath(newTheme);
+    public void Dispose()
+    {
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
+
+    protected virtual void Dispose(bool disposing)
+    {
+        if (Disposed || !disposing)
+        {
+            return;
+        }
+        if (Context?.API != null)
+        {
+            Context.API.ThemeChanged -= OnThemeChanged;
+        }
+        Disposed = true;
+    }
+
+    // --- Theme Handling ---
+    private void UpdateIconPath(Theme theme) =>
+        IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
+            ? "Images/quicknotes.light.png"
+            : "Images/quicknotes.dark.png";
+
+    private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
+        UpdateIconPath(newTheme);
     }
 }
