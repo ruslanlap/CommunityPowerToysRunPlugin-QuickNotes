@@ -446,6 +446,13 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     return DeleteAllNotes();
                 case "del":
                 case "delete":
+                    // Check if this is a confirmation request
+                    if (args.EndsWith(" --confirm"))
+                    {
+                        // Remove the --confirm flag and pass true for confirmed
+                        string cleanArgs = args.Replace(" --confirm", "").Trim();
+                        return DeleteNote(cleanArgs, true);
+                    }
                     return DeleteNote(args);
                 case "search":
                     return SearchNotes(args);
@@ -714,21 +721,87 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             };
         }
 
-        private List<Result> DeleteNote(string indexStr)
+        private List<Result> DeleteNote(string indexOrText, bool confirmed = false)
         {
-            if (!TryParseNoteIndex(indexStr, out int index, out var errorResult))
-                return errorResult;
-
             var notes = ReadNotes();
             
-            
-            var noteToRemove = notes.FirstOrDefault(n => n.OriginalIndex == index);
-            if (noteToRemove == null)
+            // First, try to parse as an index
+            if (int.TryParse(indexOrText, out int oneBasedIndex) && oneBasedIndex > 0)
             {
-                var maxDisplayIndex = notes.Any() ? notes.Max(n => n.OriginalIndex) + 1 : 0;
-                return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
+                int index = oneBasedIndex - 1;
+                var noteToRemove = notes.FirstOrDefault(n => n.OriginalIndex == index);
+                if (noteToRemove == null)
+                {
+                    var maxDisplayIndex = notes.Any() ? notes.Max(n => n.OriginalIndex) + 1 : 0;
+                    return SingleInfoResult("Note not found", $"Note number {index + 1} does not exist. Available note numbers: {string.Join(", ", notes.Select(n => n.OriginalIndex + 1).OrderBy(x => x))}");
+                }
+                
+                // Show confirmation dialog if not already confirmed
+                if (!confirmed)
+                {
+                    return new List<Result>
+                    {
+                        new Result
+                        {
+                            Title = $"Delete note: {noteToRemove.Text}",
+                            SubTitle = "Are you sure you want to delete this note? Press Enter to confirm.",
+                            IcoPath = IconPath,
+                            Score = 1000,
+                            Action = _ => 
+                            {
+                                // Call DeleteNote again with confirmed=true
+                                string query = $"qq del {oneBasedIndex} --confirm";
+                                Context?.API.ChangeQuery(query, true);
+                                return false;
+                            }
+                        }
+                    };
+                }
+                
+                return DeleteSpecificNote(noteToRemove, notes);
             }
-
+            else
+            {
+                // If not a valid index, try to find by exact text match
+                var exactMatches = notes.Where(n => n.Text.Equals(indexOrText, StringComparison.OrdinalIgnoreCase) || 
+                                                  n.Text.EndsWith(indexOrText, StringComparison.OrdinalIgnoreCase)).ToList();
+                
+                if (exactMatches.Count == 1)
+                {
+                    // Found exactly one match by text
+                    return DeleteSpecificNote(exactMatches[0], notes);
+                }
+                else if (exactMatches.Count > 1)
+                {
+                    // Multiple matches found, show options
+                    var results = new List<Result>();
+                    results.Add(new Result
+                    {
+                        Title = "Multiple matching notes found",
+                        SubTitle = "Please select a specific note to delete:",
+                        IcoPath = IconPath
+                    });
+                    
+                    foreach (var match in exactMatches)
+                    {
+                        results.Add(CreateNoteResult(match, "Press Enter to delete this note", null, 
+                            (context) => {
+                                DeleteSpecificNote(match, ReadNotes());
+                                return true;
+                            }));
+                    }
+                    return results;
+                }
+                else
+                {
+                    // No exact matches, try to find by content
+                    return SingleInfoResult("Note not found", $"No note with content '{indexOrText}' was found. Try using the note number instead.");
+                }
+            }
+        }
+        
+        private List<Result> DeleteSpecificNote(NoteEntry noteToRemove, List<NoteEntry> notes)
+        {
             try
             {
                 _lastDeletedNote = (noteToRemove.ToFileLine(), noteToRemove.OriginalIndex, noteToRemove.IsPinned);
