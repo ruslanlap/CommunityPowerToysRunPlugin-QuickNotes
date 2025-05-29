@@ -686,7 +686,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
 
         // Helper to create a standard result for a note
-        private Result CreateNoteResult(NoteEntry note, string subTitle, string? displayText = null)
+        private Result CreateNoteResult(NoteEntry note, string subTitle, string? displayText = null, Func<ActionContext, bool>? customAction = null)
         {
             // Apply text formatting for display
             string noteText = displayText ?? note.Text;
@@ -701,11 +701,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 ToolTipData = new ToolTipData("Note Details", 
                     $"Index: {note.OriginalIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."),
                 ContextData = note,
-                Action = c =>
+                Action = customAction ?? (c =>
                 {
                     try
                     {
-
                         string contentOnly = StripTimestampAndTags(note.Text);  
                         Clipboard.SetText(contentOnly);
                         Context?.API.ShowMsg("Clean content copied", 
@@ -717,7 +716,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         Context?.API.ShowMsg("Error", "Failed to copy note to clipboard: " + ex.Message);
                         return false;
                     }
-                }
+                })
             };
         }
 
