@@ -743,8 +743,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     {
                         new Result
                         {
-                            Title = $"Delete note: {noteToRemove.Text}",
-                            SubTitle = "Are you sure you want to delete this note? Press Enter to confirm.",
+                            Title = "⚠️ Confirm Deletion",
+                            SubTitle = $"Are you sure you want to delete this note?\n\nNote: {Truncate(noteToRemove.Text, 100)}\n\nPress Enter to confirm or Esc to cancel.",
                             IcoPath = IconPath,
                             Score = 1000,
                             Action = _ => 
@@ -1171,6 +1171,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
 
         // --- Utility Helpers ---
+        private string Truncate(string value, int maxLength)
+        {
+            if (string.IsNullOrEmpty(value)) return value;
+            return value.Length <= maxLength ? value : value.Substring(0, maxLength) + "...";
+        }
+
         private bool TryParseNoteIndex(string indexStr, out int index, out List<Result> errorResult)
         {
             if (!int.TryParse(indexStr, out int oneBasedIndex) || oneBasedIndex <= 0)
