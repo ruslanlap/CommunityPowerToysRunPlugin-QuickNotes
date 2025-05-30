@@ -1539,3 +1539,4 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
     private void OnThemeChanged(Theme currentTheme, Theme newTheme) =>
         UpdateIconPath(newTheme);
 }
+}
