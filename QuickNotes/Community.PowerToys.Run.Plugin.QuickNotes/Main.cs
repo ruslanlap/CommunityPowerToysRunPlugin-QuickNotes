@@ -861,7 +861,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     var parsedLine = NoteEntry.Parse(allLines[i]);
                     
                     // Порівнюємо очищений текст і статус закріплення
-                    if (parsedLine.Text.Trim().Equals(noteToRemove.Text.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    // Використовуємо більш надійне порівняння, ігноруючи пробіли та регістр
+                    string cleanParsedText = StripTimestampAndTags(parsedLine.Text).Trim();
+                    string cleanNoteText = StripTimestampAndTags(noteToRemove.Text).Trim();
+                    
+                    if (string.Equals(cleanParsedText, cleanNoteText, StringComparison.OrdinalIgnoreCase) &&
                         parsedLine.IsPinned == noteToRemove.IsPinned)
                     {
                         lineToDelete = i;
@@ -1020,7 +1024,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 for (int i = 0; i < allLines.Count; i++)
                 {
                     var parsedLine = NoteEntry.Parse(allLines[i]);
-                    if (parsedLine.Text.Trim().Equals(noteToUpdate.Text.Trim(), StringComparison.OrdinalIgnoreCase))
+                    
+                    // Використовуємо більш надійне порівняння, ігноруючи пробіли, часові мітки та теги
+                    string cleanParsedText = StripTimestampAndTags(parsedLine.Text).Trim();
+                    string cleanNoteText = StripTimestampAndTags(noteToUpdate.Text).Trim();
+                    
+                    if (string.Equals(cleanParsedText, cleanNoteText, StringComparison.OrdinalIgnoreCase))
                     {
                         lineToUpdate = i;
                         break;
@@ -1135,7 +1144,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     var parsedLine = NoteEntry.Parse(allLines[i]);
                     // Шукаємо оригінальний текст, щоб знайти правильну нотатку
-                    if (parsedLine.Text.Trim().Equals(oldNoteText.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    // Використовуємо більш надійне порівняння, ігноруючи пробіли, часові мітки та теги
+                    string cleanParsedText = StripTimestampAndTags(parsedLine.Text).Trim();
+                    string cleanOldText = StripTimestampAndTags(oldNoteText).Trim();
+                    
+                    if (string.Equals(cleanParsedText, cleanOldText, StringComparison.OrdinalIgnoreCase) &&
                         parsedLine.IsPinned == noteToEdit.IsPinned)
                     {
                         lineToEdit = i;
@@ -1193,7 +1206,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     var parsedLine = NoteEntry.Parse(allLines[i]);
                     // Шукаємо оригінальний текст, щоб знайти правильну нотатку
-                    if (parsedLine.Text.Trim().Equals(oldNoteText.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                    // Використовуємо більш надійне порівняння, ігноруючи пробіли, часові мітки та теги
+                    string cleanParsedText = StripTimestampAndTags(parsedLine.Text).Trim();
+                    string cleanOldText = StripTimestampAndTags(oldNoteText).Trim();
+                    
+                    if (string.Equals(cleanParsedText, cleanOldText, StringComparison.OrdinalIgnoreCase) &&
                         parsedLine.IsPinned == note.IsPinned)
                     {
                         lineToEdit = i;
