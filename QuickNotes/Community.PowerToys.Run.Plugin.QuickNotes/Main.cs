@@ -19,14 +19,16 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
     {
         public string Text { get; set; } = string.Empty;
         public bool IsPinned { get; set; } = false;
-        public int FileLineIndex { get; set; } // Реальний індекс рядка у файлі
         public int DisplayIndex { get; set; } // Індекс для відображення користувачу
         public DateTime Timestamp { get; set; } = DateTime.MinValue; // Parsed timestamp
+        
+        // Унікальний ідентифікатор нотатки на основі вмісту
+        public string ContentId => $"{(IsPinned ? "PINNED_" : "")}{Text.Trim()}";
 
         // Simple parsing for pinned marker and timestamp
-        internal static NoteEntry Parse(string line, int fileLineIndex)
+        internal static NoteEntry Parse(string line)
         {
-            var entry = new NoteEntry { FileLineIndex = fileLineIndex };
+            var entry = new NoteEntry();
             string remainingText = line;
 
             // Check for pinned marker (e.g., "[PINNED] ")
@@ -737,32 +739,37 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         private List<Result> DeleteNote(string indexOrText, bool confirmed = false)
         {
+            // Завжди перечитуємо всі нотатки для отримання актуальної інформації
             var notes = ReadNotes();
             
-            // First, try to parse as a display index
+            // Спробуємо обробити як індекс
             if (int.TryParse(indexOrText, out int displayIndex) && displayIndex > 0)
             {
+                // Шукаємо нотатку за відображуваним індексом
                 var noteToRemove = notes.FirstOrDefault(n => n.DisplayIndex == displayIndex);
                 if (noteToRemove == null)
                 {
+                    // Нотатка не знайдена - покажемо список доступних індексів
                     var availableIndices = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
-                    return SingleInfoResult("Note not found", $"Note number {displayIndex} does not exist. Available note numbers: {string.Join(", ", availableIndices)}");
+                    return SingleInfoResult("Note not found", 
+                        $"Note number {displayIndex} does not exist.\n" + 
+                        $"Available note numbers: {string.Join(", ", availableIndices)}");
                 }
                 
-                // Show confirmation dialog if not already confirmed
+                // Показуємо діалог підтвердження, якщо це перший запуск
                 if (!confirmed)
                 {
                     return new List<Result>
                     {
                         new Result
                         {
-                            Title = "⚠️ Confirm Deletion",
+                            Title = $"⚠️ Confirm Deletion",
                             SubTitle = $"Are you sure you want to delete this note?\n\nNote: {Truncate(noteToRemove.Text, 100)}\n\nPress Enter to confirm or Esc to cancel.",
                             IcoPath = IconPath,
                             Score = 1000,
                             Action = _ => 
                             {
-                                // Call DeleteNote again with confirmed=true
+                                // Викликаємо DeleteNote знову з підтвердженням
                                 string query = $"qq del {displayIndex} --confirm";
                                 Context?.API.ChangeQuery(query, true);
                                 return false;
@@ -771,6 +778,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     };
                 }
                 
+                // Підтверджено - видаляємо нотатку
                 return DeleteSpecificNote(noteToRemove, notes);
             }
             else
@@ -808,67 +816,60 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 else
                 {
                     // No exact matches, try to find by content
-                    return SingleInfoResult("Note not found", $"No note with content '{indexOrText}' was found. Try using the note number instead.");
+        }
+        else
+        {
                 }
             }
         }
-        
+
         private List<Result> DeleteSpecificNote(NoteEntry noteToRemove, List<NoteEntry> notes)
         {
             try
             {
-                // Зберігаємо інформацію для undo
-                _lastDeletedNote = (noteToRemove.ToFileLine(), noteToRemove.FileLineIndex, noteToRemove.IsPinned);
-                
-                // Читаємо актуальний стан файлу
+                // Прочитаємо весь файл повторно, щоб мати актуальні дані
                 var allLines = ReadNotesRaw();
                 
-                // Перевіряємо, чи рядок існує і чи співпадає з очікуваним вмістом
-                if (noteToRemove.FileLineIndex >= 0 && noteToRemove.FileLineIndex < allLines.Count)
+                // Знайдемо точний рядок для видалення, базуючись на вмісті нотатки
+                string noteContent = noteToRemove.Text.Trim();
+                string expectedPrefix = noteToRemove.IsPinned ? "[PINNED] " : "";
+                int lineToRemove = -1;
+                
+                // Шукаємо рядок, який містить точний текст нотатки
+                for (int i = 0; i < allLines.Count; i++)
                 {
-                    // Перевіримо вміст рядка, щоб переконатися, що він не змінився
-                    string currentLine = allLines[noteToRemove.FileLineIndex];
-                    string expectedLine = noteToRemove.ToFileLine();
+                    string line = allLines[i];
                     
-                    // Порівнюємо основний зміст (ігноруємо пробіли на початку/кінці)
-                    if (!string.Equals(currentLine.Trim(), expectedLine.Trim(), StringComparison.Ordinal))
+                    // Перевіряємо, чи цей рядок відповідає нашій нотатці
+                    if (line.Contains(noteContent) && 
+                        (noteToRemove.IsPinned == line.StartsWith("[PINNED] ")))
                     {
-                        // Якщо вміст змінився, шукаємо нотатку з таким самим текстом
-                        int foundIndex = -1;
-                        for (int i = 0; i < allLines.Count; i++)
-                        {
-                            if (string.Equals(allLines[i].Trim(), expectedLine.Trim(), StringComparison.Ordinal))
-                            {
-                                foundIndex = i;
-                                break;
-                            }
-                        }
-                        
-                        if (foundIndex >= 0)
-                        {
-                            // Знайшли нотатку в іншому місці
-                            _lastDeletedNote = (allLines[foundIndex], foundIndex, noteToRemove.IsPinned);
-                            allLines.RemoveAt(foundIndex);
-                        }
-                        else
-                        {
-                            return ErrorResult("Error deleting note", "Note content has changed. Please refresh your notes list and try again.");
-                        }
+                        lineToRemove = i;
+                        break;
                     }
-                    else
-                    {
-                        // Нотатка не змінилася, видаляємо її
-                        allLines.RemoveAt(noteToRemove.FileLineIndex);
-                    }
+                }
+                
+                if (lineToRemove >= 0)
+                {
+                    // Зберігаємо для undo
+                    _lastDeletedNote = (allLines[lineToRemove], lineToRemove, noteToRemove.IsPinned);
+                    
+                    // Видаляємо рядок
+                    allLines.RemoveAt(lineToRemove);
                     
                     // Записуємо оновлений файл
                     WriteNotes(allLines);
                     
-                    return SingleInfoResult("Note deleted", $"Removed: [{noteToRemove.DisplayIndex}] {Truncate(noteToRemove.Text, 50)}\nTip: Use 'qq undo' to restore.", true);
+                    return SingleInfoResult("Note deleted", 
+                        $"Removed: [{noteToRemove.DisplayIndex}] {Truncate(noteToRemove.Text, 50)}\n" +
+                        "Tip: Use 'qq undo' to restore.", true);
                 }
                 else
                 {
-                    return ErrorResult("Error deleting note", "Note position in file is invalid. File may have been modified externally.");
+                    // Не знайшли нотатку - перечитуємо нотатки і повідомляємо про помилку
+                    return ErrorResult("Error deleting note", 
+                        "Could not find the exact note in the file. The file may have been modified.\n" +
+                        "Please type 'qq' to refresh the notes list and try again.");
                 }
             }
             catch (Exception ex)
@@ -877,79 +878,55 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
-        private List<Result> DeleteAllNotes()
-        {
-            try
-            {
-                if (!File.Exists(_notesPath))
-                {
-                    return SingleInfoResult("No notes file to backup", "The notes file doesn't exist.");
-                }
-
-                string notesDir = Path.GetDirectoryName(_notesPath)!;
-                string backupFileName = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
-                File.Copy(_notesPath, backupFileName, true);
-
-                // Open the folder in Explorer
-                try
-                {
-                    var folderProcess = new Process
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = notesDir,
-                            UseShellExecute = true,
-                            Verb = "open"
-                        }
-                    };
-                    folderProcess.Start();
-                }
-                catch (Exception ex)
-                {
-                    // If we can't open the folder, just continue with the backup
-                    Log.Exception("Failed to open backup folder", ex, GetType());
-                }
-                
-                return SingleInfoResult("Backup created", 
-                    $"Backup saved to: {backupFileName}\n\n" +
-                    "The backup folder has been opened for you.", true);
-            }
-            catch (Exception ex)
-            {
-                return ErrorResult("Error creating backup", ex.Message);
-            }
-        }
-
         private List<Result> UndoDelete()
         {
-            if (_lastDeletedNote == null)
+            if (!_lastDeletedNote.HasValue)
             {
-                return SingleInfoResult("Nothing to undo", "No note has been deleted recently.");
+                return SingleInfoResult("Nothing to undo", "No recently deleted note found. You need to delete a note first.");
             }
 
             try
             {
-                var notes = ReadNotesRaw();
-                var (text, fileLineIndex, _) = _lastDeletedNote.Value;
+                // Читаємо поточні нотатки
+                var allLines = ReadNotesRaw();
+                var (noteText, originalIndex, wasPinned) = _lastDeletedNote.Value;
 
-                // Вставляємо нотатку на оригінальну позицію, якщо можливо
-                if (fileLineIndex >= 0 && fileLineIndex <= notes.Count)
+                // Додаємо нотатку назад в її оригінальну позицію, якщо можливо
+                string position;
+                if (originalIndex >= 0 && originalIndex <= allLines.Count)
                 {
-                    notes.Insert(fileLineIndex, text);
+                    // Можемо відновити в оригінальній позиції
+                    allLines.Insert(originalIndex, noteText);
+                    position = $"at original position (index {originalIndex + 1})";
                 }
                 else
                 {
-                    // Якщо оригінальна позиція недоступна, додаємо в кінець
-                    notes.Add(text);
+                    // Додаємо в кінець, якщо оригінальна позиція недоступна
+                    allLines.Add(noteText);
+                    position = "at the end of the list";
                 }
 
-                WriteNotes(notes);
+                // Записуємо оновлений файл
+                WriteNotes(allLines);
+                
+                // Отримуємо відображуваний індекс для відновленої нотатки
+                var updatedNotes = ReadNotes();
+                var restoredNote = updatedNotes
+                    .FirstOrDefault(n => n.Text.Trim() == noteText.Trim() && n.IsPinned == wasPinned);
+                    
+                string displayInfo = restoredNote != null ? 
+                    $" (now note #{restoredNote.DisplayIndex})" : "";
+                
+                // Скидаємо буфер відновлення
                 _lastDeletedNote = null;
-                return SingleInfoResult("Note restored", $"Restored note at original position (line {fileLineIndex + 1}).", true);
+                
+                return SingleInfoResult("Note restored", 
+                    $"Restored note {position}{displayInfo}.\n" +
+                    $"{Truncate(noteText, 50)}", true);
             }
             catch (Exception ex)
             {
-                return ErrorResult("Error undoing delete", ex.Message);
+                return ErrorResult("Error restoring note", ex.Message);
             }
         }
 
@@ -1226,33 +1203,26 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 if (!File.Exists(_notesPath)) return new List<NoteEntry>();
                 
-                // Використовуємо FileShare.ReadWrite для дозволу читання і запису іншими процесами,
-                // але не дозволяємо видалення файлу
-                using (var fileStream = new FileStream(_notesPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (var reader = new StreamReader(fileStream))
+                // Читаємо всі рядки файлу безпечним способом
+                var allLines = ReadNotesRaw();
+
+                // Створюємо нотатки з послідовними індексами
+                var entries = new List<NoteEntry>();
+                var displayIndex = 1; // Починаємо з 1 для відображення користувачу
+                
+                foreach (var line in allLines)
                 {
-                    var lines = new List<string>();
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        lines.Add(line);
-                    }
-
-                    var entries = new List<NoteEntry>();
-                    var validDisplayIndex = 1; // Починаємо з 1 для відображення користувача
-
-                    for (int i = 0; i < lines.Count; i++)
-                    {
-                        var entry = NoteEntry.Parse(lines[i], i);
-                        if (!string.IsNullOrWhiteSpace(entry.Text))
-                        {
-                            entry.DisplayIndex = validDisplayIndex++;
-                            entries.Add(entry);
-                        }
-                    }
+                    if (string.IsNullOrWhiteSpace(line)) continue;
                     
-                    return entries;
+                    var entry = NoteEntry.Parse(line);
+                    if (!string.IsNullOrWhiteSpace(entry.Text))
+                    {
+                        entry.DisplayIndex = displayIndex++;
+                        entries.Add(entry);
+                    }
                 }
+                
+                return entries;
             }
             catch (Exception ex)
             {
