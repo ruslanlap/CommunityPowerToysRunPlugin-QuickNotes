@@ -1625,7 +1625,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         Disposed = true;
     }
 
-    // --- Theme Handling ---
     private void UpdateIconPath(Theme theme) =>
         IconPath = theme == Theme.Light || theme == Theme.HighContrastWhite
             ? "Images/quicknotes.light.png"
