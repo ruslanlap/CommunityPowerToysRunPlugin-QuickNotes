@@ -18,7 +18,7 @@
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.5-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.6-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -28,7 +28,7 @@
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
 
-> 🐛 **Critical Bug Fix in v1.0.6**: Fixed an important issue where notes were being deleted incorrectly due to index mismatch. All note operations (delete, edit, view, pin) now correctly target the intended notes. Update recommended for all users!
+> 🚀 **Major Update in v1.0.6**: Completely reworked note management system that fixes critical bugs with note deletion and editing. The plugin now reliably identifies notes by their content rather than position, ensuring operations always target the correct note. Update strongly recommended for all users! [See release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.6.md)
 
 ## 📚 Documentation & Wiki
 

@@ -92,7 +92,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private bool _isInitialized = false;
 
         // --- State for Undo ---
-        private (string Text, int FileLineIndex, bool WasPinned)? _lastDeletedNote;
+        private (string Text, int LineIndex, bool WasPinned)? _lastDeletedNote;
 
         // For text formatting
         private bool _useItalicForTags = false; // Default: use bold formatting for tags
@@ -716,7 +716,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 SubTitle = subTitle,
                 IcoPath = IconPath,
                 ToolTipData = new ToolTipData("Note Details", 
-                    $"Display Index: {note.DisplayIndex}\nFile Line: {note.FileLineIndex + 1}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."),
+                    $"Display Index: {note.DisplayIndex}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."),
                 ContextData = note,
                 Action = customAction ?? (c =>
                 {
@@ -851,41 +851,42 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             try
             {
+                // Отримуємо всі рядки з файлу
                 var allLines = ReadNotesRaw();
-
-                if (noteToRemove.FileLineIndex >= 0 && noteToRemove.FileLineIndex < allLines.Count)
+                int lineToDelete = -1;
+                
+                // Шукаємо рядок, який відповідає нашій нотатці
+                for (int i = 0; i < allLines.Count; i++)
                 {
-                    // Verify the content before deleting to prevent accidental deletion if file changed
-                    string lineInFile = allLines[noteToRemove.FileLineIndex];
-                    string expectedLine = noteToRemove.ToFileLine();
-
-                    // A more robust check: compare parsed content, ignoring timestamp differences
-                    // This is important because the timestamp is added on creation, but not part of the NoteEntry.Text
-                    // We should compare the 'clean' text and pinned status.
-                    var parsedLineInFile = NoteEntry.Parse(lineInFile);
-
-                    if (parsedLineInFile.Text.Trim().Equals(noteToRemove.Text.Trim(), StringComparison.OrdinalIgnoreCase) &&
-                        parsedLineInFile.IsPinned == noteToRemove.IsPinned)
+                    var parsedLine = NoteEntry.Parse(allLines[i]);
+                    
+                    // Порівнюємо очищений текст і статус закріплення
+                    if (parsedLine.Text.Trim().Equals(noteToRemove.Text.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                        parsedLine.IsPinned == noteToRemove.IsPinned)
                     {
-                        _lastDeletedNote = (allLines[noteToRemove.FileLineIndex], noteToRemove.FileLineIndex, noteToRemove.IsPinned);
-                        allLines.RemoveAt(noteToRemove.FileLineIndex);
-                        WriteNotes(allLines);
-
-                        return SingleInfoResult("Note deleted",
-                            $"Removed: [{noteToRemove.DisplayIndex}] {Truncate(noteToRemove.Text, 50)}\n" +
-                            "Tip: Use 'qq undo' to restore.", true);
+                        lineToDelete = i;
+                        break;
                     }
-                    else
-                    {
-                        return ErrorResult("Error deleting note",
-                            "The note content in the file does not match the selected note. The file may have been modified externally.\n" +
-                            "Please type 'qq' to refresh the notes list and try again.");
-                    }
+                }
+                
+                if (lineToDelete >= 0)
+                {
+                    // Зберігаємо інформацію для можливого відновлення
+                    _lastDeletedNote = (allLines[lineToDelete], lineToDelete, noteToRemove.IsPinned);
+                    
+                    // Видаляємо рядок і оновлюємо файл
+                    allLines.RemoveAt(lineToDelete);
+                    WriteNotes(allLines);
+                    
+                    return SingleInfoResult("Note deleted",
+                        $"Removed: [{noteToRemove.DisplayIndex}] {Truncate(noteToRemove.Text, 50)}\n" +
+                        "Tip: Use 'qq undo' to restore.", true);
                 }
                 else
                 {
+                    // Нотатку не знайдено
                     return ErrorResult("Error deleting note",
-                        "Note position in file is invalid. The file may have been modified.\n" +
+                        "Could not find the exact note in the file. The file may have been modified.\n" +
                         "Please type 'qq' to refresh the notes list and try again.");
                 }
             }
@@ -963,19 +964,33 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             try
             {
-                // Оновлюємо стан pin в файлі
+                // Оновлюємо стан закріплення нотатки
                 var allLines = ReadNotesRaw();
-                if (noteToUpdate.FileLineIndex >= 0 && noteToUpdate.FileLineIndex < allLines.Count)
+                int lineToUpdate = -1;
+                
+                // Шукаємо точну нотатку в файлі
+                for (int i = 0; i < allLines.Count; i++)
                 {
+                    var parsedLine = NoteEntry.Parse(allLines[i]);
+                    if (parsedLine.Text.Trim().Equals(noteToUpdate.Text.Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        lineToUpdate = i;
+                        break;
+                    }
+                }
+                
+                if (lineToUpdate >= 0)
+                {
+                    // Змінюємо статус закріплення
                     noteToUpdate.IsPinned = pin;
-                    allLines[noteToUpdate.FileLineIndex] = noteToUpdate.ToFileLine();
+                    allLines[lineToUpdate] = noteToUpdate.ToFileLine();
                     WriteNotes(allLines);
                     _lastDeletedNote = null;
                     return SingleInfoResult($"Note {(pin ? "pinned" : "unpinned")}", $"[{displayIndex}] {noteToUpdate.Text}", true);
                 }
                 else
                 {
-                    return ErrorResult($"Error {(pin ? "pinning" : "unpinning")} note", "Note position in file is invalid.");
+                    return ErrorResult($"Error {(pin ? "pinning" : "unpinning")} note", "Could not find the note in the file. Please refresh your notes list and try again.");
                 }
             }
             catch (Exception ex)
@@ -1001,17 +1016,17 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "date":
                     sortedNotes = descending
                         ? notes.OrderByDescending(n => n.Timestamp == DateTime.MinValue ? DateTime.MaxValue : n.Timestamp)
-                               .ThenBy(n => n.FileLineIndex)
+                               .ThenBy(n => n.DisplayIndex)
                         : notes.OrderBy(n => n.Timestamp == DateTime.MinValue ? DateTime.MaxValue : n.Timestamp)
-                               .ThenBy(n => n.FileLineIndex);
+                               .ThenBy(n => n.DisplayIndex);
                     break;
                 case "alpha":
                 case "text":
                     sortedNotes = descending
                         ? notes.OrderByDescending(n => n.Text, StringComparer.OrdinalIgnoreCase)
-                               .ThenBy(n => n.FileLineIndex)
+                               .ThenBy(n => n.DisplayIndex)
                         : notes.OrderBy(n => n.Text, StringComparer.OrdinalIgnoreCase)
-                               .ThenBy(n => n.FileLineIndex);
+                               .ThenBy(n => n.DisplayIndex);
                     break;
                 default:
                     return SingleInfoResult("Invalid sort type", "Use 'qq sort date [asc|desc]' or 'qq sort alpha [asc|desc]'");
@@ -1063,18 +1078,34 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 
                 noteToEdit.Text = timestampPrefix + newNoteText.Trim();
 
-                // Оновлюємо в файлі
+                // Оновлюємо нотатку в файлі
                 var allLines = ReadNotesRaw();
-                if (noteToEdit.FileLineIndex >= 0 && noteToEdit.FileLineIndex < allLines.Count)
+                int lineToEdit = -1;
+                
+                // Шукаємо нотатку в файлі за вмістом
+                for (int i = 0; i < allLines.Count; i++)
                 {
-                    allLines[noteToEdit.FileLineIndex] = noteToEdit.ToFileLine();
+                    var parsedLine = NoteEntry.Parse(allLines[i]);
+                    // Шукаємо оригінальний текст, щоб знайти правильну нотатку
+                    if (parsedLine.Text.Trim().Equals(oldNoteText.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                        parsedLine.IsPinned == noteToEdit.IsPinned)
+                    {
+                        lineToEdit = i;
+                        break;
+                    }
+                }
+                
+                if (lineToEdit >= 0)
+                {
+                    // Знайдено нотатку, оновлюємо її
+                    allLines[lineToEdit] = noteToEdit.ToFileLine();
                     WriteNotes(allLines);
                     _lastDeletedNote = null;
-                    return SingleInfoResult("Note edited", $"Updated note #{displayIndex}: {newNoteText}", true);
+                    return SingleInfoResult("Note edited", $"Updated note #{displayIndex}: {Truncate(newNoteText, 50)}", true);
                 }
                 else
                 {
-                    return ErrorResult("Error saving edited note", "Note position in file is invalid.");
+                    return ErrorResult("Error saving edited note", "Could not find the original note in the file. Please refresh your notes list and try again.");
                 }
             }
             catch (Exception ex)
@@ -1105,18 +1136,34 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 
                 note.Text = timestampPrefix + newNoteText.Trim();
 
-                // Оновлюємо в файлі
+                // Оновлюємо нотатку в файлі
                 var allLines = ReadNotesRaw();
-                if (note.FileLineIndex >= 0 && note.FileLineIndex < allLines.Count)
+                int lineToEdit = -1;
+                
+                // Шукаємо нотатку в файлі за вмістом
+                for (int i = 0; i < allLines.Count; i++)
                 {
-                    allLines[note.FileLineIndex] = note.ToFileLine();
+                    var parsedLine = NoteEntry.Parse(allLines[i]);
+                    // Шукаємо оригінальний текст, щоб знайти правильну нотатку
+                    if (parsedLine.Text.Trim().Equals(oldNoteText.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                        parsedLine.IsPinned == note.IsPinned)
+                    {
+                        lineToEdit = i;
+                        break;
+                    }
+                }
+                
+                if (lineToEdit >= 0)
+                {
+                    // Знайдено нотатку, оновлюємо її
+                    allLines[lineToEdit] = note.ToFileLine();
                     WriteNotes(allLines);
                     _lastDeletedNote = null;
                     Context?.API.ShowMsg("Note edited", $"Updated note #{note.DisplayIndex}", IconPath);
                 }
                 else
                 {
-                    Context?.API.ShowMsg("Error", "Could not find the note to save the edit.", IconPath);
+                    Context?.API.ShowMsg("Error", "Could not find the note to save the edit. Try refreshing the notes list.", IconPath);
                 }
             }
             catch (Exception ex)
