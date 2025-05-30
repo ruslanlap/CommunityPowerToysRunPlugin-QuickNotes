@@ -446,7 +446,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "view":
                     return ViewNote(args);
                 case "delall":
-                    return DeleteAllNotes();
+                    return SingleInfoResult("Delete All Notes", "This feature is coming soon in a future update.");
                 case "del":
                 case "delete":
                     // Check if this is a confirmation request
@@ -895,6 +895,54 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return ErrorResult("Error deleting note", ex.Message);
             }
         }
+        
+        private List<Result> DeleteAllNotes()
+        {
+            try
+            {
+                // Провіряємо, чи є нотатки для видалення
+                var notes = ReadNotes();
+                if (notes.Count == 0)
+                {
+                    return SingleInfoResult("No notes to delete", "Your notes file is already empty.");
+                }
+
+                // Створюємо результат з підтвердженням
+                var result = new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "Confirm deletion of ALL notes",
+                        SubTitle = $"This will permanently delete all {notes.Count} notes. Are you sure?",
+                        IcoPath = IconPath,
+                        Action = _ =>
+                        {
+                            // Створюємо резервну копію файлу перед видаленням
+                            BackupNotes();
+                            
+                            // Видаляємо всі нотатки
+                            WriteNotes(new List<string>());
+                            _lastDeletedNote = null; // Скидаємо буфер відновлення, так як відновити всі нотатки неможливо
+                            Context?.API.ShowMsg("All notes deleted", "All notes have been permanently deleted. You can find a backup in the backup folder.", IconPath);
+                            return true;
+                        }
+                    },
+                    new Result
+                    {
+                        Title = "Cancel",
+                        SubTitle = "Keep your notes (no changes will be made)",
+                        IcoPath = IconPath,
+                        Action = _ => true
+                    }
+                };
+                
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error deleting all notes", ex.Message);
+            }
+        }
 
         private List<Result> UndoDelete()
         {
@@ -1306,8 +1354,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 using (var reader = new StreamReader(fileStream))
                 {
                     var lines = new List<string>();
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
+                    string? line;
+                    while ((line = reader.ReadLine()) is not null)
                     {
                         lines.Add(line);
                     }
