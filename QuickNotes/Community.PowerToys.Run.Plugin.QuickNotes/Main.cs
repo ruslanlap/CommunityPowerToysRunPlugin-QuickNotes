@@ -819,11 +819,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     return SingleInfoResult("Note not found", $"No note with content '{indexOrText}' was found. Try using the note number instead.");
                 }
             }
-            else
-            {
-                // If not a valid index or text, return an error message
-                return SingleInfoResult("Invalid input", "Please specify a valid note number or text content to delete.");
-            }
+        }
         }
 
         private List<Result> DeleteSpecificNote(NoteEntry noteToRemove, List<NoteEntry> notes)
