@@ -18,17 +18,19 @@
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.6-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.7-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
-  [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest)
+  [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes?label=latest)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest)
   [![GitHub all releases](https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases)
   ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
 
-> 🚀 **Major Update in v1.0.6**: Completely reworked note management system that fixes critical bugs with note deletion and editing. The plugin now reliably identifies notes by their content rather than position, ensuring operations always target the correct note. Update strongly recommended for all users! [See release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.6.md)
+> 🚀 **New in v1.0.7**: Enhanced note deletion system with improved user experience. The deletion process now provides clearer confirmation dialogs, better error handling, and more reliable identification of notes using their unique IDs. Update recommended for all users! [See release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.7.md)
+>
+> 🔄 **Previous Update in v1.0.6**: Completely reworked note management system that fixes critical bugs with note deletion and editing. The plugin now reliably identifies notes by their content rather than position, ensuring operations always target the correct note.
 
 ## 📚 Documentation & Wiki
 
@@ -71,7 +73,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.6/QuickNotes-v1.0.6-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.7/QuickNotes-v1.0.7-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
@@ -100,7 +102,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 - 📌 **Pin Important Notes** - Pin critical notes to keep them at the top
 - 🔄 **Sorting Options** - Sort notes by date or alphabetically
 - ✏️ **Easy Editing** - Modify existing notes with a simple interface
-- 🗑️ **Note Management** - Delete individual notes or clear all notes (with fixed index matching!)
+- 🗑️ **Enhanced Note Deletion** - Delete individual notes with improved confirmation dialogs, better error handling, and reliable ID-based identification
 - ↩️ **Undo Delete** - Restore recently deleted notes
 - 💾 **Simple Backup** - Create backups of your notes collection and view them in File Explorer
 - 📋 **Clipboard Integration** - Copy notes to clipboard with a single click
