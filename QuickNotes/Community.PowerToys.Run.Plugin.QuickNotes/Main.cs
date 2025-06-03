@@ -1,10 +1,10 @@
 using ManagedCommon;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics; // For Process.Start
+using System.Diagnostics; 
 using System.IO;
 using System.Linq;
-using System.Text; // For StringBuilder
+using System.Text; 
 using System.Text.RegularExpressions; // For highlighting and URL detection
 using System.Windows;
 using System.Windows.Input;
@@ -14,18 +14,15 @@ using Microsoft.VisualBasic; // For InputBox
 
 namespace Community.PowerToys.Run.Plugin.QuickNotes
 {
-    // Note structure now includes a persistent GUID-based ID
     internal class NoteEntry
     {
-        // Унікальний незмінний ідентифікатор (GUID)
         public string Id { get; set; } = string.Empty;
 
         public string Text { get; set; } = string.Empty;
         public bool IsPinned { get; set; } = false;
-        public int DisplayIndex { get; set; } // Індекс для відображення користувачу
-        public DateTime Timestamp { get; set; } = DateTime.MinValue; // Parsed timestamp
+        public int DisplayIndex { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.MinValue; 
 
-        // Формує унікальний ContentId (за потреби), але основний ідентифікатор — GUID
         public string ContentId => $"{Id}_{(IsPinned ? "PINNED" : "")}_{Text.Trim()}";
 
         /// <summary>
@@ -686,168 +683,214 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             };
         }
 
-        // --- Оновлена логіка видалення нотатки за DisplayIndex, без зміщення індексів ---
+        // --- Покращена логіка видалення нотатки за DisplayIndex або ID ---
         private List<Result> DeleteNote(string indexOrText, bool confirmed = false)
         {
-            // Якщо аргумент конвертується в число → спочатку знаходимо по DisplayIndex
-            if (int.TryParse(indexOrText, out int displayIndex) && displayIndex > 0)
+            // Зчитуємо всі нотатки одразу
+            var rawLines = ReadNotesRaw();
+            var notes = new List<(NoteEntry entry, int rawIndex)>();
+            int displayIndex = 1;
+            
+            // Підготуємо всі нотатки з їх індексами
+            for (int i = 0; i < rawLines.Count; i++)
             {
-                // Зчитуємо сирі рядки
-                var rawLines = ReadNotesRaw();
-                // Будуємо мапу DisplayIndex → (NoteEntry, rawIndex)
-                var indexedNotes = new List<(NoteEntry entry, int rawIndex)>();
-                int di = 1;
-                for (int i = 0; i < rawLines.Count; i++)
-                {
-                    var line = rawLines[i];
-                    if (string.IsNullOrWhiteSpace(line)) continue;
+                var line = rawLines[i];
+                if (string.IsNullOrWhiteSpace(line)) continue;
 
-                    var entry = NoteEntry.Parse(line);
-                    entry.DisplayIndex = di++;
-                    indexedNotes.Add((entry, i));
-                }
+                var entry = NoteEntry.Parse(line);
+                entry.DisplayIndex = displayIndex++;
+                notes.Add((entry, i));
+            }
 
-                // Шукаємо пару за DisplayIndex
-                var pair = indexedNotes.FirstOrDefault(p => p.entry.DisplayIndex == displayIndex);
-                if (pair.entry == null || pair.entry.DisplayIndex != displayIndex)
+            // Якщо аргумент конвертується в число → знаходимо по DisplayIndex
+            if (int.TryParse(indexOrText, out int targetIndex) && targetIndex > 0)
+            {
+                var noteToDelete = notes.FirstOrDefault(n => n.entry.DisplayIndex == targetIndex);
+                
+                if (noteToDelete.entry == null)
                 {
-                    var available = indexedNotes.Select(p => p.entry.DisplayIndex).OrderBy(x => x).ToList();
+                    var available = notes.Select(n => n.entry.DisplayIndex).OrderBy(x => x).ToList();
                     return SingleInfoResult("Note not found",
-                        $"Note number {displayIndex} does not exist.\nAvailable: {string.Join(", ", available)}");
+                        $"Note number {targetIndex} does not exist.\nAvailable: {string.Join(", ", available)}");
                 }
 
-                var noteToRemove = pair.entry;
-                var rawIndexToRemove = pair.rawIndex;
-
+                // Якщо не підтверджено - показуємо запит на підтвердження
                 if (!confirmed)
                 {
-                    // Показуємо підтвердження
                     return new List<Result>
                     {
                         new Result
                         {
                             Title = "Confirm Deletion",
-                            SubTitle = $"Are you sure you want to delete this note?\n\nNote: {Truncate(noteToRemove.Text, 100)}\nPress Enter to confirm or Esc to cancel.",
+                            SubTitle = $"Delete note #{targetIndex}?\n{Truncate(StripTimestamp(noteToDelete.entry.Text), 100)}\nPress Enter to confirm",
                             IcoPath = IconPath,
                             Score = 1000,
                             Action = _ =>
                             {
-                                // Викликаємо вдруге з --confirm
-                                Context?.API.ChangeQuery($"qq del {displayIndex} --confirm", true);
-                                return false;
+                                // Виконуємо видалення
+                                var results = DeleteSpecificLine(rawLines, noteToDelete.entry, noteToDelete.rawIndex);
+                                Context?.API.ChangeQuery("qq", true); // Оновлюємо список нотаток
+                                return true;
                             }
+                        },
+                        new Result
+                        {
+                            Title = "Cancel",
+                            SubTitle = "Keep this note",
+                            IcoPath = IconPath,
+                            Score = 999,
+                            Action = _ => true
                         }
                     };
                 }
 
-                // Після підтвердження – видаляємо рядок за rawIndex
-                return DeleteSpecificLine(rawLines, noteToRemove, rawIndexToRemove);
+                // Якщо вже підтверджено - видаляємо
+                return DeleteSpecificLine(rawLines, noteToDelete.entry, noteToDelete.rawIndex);
             }
             else
             {
-                // Якщо аргумент не число, шукаємо за текстом (exact / partial)
-                var notes = ReadNotes();
-                var exactMatches = notes.Where(n => StripTimestampAndTags(n.Text)
-                                                    .Equals(indexOrText, StringComparison.OrdinalIgnoreCase))
-                                        .ToList();
+                // Шукаємо за текстом або за частиною тексту
+                var query = indexOrText.Trim().ToLowerInvariant();
+                
+                // Спочатку шукаємо точні співпадіння за контентом
+                var exactMatches = notes.Where(n => StripTimestampAndTags(n.entry.Text)
+                                        .Equals(query, StringComparison.OrdinalIgnoreCase))
+                            .ToList();
 
                 if (exactMatches.Count == 1)
                 {
-                    var rawLines = ReadNotesRaw();
-                    var indexedNotes = new List<(NoteEntry entry, int rawIndex)>();
-                    int di = 1;
-                    for (int i = 0; i < rawLines.Count; i++)
+                    // Якщо знайдено точно одну нотатку - видаляємо її
+                    if (!confirmed)
                     {
-                        var line = rawLines[i];
-                        if (string.IsNullOrWhiteSpace(line)) continue;
-
-                        var entry = NoteEntry.Parse(line);
-                        entry.DisplayIndex = di++;
-                        indexedNotes.Add((entry, i));
+                        return new List<Result>
+                        {
+                            new Result
+                            {
+                                Title = "Confirm Deletion",
+                                SubTitle = $"Delete note #{exactMatches[0].entry.DisplayIndex}?\n{Truncate(StripTimestamp(exactMatches[0].entry.Text), 100)}\nPress Enter to confirm",
+                                IcoPath = IconPath,
+                                Score = 1000,
+                                Action = _ =>
+                                {
+                                    var results = DeleteSpecificLine(rawLines, exactMatches[0].entry, exactMatches[0].rawIndex);
+                                    Context?.API.ChangeQuery("qq", true);
+                                    return true;
+                                }
+                            },
+                            new Result
+                            {
+                                Title = "Cancel",
+                                SubTitle = "Keep this note",
+                                IcoPath = IconPath,
+                                Score = 999,
+                                Action = _ => true
+                            }
+                        };
                     }
-
-                    var matchingPair = indexedNotes.FirstOrDefault(p =>
-                        string.Equals(StripTimestampAndTags(p.entry.Text), StripTimestampAndTags(exactMatches[0].Text), StringComparison.OrdinalIgnoreCase)
-                        && p.entry.IsPinned == exactMatches[0].IsPinned);
-
-                    if (matchingPair.entry != null)
-                        return DeleteSpecificLine(rawLines, matchingPair.entry, matchingPair.rawIndex);
-                    else
-                        return ErrorResult("Error deleting note",
-                            "Could not find the exact note in the file. File may have been modified. Type 'qq' to refresh.");
+                    
+                    return DeleteSpecificLine(rawLines, exactMatches[0].entry, exactMatches[0].rawIndex);
                 }
                 else if (exactMatches.Count > 1)
                 {
+                    // Якщо знайдено кілька - показуємо список для вибору
                     var results = new List<Result>
                     {
                         new Result
                         {
-                            Title = "Multiple exact matching notes found",
+                            Title = "Multiple matching notes found",
                             SubTitle = "Please select a specific note to delete:",
-                            IcoPath = IconPath
+                            IcoPath = IconPath,
+                            Score = 1000
                         }
                     };
 
                     foreach (var match in exactMatches)
                     {
-                        results.Add(CreateNoteResult(match, "Press Enter to delete", null, (ctx) =>
+                        results.Add(new Result
                         {
-                            DeleteNote(match.DisplayIndex.ToString());
-                            return true;
-                        }));
+                            Title = $"Delete #{match.entry.DisplayIndex}: {Truncate(StripTimestamp(match.entry.Text), 70)}",
+                            SubTitle = match.entry.IsPinned ? "[PINNED] Press Enter to delete" : "Press Enter to delete",
+                            IcoPath = IconPath,
+                            Score = 900 - match.entry.DisplayIndex,
+                            Action = _ =>
+                            {
+                                var deleteResults = DeleteSpecificLine(rawLines, match.entry, match.rawIndex);
+                                Context?.API.ChangeQuery("qq", true);
+                                return true;
+                            }
+                        });
                     }
                     return results;
                 }
                 else
                 {
-                    var partialMatches = notes.Where(n => StripTimestampAndTags(n.Text)
-                                                          .Contains(indexOrText, StringComparison.OrdinalIgnoreCase))
-                                              .ToList();
+                    // Якщо точних співпадінь немає - шукаємо часткові
+                    var partialMatches = notes.Where(n => StripTimestampAndTags(n.entry.Text)
+                                               .Contains(query, StringComparison.OrdinalIgnoreCase))
+                                      .ToList();
 
                     if (partialMatches.Count == 1)
                     {
-                        var rawLines = ReadNotesRaw();
-                        var indexedNotes = new List<(NoteEntry entry, int rawIndex)>();
-                        int di = 1;
-                        for (int i = 0; i < rawLines.Count; i++)
+                        // Якщо знайдено лише одне часткове співпадіння
+                        if (!confirmed)
                         {
-                            var line = rawLines[i];
-                            if (string.IsNullOrWhiteSpace(line)) continue;
-
-                            var entry = NoteEntry.Parse(line);
-                            entry.DisplayIndex = di++;
-                            indexedNotes.Add((entry, i));
+                            return new List<Result>
+                            {
+                                new Result
+                                {
+                                    Title = "Confirm Deletion",
+                                    SubTitle = $"Delete note #{partialMatches[0].entry.DisplayIndex}?\n{Truncate(StripTimestamp(partialMatches[0].entry.Text), 100)}\nPress Enter to confirm",
+                                    IcoPath = IconPath,
+                                    Score = 1000,
+                                    Action = _ =>
+                                    {
+                                        var results = DeleteSpecificLine(rawLines, partialMatches[0].entry, partialMatches[0].rawIndex);
+                                        Context?.API.ChangeQuery("qq", true);
+                                        return true;
+                                    }
+                                },
+                                new Result
+                                {
+                                    Title = "Cancel",
+                                    SubTitle = "Keep this note",
+                                    IcoPath = IconPath,
+                                    Score = 999,
+                                    Action = _ => true
+                                }
+                            };
                         }
-
-                        var matchingPair = indexedNotes.FirstOrDefault(p =>
-                            string.Equals(StripTimestampAndTags(p.entry.Text), StripTimestampAndTags(partialMatches[0].Text), StringComparison.OrdinalIgnoreCase)
-                            && p.entry.IsPinned == partialMatches[0].IsPinned);
-
-                        if (matchingPair.entry != null)
-                            return DeleteSpecificLine(rawLines, matchingPair.entry, matchingPair.rawIndex);
-                        else
-                            return ErrorResult("Error deleting note",
-                                "Could not find the exact note in the file. File may have been modified. Type 'qq' to refresh.");
+                        
+                        return DeleteSpecificLine(rawLines, partialMatches[0].entry, partialMatches[0].rawIndex);
                     }
                     else if (partialMatches.Count > 1)
                     {
+                        // Якщо знайдено кілька часткових співпадінь
                         var results = new List<Result>
                         {
                             new Result
                             {
                                 Title = "Multiple partial matching notes found",
                                 SubTitle = "Please select a specific note to delete:",
-                                IcoPath = IconPath
+                                IcoPath = IconPath,
+                                Score = 1000
                             }
                         };
 
                         foreach (var match in partialMatches)
                         {
-                            results.Add(CreateNoteResult(match, "Press Enter to delete", null, (ctx) =>
+                            results.Add(new Result
                             {
-                                DeleteNote(match.DisplayIndex.ToString());
-                                return true;
-                            }));
+                                Title = $"Delete #{match.entry.DisplayIndex}: {Truncate(StripTimestamp(match.entry.Text), 70)}", 
+                                SubTitle = match.entry.IsPinned ? "[PINNED] Press Enter to delete" : "Press Enter to delete",
+                                IcoPath = IconPath,
+                                Score = 900 - match.entry.DisplayIndex,
+                                Action = _ =>
+                                {
+                                    var deleteResults = DeleteSpecificLine(rawLines, match.entry, match.rawIndex);
+                                    Context?.API.ChangeQuery("qq", true);
+                                    return true;
+                                }
+                            });
                         }
                         return results;
                     }
@@ -859,31 +902,37 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
-        // Новий метод: безпосереднє видалення за rawIndex
+        // Покращений метод: ефективне видалення нотатки за ID
         private List<Result> DeleteSpecificLine(List<string> rawLines, NoteEntry noteToRemove, int rawIndex)
         {
             try
             {
+                // Використовуємо ID нотатки для надійної ідентифікації
                 var idPrefix = $"[id:{noteToRemove.Id}]";
+                
+                // Знаходимо нотатку за її унікальним ID
                 var lineToRemove = rawLines.FirstOrDefault(line => line.StartsWith(idPrefix));
                 if (lineToRemove == null)
                 {
                     return ErrorResult("Note not found", "The note was not found in the file. It may have been deleted already.");
                 }
 
-                // Зберігаємо для Undo (без rawIndex, вставка буде в кінець)
+                // Зберігаємо для Undo
                 _lastDeletedNoteRaw = (lineToRemove, -1, noteToRemove.IsPinned);
 
-                // Видаляємо рядок за вмістом
+                // Видаляємо нотатку за її ID
                 rawLines.Remove(lineToRemove);
                 WriteNotes(rawLines);
 
+                // Показуємо користувачу короткий текст нотатки
+                var displayText = StripTimestamp(noteToRemove.Text);
                 return SingleInfoResult("Note deleted",
-                    $"Removed: [{noteToRemove.DisplayIndex}] {Truncate(noteToRemove.Text, 50)}\nTip: Use 'qq undo' to restore.", true);
+                    $"Removed note #{noteToRemove.DisplayIndex}: {Truncate(displayText, 60)}\nTip: Use 'qq undo' to restore the note.", true);
             }
             catch (Exception ex)
             {
-                return ErrorResult("Error deleting note", ex.Message);
+                return ErrorResult("Error deleting note", 
+                    $"Could not delete note: {ex.Message}\nPlease try again or restart PowerToys Run.");
             }
         }
 
