@@ -18,7 +18,7 @@
     <!-- Other important properties -->
     <RootNamespace>Community.PowerToys.Run.Plugin.QuickNotes</RootNamespace>
     <AssemblyName>Community.PowerToys.Run.Plugin.QuickNotes</AssemblyName>
-    <Version>1.0.5</Version>
+    <Version>1.0.7</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
