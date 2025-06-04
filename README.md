@@ -340,7 +340,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 **Feature Ideas We'd Love to See:**
 - ~~Tag system for notes~~
 - ~~Easy copy notes~~
-- ~~Autosuggestions commands~~
+- ~~Auto‑suggestion commands~~
 - ~~Rich text formatting~~
 - Cloud sync options
 - Reminder functionality
