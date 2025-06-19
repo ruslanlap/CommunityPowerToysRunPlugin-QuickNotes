@@ -92,7 +92,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 
 <div align="center">
   <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
-    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release_(v1.0.6)-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
+    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release_(v1.0.8)-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
   </a>
 </div>
 
