@@ -1647,3 +1647,4 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
     }
 }
+//end of file//
