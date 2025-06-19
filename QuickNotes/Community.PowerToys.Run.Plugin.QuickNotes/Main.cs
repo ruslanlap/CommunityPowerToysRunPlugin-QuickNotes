@@ -130,7 +130,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             "unpin",
             "undo",
             "sort",
-            "tagstyle"
+            "tagstyle",
         };
 
         // Опис команд
@@ -395,8 +395,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "help":
                     return HelpCommand();
                 case "backup":
-                case "export":
                     return BackupNotes();
+                case "export":
+                    return ExportNotes();
                 case "edit":
                     return EditNote(args);
                 case "view":
@@ -437,8 +438,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             try
             {
-                // Зараз усі Id починаються з 'Q'
-                var newId = "Q" + Guid.NewGuid().ToString("N"); // Унікальний GUID без дефісів + префікс Q
+                // Generate a new GUID
+                var newId = "Q" + Guid.NewGuid().ToString("N"); 
                 var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
                 var entryLine = $"[id:{newId}] [{timestamp}] {note.Trim()}";
 
@@ -690,7 +691,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             var rawLines = ReadNotesRaw();
             var notes = new List<(NoteEntry entry, int rawIndex)>();
             int displayIndex = 1;
-            
+
             // Підготуємо всі нотатки з їх індексами
             for (int i = 0; i < rawLines.Count; i++)
             {
@@ -706,7 +707,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (int.TryParse(indexOrText, out int targetIndex) && targetIndex > 0)
             {
                 var noteToDelete = notes.FirstOrDefault(n => n.entry.DisplayIndex == targetIndex);
-                
+
                 if (noteToDelete.entry == null)
                 {
                     var available = notes.Select(n => n.entry.DisplayIndex).OrderBy(x => x).ToList();
@@ -751,7 +752,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 // Шукаємо за текстом або за частиною тексту
                 var query = indexOrText.Trim().ToLowerInvariant();
-                
+
                 // Спочатку шукаємо точні співпадіння за контентом
                 var exactMatches = notes.Where(n => StripTimestampAndTags(n.entry.Text)
                                         .Equals(query, StringComparison.OrdinalIgnoreCase))
@@ -782,12 +783,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                 Title = "Cancel",
                                 SubTitle = "Keep this note",
                                 IcoPath = IconPath,
-                                Score = 999,
                                 Action = _ => true
                             }
                         };
                     }
-                    
+
                     return DeleteSpecificLine(rawLines, exactMatches[0].entry, exactMatches[0].rawIndex);
                 }
                 else if (exactMatches.Count > 1)
@@ -854,12 +854,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                     Title = "Cancel",
                                     SubTitle = "Keep this note",
                                     IcoPath = IconPath,
-                                    Score = 999,
                                     Action = _ => true
                                 }
                             };
                         }
-                        
+
                         return DeleteSpecificLine(rawLines, partialMatches[0].entry, partialMatches[0].rawIndex);
                     }
                     else if (partialMatches.Count > 1)
@@ -909,7 +908,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 // Використовуємо ID нотатки для надійної ідентифікації
                 var idPrefix = $"[id:{noteToRemove.Id}]";
-                
+
                 // Знаходимо нотатку за її унікальним ID
                 var lineToRemove = rawLines.FirstOrDefault(line => line.StartsWith(idPrefix));
                 if (lineToRemove == null)
@@ -933,99 +932,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 return ErrorResult("Error deleting note", 
                     $"Could not delete note: {ex.Message}\nPlease try again or restart PowerToys Run.");
-            }
-        }
-
-        // --- Реалізація qq delall: видалити всі нотатки з підтвердженням ---
-        private List<Result> DeleteAllNotes()
-        {
-            try
-            {
-                var notes = ReadNotes();
-                if (!notes.Any())
-                    return SingleInfoResult("No notes to delete", "Your notes file is already empty.");
-
-                // Створюємо варіант підтвердження
-                var result = new List<Result>
-                {
-                    new Result
-                    {
-                        Title = "Confirm deletion of ALL notes",
-                        SubTitle = $"This will permanently delete all {notes.Count} notes. Are you sure?",
-                        IcoPath = IconPath,
-                        Score = 1000,
-                        Action = _ =>
-                        {
-                            // Backup перед видаленням
-                            BackupNotesInternal();
-
-                            // Видаляємо всі рядки
-                            WriteNotes(new List<string>());
-                            _lastDeletedNoteRaw = null; // reset undo buffer—невідновлювано
-                            Context?.API.ShowMsg("All notes deleted",
-                                "All notes have been permanently deleted. You can find a backup in the same folder.", IconPath);
-                            return true;
-                        }
-                    },
-                    new Result
-                    {
-                        Title = "Cancel",
-                        SubTitle = "Keep your notes (no changes made)",
-                        IcoPath = IconPath,
-                        Action = _ => true
-                    }
-                };
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return ErrorResult("Error deleting all notes", ex.Message);
-            }
-        }
-
-        // Виклик безпосереднього бекапу (для DeleteAllNotes)
-        private void BackupNotesInternal()
-        {
-            try
-            {
-                if (!File.Exists(_notesPath))
-                    return;
-
-                var notesDir = Path.GetDirectoryName(_notesPath)!;
-                var backupFile = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
-                File.Copy(_notesPath, backupFile, true);
-            }
-            catch
-            {
-                // Ігноруємо помилки при створенні бекапу
-            }
-        }
-
-        private List<Result> UndoDelete()
-        {
-            if (!_lastDeletedNoteRaw.HasValue)
-                return SingleInfoResult("Nothing to undo", "No recently deleted note. Delete one first.");
-
-            try
-            {
-                var (deletedLine, _, wasPinned) = _lastDeletedNoteRaw.Value;
-                var rawLines = ReadNotesRaw();
-                rawLines.Add(deletedLine); // Додаємо в кінець
-                WriteNotes(rawLines);
-
-                var updatedNotes = ReadNotes();
-                var restored = updatedNotes.FirstOrDefault(n => n.Text.Trim() == deletedLine.Trim() && n.IsPinned == wasPinned);
-
-                var displayInfo = restored != null ? $" (now note #{restored.DisplayIndex})" : "";
-                _lastDeletedNoteRaw = null;
-
-                return SingleInfoResult("Note restored",
-                    $"Restored note{displayInfo}.\n{Truncate(deletedLine, 50)}", true);
-            }
-            catch (Exception ex)
-            {
-                return ErrorResult("Error restoring note", ex.Message);
             }
         }
 
@@ -1125,43 +1031,63 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 return SingleInfoResult("Note not found", $"Note #{displayIndex} does not exist. Available: {string.Join(", ", available)}");
             }
 
-            var oldText = noteToEdit.Text;
-            var newText = Interaction.InputBox($"Edit note #{displayIndex}", "Edit QuickNote", oldText);
-            if (string.IsNullOrEmpty(newText) || newText == oldText)
-                return SingleInfoResult("Edit cancelled", "Note was not changed.");
-
-            try
+            return new List<Result>
             {
-                // Зберігаємо timestamp prefix, якщо є
-                var tsPrefix = "";
-                if (noteToEdit.Timestamp != DateTime.MinValue && noteToEdit.Text.StartsWith("["))
-                    tsPrefix = noteToEdit.Text.Substring(0, 22);
+                new Result
+                {
+                    Title = $"Edit note #{displayIndex}",
+                    SubTitle = $"Press Enter to edit: {Truncate(StripTimestamp(noteToEdit.Text), 60)}",
+                    IcoPath = IconPath,
+                    Action = _ =>
+                    {
+                        var textToEdit = StripTimestamp(noteToEdit.Text);
+                        var newText = Interaction.InputBox($"Edit note #{displayIndex}", "Edit QuickNote", textToEdit);
+                        if (string.IsNullOrEmpty(newText) || newText == textToEdit)
+                        {
+                            Context?.API.ShowMsg("Edit cancelled", "Note was not changed.", IconPath);
+                            return true;
+                        }
 
-                noteToEdit.Text = tsPrefix + newText.Trim();
+                        try
+                        {
+                            // Зберігаємо timestamp prefix, якщо є
+                            var tsPrefix = "";
+                            if (noteToEdit.Timestamp != DateTime.MinValue && noteToEdit.Text.StartsWith("["))
+                                tsPrefix = noteToEdit.Text.Substring(0, 22);
 
-                // Зчитуємо rawLines і знаходимо, де лежить ця нотатка
-                var rawLines = ReadNotesRaw();
-                var idPrefix = $"[id:{noteToEdit.Id}]";
-                var index = rawLines.FindIndex(line => line.StartsWith(idPrefix));
-                if (index < 0)
-                    return ErrorResult("Note not found", "Could not find the note in the file.");
+                            noteToEdit.Text = tsPrefix + newText.Trim();
 
-                rawLines[index] = noteToEdit.ToFileLine();
-                WriteNotes(rawLines);
-                _lastDeletedNoteRaw = null;
-                return SingleInfoResult("Note edited", $"Updated note #{displayIndex}: {Truncate(newText, 50)}", true);
-            }
-            catch (Exception ex)
-            {
-                return ErrorResult("Error saving edited note", ex.Message);
-            }
+                            // Зчитуємо rawLines і знаходимо, де лежить ця нотатка
+                            var rawLines = ReadNotesRaw();
+                            var idPrefix = $"[id:{noteToEdit.Id}]";
+                            var index = rawLines.FindIndex(line => line.StartsWith(idPrefix));
+                            if (index < 0)
+                            {
+                                Context?.API.ShowMsg("Error", "Could not find the note in the file.", IconPath);
+                                return true;
+                            }
+
+                            rawLines[index] = noteToEdit.ToFileLine();
+                            WriteNotes(rawLines);
+                            _lastDeletedNoteRaw = null;
+                            Context?.API.ShowMsg("Note edited", $"Updated note #{displayIndex}: {Truncate(newText, 50)}", IconPath);
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Context?.API.ShowMsg("Error saving edited note", ex.Message, IconPath);
+                            return true;
+                        }
+                    }
+                }
+            };
         }
 
         private void EditNoteInline(NoteEntry note)
         {
-            var oldText = note.Text;
-            var newText = Interaction.InputBox($"Edit note #{note.DisplayIndex}", "Edit QuickNote", oldText);
-            if (string.IsNullOrEmpty(newText) || newText == oldText)
+            var textToEdit = StripTimestamp(note.Text);
+            var newText = Interaction.InputBox($"Edit note #{note.DisplayIndex}", "Edit QuickNote", textToEdit);
+            if (string.IsNullOrEmpty(newText) || newText == textToEdit)
             {
                 Context?.API.ShowMsg("Edit cancelled", "Note was not changed.", IconPath);
                 return;
@@ -1240,6 +1166,54 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
         }
 
+        private List<Result> ExportNotes()
+        {
+            try
+            {
+                if (!File.Exists(_notesPath))
+                    return SingleInfoResult("No notes file to export", "The notes file doesn't exist.");
+
+                var notes = ReadNotes();
+                if (!notes.Any())
+                {
+                    return SingleInfoResult("No notes to export", "Your notes file is empty.");
+                }
+
+                var notesDir = Path.GetDirectoryName(_notesPath)!;
+                var exportFile = Path.Combine(notesDir, $"notes_export_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+
+                using (var writer = new StreamWriter(exportFile, false, Encoding.UTF8))
+                {
+                    foreach (var note in notes)
+                    {
+                        var lineToWrite = new StringBuilder();
+                        if (note.IsPinned)
+                        {
+                            lineToWrite.Append("[PINNED] ");
+                        }
+                        lineToWrite.Append(note.Text);
+                        writer.WriteLine(lineToWrite.ToString());
+                    }
+                }
+
+                try
+                {
+                    Process.Start(new ProcessStartInfo(notesDir) { UseShellExecute = true, Verb = "open" });
+                }
+                catch (Exception ex)
+                {
+                    Log.Exception("Failed to open export folder", ex, GetType());
+                }
+
+                return SingleInfoResult("Export created",
+                    $"Export saved to: {exportFile}\nExport folder opened.", true);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error creating export", ex.Message);
+            }
+        }
+
         private List<Result> HelpCommand()
         {
             return new List<Result> { HelpResult() };
@@ -1249,14 +1223,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             var helpText =
                 "qq <text>              Add note ✏️       | qq pin <N>             Pin note 📌\n" +
-                "qq search <term>       Search notes 🔍   | qq unpin <N>           Unpin note 📎\n" +
-                "qq searchtag <tag>     Search #tags 🏷️   | qq sort date|alpha     Sort notes 🔄\n" +
-                "qq view <N>            View note 👁️      | qq undo                Restore note ↩️\n" +
-                "qq edit <N>            Edit note 📝      | qq delall              Delete ALL 💣\n" +
-                "qq del <N>             Delete note 🗑️    | qq backup/export       Backup notes 💾\n" +
-                "qq help                Show help ℹ️      | qq tagstyle bold/italic Tag style ✨\n\n" +
-                "Formatting: **bold** or __bold__, *italic* or _italic_, ==highlight==, #tag\n" +
-                "TIP: Right-click on a note for copy/edit options";
+                "qq search <text>        Search notes 🔍      | qq searchtag <tag>     Search by tag\n" +
+                "qq view <N>              View note         | qq sort <field> <dir>  Sort notes\n" +
+                "qq edit <N> <new text>   Edit note ✏️      | qq pin/unpin <N>     Pin/unpin note 📌\n" +
+                "qq del <N>             Delete note 🗑️    | qq backup/export       Backup/Export notes 💾\n" +
+                "qq delall              Delete all notes    | qq undo                Undo last delete\n" +
+                "qq tagstyle <style>    hash/fancy style";
 
             return new Result
             {
@@ -1580,5 +1552,98 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         private void OnThemeChanged(Theme current, Theme next) =>
             UpdateIconPath(next);
+
+        // --- Реалізація qq delall: видалити всі нотатки з підтвердженням ---
+        private List<Result> DeleteAllNotes()
+        {
+            try
+            {
+                var notes = ReadNotes();
+                if (!notes.Any())
+                    return SingleInfoResult("No notes to delete", "Your notes file is already empty.");
+
+                // Створюємо варіант підтвердження
+                var result = new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "Confirm deletion of ALL notes",
+                        SubTitle = $"This will permanently delete all {notes.Count} notes. Are you sure?",
+                        IcoPath = IconPath,
+                        Score = 1000,
+                        Action = _ =>
+                        {
+                            // Виконуємо видалення
+                            BackupNotesInternal();
+
+                            // Видаляємо всі рядки
+                            WriteNotes(new List<string>());
+                            _lastDeletedNoteRaw = null; // reset undo buffer—невідновлювано
+                            Context?.API.ShowMsg("All notes deleted",
+                                "All notes have been permanently deleted. You can find a backup in the same folder.", IconPath);
+                            return true;
+                        }
+                    },
+                    new Result
+                    {
+                        Title = "Cancel",
+                        SubTitle = "Keep your notes (no changes made)",
+                        IcoPath = IconPath,
+                        Action = _ => true
+                    }
+                };
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error deleting all notes", ex.Message);
+            }
+        }
+
+        // Виклик безпосереднього бекапу (для DeleteAllNotes)
+        private void BackupNotesInternal()
+        {
+            try
+            {
+                if (!File.Exists(_notesPath))
+                    return;
+
+                var notesDir = Path.GetDirectoryName(_notesPath)!;
+                var backupFile = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
+                File.Copy(_notesPath, backupFile, true);
+            }
+            catch
+            {
+                // Ігноруємо помилки при створенні бекапу
+            }
+        }
+
+        private List<Result> UndoDelete()
+        {
+            if (!_lastDeletedNoteRaw.HasValue)
+                return SingleInfoResult("Nothing to undo", "No recently deleted note. Delete one first.");
+
+            try
+            {
+                var (deletedLine, _, wasPinned) = _lastDeletedNoteRaw.Value;
+                var rawLines = ReadNotesRaw();
+                rawLines.Add(deletedLine); // Додаємо в кінець
+                WriteNotes(rawLines);
+
+                var updatedNotes = ReadNotes();
+                var restored = updatedNotes.FirstOrDefault(n => n.Text.Trim() == deletedLine.Trim() && n.IsPinned == wasPinned);
+
+                var displayInfo = restored != null ? $" (now note #{restored.DisplayIndex})" : "";
+                _lastDeletedNoteRaw = null;
+
+                return SingleInfoResult("Note restored",
+                    $"Restored note{displayInfo}.\n{Truncate(deletedLine, 50)}", true);
+            }
+            catch (Exception ex)
+            {
+                return ErrorResult("Error restoring note", ex.Message);
+            }
+        }
     }
 }

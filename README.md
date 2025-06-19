@@ -18,7 +18,7 @@
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.7-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.8-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -28,9 +28,11 @@
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
 
-> 🚀 **New in v1.0.7**: Enhanced note deletion system with improved user experience. The deletion process now provides clearer confirmation dialogs, better error handling, and more reliable identification of notes using their unique IDs. Update recommended for all users! [See release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.7.md)
+> 🚀 **New in v1.0.8**: Fixed issues with duplicate timestamps when editing notes and improved the export functionality. The edit dialog behavior has been enhanced to prevent multiple dialogs from opening. [See changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/CHANGELOG.md)
 >
-> 🔄 **Previous Update in v1.0.6**: Completely reworked note management system that fixes critical bugs with note deletion and editing. The plugin now reliably identifies notes by their content rather than position, ensuring operations always target the correct note.
+> 🔄 **Previous Update in v1.0.7**: Enhanced note deletion system with improved user experience. The deletion process now provides clearer confirmation dialogs, better error handling, and more reliable identification of notes using their unique IDs. [Release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.7.md)
+>
+> 📝 **v1.0.6**: Completely reworked note management system that fixes critical bugs with note deletion and editing. The plugin now reliably identifies notes by their content rather than position, ensuring operations always target the correct note.
 
 ## 📚 Documentation & Wiki
 
@@ -73,7 +75,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.7/QuickNotes-v1.0.7-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-v1.0.8-x64.zip">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
