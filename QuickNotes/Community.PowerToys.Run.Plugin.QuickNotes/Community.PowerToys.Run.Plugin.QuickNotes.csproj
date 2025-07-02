@@ -53,4 +53,15 @@
       " />
     </ItemGroup>
   </Target>
+
+  <!-- Remove unnecessary DLLs from build output for packaging -->
+  <Target Name="RemovePowerToysDlls" AfterTargets="Build">
+    <ItemGroup>
+      <UnwantedFiles Include="$(OutputPath)PowerToys.*.dll" />
+      <UnwantedFiles Include="$(OutputPath)PowerToys.*.pdb" />
+      <UnwantedFiles Include="$(OutputPath)Wox.*.dll" />
+      <UnwantedFiles Include="$(OutputPath)Wox.*.pdb" />
+    </ItemGroup>
+    <Delete Files="@(UnwantedFiles)" />
+  </Target>
 </Project>
