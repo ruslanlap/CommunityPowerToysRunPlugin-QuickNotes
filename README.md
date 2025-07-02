@@ -28,7 +28,7 @@
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
 </div>
 
-> 🚀 **New in v1.0.8**: Fixed issues with duplicate timestamps when editing notes and improved the export functionality. The edit dialog behavior has been enhanced to prevent multiple dialogs from opening. [See changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/CHANGELOG.md)
+> 🚀 **New in v1.0.8**: Now fully compliant with PowerToys Run plugin validation requirements. Fixed file naming conventions, added proper checksums, and optimized dependencies. Also includes previous improvements for duplicate timestamps and export functionality. [See changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/CHANGELOG.md)
 >
 > 🔄 **Previous Update in v1.0.7**: Enhanced note deletion system with improved user experience. The deletion process now provides clearer confirmation dialogs, better error handling, and more reliable identification of notes using their unique IDs. [Release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.7.md)
 >
@@ -75,7 +75,7 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
 ## ⚡ Easy Install
 
 <div align="">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-v1.0.8-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
     <img src="https://img.shields.io/badge/⬇️_DOWNLOAD-QUICKNOTES_PLUGIN-blue?style=for-the-badge&logo=github" alt="Download QuickNotes Plugin">
   </a>
   
@@ -88,13 +88,35 @@ QuickNotes is a plugin for [Microsoft PowerToys Run](https://github.com/microsof
   </p>
 </div>
 
-### Quick Installation
+### 🔄 Automatic Installation (PowerShell)
 
-<div align="center">
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
-    <img src="https://img.shields.io/badge/⬇️_Download-Latest_Release_(v1.0.8)-blue?style=for-the-badge&logo=github" alt="Download Latest Release">
-  </a>
-</div>
+For a one-command installation, run this in PowerShell (as Administrator):
+
+```powershell
+# Download and install the latest version
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-x64.zip"
+$pluginPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\PowerToys Run\Plugins\QuickNotes"
+New-Item -ItemType Directory -Force -Path $pluginPath | Out-Null
+Invoke-WebRequest -Uri $url -OutFile "$env:TEMP\QuickNotes.zip"
+Expand-Archive -Path "$env:TEMP\QuickNotes.zip" -DestinationPath $pluginPath -Force
+Remove-Item "$env:TEMP\QuickNotes.zip"
+Write-Host "QuickNotes plugin has been installed. Please restart PowerToys." -ForegroundColor Green
+```
+
+Or for ARM64 systems:
+
+```powershell
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-arm64.zip"
+# Rest of the script remains the same
+```
+
+## 🏆 PowerToys Run Plugin Certified
+
+✅ **Fully Validated** - Passes all PowerToys Run plugin validation checks
+
+✅ **Optimized Dependencies** - Only includes necessary components
+
+✅ **Secure** - Includes SHA256 checksums for package verification
 
 ## ✨ Features
 
