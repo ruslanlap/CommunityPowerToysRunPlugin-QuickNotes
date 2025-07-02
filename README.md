@@ -18,6 +18,16 @@
   </div>
 </div>
 
+<!-- SHA256 checksums for verification -->
+<details>
+<summary>SHA256 Checksums</summary>
+
+```text
+6cc4f586f79b7684d54a9046385e1bde45e02ac2abd817c323e18b68a612e739  QuickNotes-1.0.8-x64.zip
+620b4bba43f2f001c972e6aa15437eb5e156bb0e2458dfd2c78300a667b8f987  QuickNotes-1.0.8-arm64.zip
+```
+</details>
+
 <div align="center">
   <h1>✨ QuickNotes for PowerToys Run ✨</h1>
   <h3>Create, manage, and search notes directly from PowerToys Run</h3>
