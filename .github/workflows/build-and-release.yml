@@ -248,6 +248,7 @@ jobs:
           body: ${{ steps.release_notes.outputs.RELEASE_NOTES }}
           draft: false
           prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             artifacts/build-artifacts-x64/*.zip
             artifacts/build-artifacts-x64/*.sha256
@@ -268,6 +269,7 @@ jobs:
         with:
           name: QuickNotes v${{ steps.get_version.outputs.VERSION }}
           tag_name: latest
+          token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             latest_release/QuickNotes-latest-x64.zip
             latest_release/QuickNotes-latest-arm64.zip
