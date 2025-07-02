@@ -9,10 +9,10 @@
   
   <!-- Download Badges -->
   <div style="margin: 20px 0;">
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-x64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-x64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
     </a>
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-arm64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-arm64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
     </a>
   </div>
@@ -104,7 +104,7 @@ For a one-command installation, run this in PowerShell (as Administrator):
 
 ```powershell
 # Download and install the latest version
-$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-x64.zip"
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-x64.zip"
 $pluginPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\PowerToys Run\Plugins\QuickNotes"
 New-Item -ItemType Directory -Force -Path $pluginPath | Out-Null
 Invoke-WebRequest -Uri $url -OutFile "$env:TEMP\QuickNotes.zip"
@@ -116,7 +116,7 @@ Write-Host "QuickNotes plugin has been installed. Please restart PowerToys." -Fo
 Or for ARM64 systems:
 
 ```powershell
-$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-arm64.zip"
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-arm64.zip"
 # Rest of the script remains the same
 ```
 
@@ -448,11 +448,11 @@ This robust architecture makes QuickNotes not just a simple note-taking plugin, 
 <div align="center">
   <h2>📥 Download Latest Version</h2>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-x64.zip">
     <img src="https://img.shields.io/badge/Download-x64_64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
   </a>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-arm64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-arm64.zip">
     <img src="https://img.shields.io/badge/Download-ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
   </a>
   
