@@ -6,6 +6,16 @@
 
   <!-- Centered Logo -->
   <img src="./assets/quicknotes.dark.png" alt="QuickNotes Icon" width="128" height="128">
+  
+  <!-- Download Badges -->
+  <div style="margin: 20px 0;">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-x64.zip">
+      <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
+    </a>
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-arm64.zip">
+      <img src="https://img.shields.io/badge/⬇_Download_ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
+    </a>
+  </div>
 </div>
 
 <div align="center">
@@ -436,6 +446,20 @@ This robust architecture makes QuickNotes not just a simple note-taking plugin, 
 ---
 
 <div align="center">
+  <h2>📥 Download Latest Version</h2>
+  
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-x64.zip">
+    <img src="https://img.shields.io/badge/Download-x64_64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
+  </a>
+  
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest/download/QuickNotes-1.0.8-arm64.zip">
+    <img src="https://img.shields.io/badge/Download-ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
+  </a>
+  
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
+    <img src="https://img.shields.io/badge/View_All_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="View All Releases">
+  </a>
+  
   <p>Made with ❤️ by <a href="https://github.com/ruslanlap">ruslanlap</a></p>
   
   <a href="#-powertoys-run-quicknotes-plugin">Back to top ⬆️</a>
