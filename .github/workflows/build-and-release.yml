@@ -132,6 +132,22 @@ jobs:
           }
         shell: pwsh
       
+      - name: Remove unnecessary dependencies
+        run: |
+          $artifactDir = "artifacts/QuickNotes-${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}"
+          $exclude = @(
+            'PowerToys.Common.UI.dll','PowerToys.Common.UI.pdb',
+            'PowerToys.ManagedCommon.dll','PowerToys.ManagedCommon.pdb',
+            'PowerToys.Settings.UI.Lib.dll','PowerToys.Settings.UI.Lib.pdb',
+            'Wox.Infrastructure.dll','Wox.Infrastructure.pdb',
+            'Wox.Plugin.dll','Wox.Plugin.pdb'
+          )
+          foreach ($file in $exclude) {
+            $path = Join-Path "$artifactDir/QuickNotes" $file
+            if (Test-Path $path) { Remove-Item $path -Force }
+          }
+        shell: pwsh
+
       - name: Create ZIP archive
         run: |
           # Use VERSION without 'v' prefix for ZIP naming (PowerToys convention)

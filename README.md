@@ -23,8 +23,10 @@
 <summary>SHA256 Checksums</summary>
 
 ```text
-6cc4f586f79b7684d54a9046385e1bde45e02ac2abd817c323e18b68a612e739  QuickNotes-1.0.8-x64.zip
-620b4bba43f2f001c972e6aa15437eb5e156bb0e2458dfd2c78300a667b8f987  QuickNotes-1.0.8-arm64.zip
+
+f69e72fdf4088a61c6f0c909f3fb1eaa52c6223d46aa0adccee8a63af2e7125b  QuickNotes-1.0.8-x64.zip
+27ccca1bdfd83844301da68a3dfcd5854fad6c96322cf613b7a4b49dfa019c00  QuickNotes-1.0.8-arm64.zip
+
 ```
 </details>
 
