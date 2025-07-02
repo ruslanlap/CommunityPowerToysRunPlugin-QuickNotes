@@ -26,9 +26,12 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- Package references -->
+  <!-- Package references with exclusions -->
   <ItemGroup>
-     <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.90.0" />
+    <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.91.0">
+      <ExcludeAssets>runtime</ExcludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
   <!-- Additional files to include in the output -->
@@ -40,4 +43,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
+  <!-- Exclude unnecessary PowerToys DLLs from publish output -->
+  <Target Name="ExcludePowerToysDlls" BeforeTargets="PublishResolveAssemblies">
+    <ItemGroup>
+      <ResolvedAssembliesToPublish Remove="@(ResolvedAssembliesToPublish)" Condition="
+        $([System.String]::new(%(Filename)).StartsWith('PowerToys.')) OR
+        $([System.String]::new(%(Filename)).StartsWith('Wox.'))
+      " />
+    </ItemGroup>
+  </Target>
 </Project>

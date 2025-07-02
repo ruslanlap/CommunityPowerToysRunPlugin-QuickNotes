@@ -4,11 +4,11 @@
   "IsGlobal": false,
   "Name": "QuickNotes",
   "Author": "ruslanlap",
-  "Version": "1.0.7",
+  "Version": "1.0.8",
   "Language": "csharp",
   "Website": "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes",
   "ExecuteFileName": "Community.PowerToys.Run.Plugin.QuickNotes.dll",
-  "IcoPathDark": "Images\\QuickNotes.dark.png",
-  "IcoPathLight": "Images\\QuickNotes.light.png",
+  "IcoPathDark": "Images\\quicknotes.dark.png",
+  "IcoPathLight": "Images\\quicknotes.light.png",
   "DynamicLoading": false
 }

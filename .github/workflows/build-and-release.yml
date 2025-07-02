@@ -43,10 +43,13 @@ jobs:
         shell: bash
         run: |
           if [[ $GITHUB_REF == refs/tags/v* ]]; then
+            # Remove 'v' prefix for package naming convention
             echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+            echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
             echo "IS_TAG=true" >> $GITHUB_OUTPUT
           else
             echo "VERSION=$(date +'%Y.%m.%d')-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
+            echo "TAG_VERSION=v$(date +'%Y.%m.%d')-$(echo $GITHUB_SHA | cut -c1-7)" >> $GITHUB_OUTPUT
             echo "IS_TAG=false" >> $GITHUB_OUTPUT
           fi
       
@@ -60,7 +63,8 @@ jobs:
       
       - name: Copy build output to artifacts directory
         run: |
-          $artifactDir = "artifacts/QuickNotes-v${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}"
+          # Use VERSION without 'v' prefix for directory naming
+          $artifactDir = "artifacts/QuickNotes-${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}"
           
           # Create the artifact directory
           New-Item -ItemType Directory -Force -Path $artifactDir
@@ -128,18 +132,41 @@ jobs:
       
       - name: Create ZIP archive
         run: |
-          $artifactDir = "artifacts/QuickNotes-v${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}"
-          $zipFile = "QuickNotes-v${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}.zip"
+          # Use VERSION without 'v' prefix for ZIP naming (PowerToys convention)
+          $artifactDir = "artifacts/QuickNotes-${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}"
+          # Ensure correct naming convention without 'v' prefix
+          $zipFile = "QuickNotes-${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}.zip"
           
           # Create the zip file
           Compress-Archive -Path "$artifactDir/QuickNotes" -DestinationPath "artifacts/$zipFile"
+          
+          Write-Host "Created ZIP file: $zipFile"
+        shell: pwsh
+      
+      - name: Generate checksums
+        run: |
+          # Generate SHA256 checksums for PowerToys Run plugin validation
+          $zipFile = "QuickNotes-${{ steps.get_version.outputs.VERSION }}-${{ matrix.platform }}.zip"
+          $zipPath = "artifacts/$zipFile"
+          $hashFile = "artifacts/$zipFile.sha256"
+          
+          if (Test-Path $zipPath) {
+            $hash = (Get-FileHash -Path $zipPath -Algorithm SHA256).Hash
+            $hash | Out-File -FilePath $hashFile -Encoding ASCII -NoNewline
+            Write-Host "Generated checksum for $zipFile`: $hash"
+          } else {
+            Write-Error "ZIP file not found: $zipPath"
+            exit 1
+          }
         shell: pwsh
       
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-${{ matrix.platform }}
-          path: artifacts/*.zip
+          path: |
+            artifacts/*.zip
+            artifacts/*.sha256
   
   release:
     needs: build
@@ -157,7 +184,10 @@ jobs:
       
       - name: Get version from tag
         id: get_version
-        run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+        run: |
+          # Remove 'v' prefix for package naming
+          echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+          echo "TAG_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
       
       - name: Prepare Release Notes
         id: release_notes
@@ -192,6 +222,12 @@ jobs:
           | `qq view <number>` | View note details |
           | `qq backup` | Backup notes |
           
+          ## 📦 Package Files
+          
+          - `QuickNotes-${{ steps.get_version.outputs.VERSION }}-x64.zip` - For x64 systems
+          - `QuickNotes-${{ steps.get_version.outputs.VERSION }}-arm64.zip` - For ARM64 systems
+          - `.sha256` files contain checksums for verification
+          
           ## 🙏 Thank You
           
           Thank you for using QuickNotes! If you encounter any issues or have suggestions, please [open an issue](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues).
@@ -214,14 +250,17 @@ jobs:
           prerelease: false
           files: |
             artifacts/build-artifacts-x64/*.zip
+            artifacts/build-artifacts-x64/*.sha256
             artifacts/build-artifacts-arm64/*.zip
+            artifacts/build-artifacts-arm64/*.sha256
             
       - name: Create Latest Release Artifacts
         if: success()
         run: |
           mkdir -p latest_release
-          cp artifacts/build-artifacts-x64/QuickNotes-v${{ steps.get_version.outputs.VERSION }}-x64.zip latest_release/QuickNotes-latest-x64.zip
-          cp artifacts/build-artifacts-arm64/QuickNotes-v${{ steps.get_version.outputs.VERSION }}-arm64.zip latest_release/QuickNotes-latest-arm64.zip
+          # Copy with proper naming convention (no 'v' prefix)
+          cp artifacts/build-artifacts-x64/QuickNotes-${{ steps.get_version.outputs.VERSION }}-x64.zip latest_release/QuickNotes-latest-x64.zip
+          cp artifacts/build-artifacts-arm64/QuickNotes-${{ steps.get_version.outputs.VERSION }}-arm64.zip latest_release/QuickNotes-latest-arm64.zip
       
       - name: Update Latest Release Artifacts
         if: success()
