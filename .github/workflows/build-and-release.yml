@@ -29,6 +29,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: false
       
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -176,6 +178,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          submodules: false
       
       - name: Download all artifacts
         uses: actions/download-artifact@v4
