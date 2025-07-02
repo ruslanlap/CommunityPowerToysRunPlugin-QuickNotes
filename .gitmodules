@@ -1,0 +1,2 @@
+# This file is intentionally empty to indicate no submodules are used
+# This prevents GitHub Actions from looking for non-existent submodules
