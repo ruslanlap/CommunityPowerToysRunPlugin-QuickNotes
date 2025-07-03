@@ -374,12 +374,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         SubTitle = "Press Enter to save this note (with timestamp)",
                         IcoPath = IconPath,
                         Score = 50,
-                        Action = _ =>
-                        {
-                            CreateNote(searchText);
-                            Context?.API.ShowMsg("Note saved", $"Saved: {searchText}");
-                            return true;
-                        }
+                                            Action = _ =>
+                    {
+                        CreateNote(searchText);
+                        return true;
+                    }
                     });
                     return results;
                 }
@@ -477,7 +476,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     Action = _ =>
                     {
                         CreateNote(noteText);
-                        Context?.API.ShowMsg("Note saved", $"Saved: {noteText}");
                         return true;
                     }
                 }
@@ -671,8 +669,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     {
                         var contentOnly = StripTimestampAndTags(note.Text);
                         Clipboard.SetText(contentOnly);
-                        Context?.API.ShowMsg("Clean content copied",
-                            $"Copied without timestamp and tags: {contentOnly.Substring(0, Math.Min(contentOnly.Length, 50))}{(contentOnly.Length > 50 ? "..." : "")}");
                         return true;
                     }
                     catch (Exception ex)
@@ -1044,7 +1040,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         var newText = Interaction.InputBox($"Edit note #{displayIndex}", "Edit QuickNote", textToEdit);
                         if (string.IsNullOrEmpty(newText) || newText == textToEdit)
                         {
-                            Context?.API.ShowMsg("Edit cancelled", "Note was not changed.", IconPath);
                             return true;
                         }
 
@@ -1070,7 +1065,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             rawLines[index] = noteToEdit.ToFileLine();
                             WriteNotes(rawLines);
                             _lastDeletedNoteRaw = null;
-                            Context?.API.ShowMsg("Note edited", $"Updated note #{displayIndex}: {Truncate(newText, 50)}", IconPath);
                             return true;
                         }
                         catch (Exception ex)
@@ -1089,7 +1083,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             var newText = Interaction.InputBox($"Edit note #{note.DisplayIndex}", "Edit QuickNote", textToEdit);
             if (string.IsNullOrEmpty(newText) || newText == textToEdit)
             {
-                Context?.API.ShowMsg("Edit cancelled", "Note was not changed.", IconPath);
                 return;
             }
 
@@ -1113,7 +1106,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 rawLines[index] = note.ToFileLine();
                 WriteNotes(rawLines);
                 _lastDeletedNoteRaw = null;
-                Context?.API.ShowMsg("Note edited", $"Updated note #{note.DisplayIndex}", IconPath);
+                // Note edited successfully
             }
             catch (Exception ex)
             {
@@ -1408,8 +1401,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         try
                         {
                             Clipboard.SetText(note.Text);
-                            Context?.API.ShowMsg("Full note copied",
-                                $"Copied with timestamp: {note.Text.Substring(0, Math.Min(note.Text.Length, 50))}{(note.Text.Length > 50 ? "..." : "")}");
                             return true;
                         }
                         catch (Exception ex)
@@ -1435,8 +1426,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         try
                         {
                             Clipboard.SetText(contentOnly);
-                            Context?.API.ShowMsg("Content copied",
-                                $"Copied without timestamp: {contentOnly.Substring(0, Math.Min(contentOnly.Length, 50))}{(contentOnly.Length > 50 ? "..." : "")}");
                             return true;
                         }
                         catch (Exception ex)
