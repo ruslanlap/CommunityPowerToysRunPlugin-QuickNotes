@@ -48,6 +48,8 @@ f69e72fdf4088a61c6f0c909f3fb1eaa52c6223d46aa0adccee8a63af2e7125b  QuickNotes-1.0
   [![GitHub all releases](https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases)
   ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
   ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
+  <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
+    <img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome PowerToys Run Plugins">
 </div>
 
 > 🚀 **New in v1.0.8**: Now fully compliant with PowerToys Run plugin validation requirements. Fixed file naming conventions, added proper checksums, and optimized dependencies. Also includes previous improvements for duplicate timestamps and export functionality. [See changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/CHANGELOG.md)
