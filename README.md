@@ -10,6 +10,9 @@
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
     </a>
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip">
+      <img src="https://img.shields.io/badge/⬇_Download_ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
+    </a>
   </div>
   
   <div>
