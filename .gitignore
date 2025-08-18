@@ -396,3 +396,24 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Release artifacts
+*.zip
+*.zip.sha256
+*.sha256
+checksums.txt
+
+# Duplicate wiki content
+CommunityPowerToysRunPlugin-QuickNotes.wiki/
+
+# Temporary and backup files
+*.bak
+*.swp
+*.tmp
+
+# OS specific files
+.DS_Store
+Thumb.db
+.gitignore
+gitignore
+.editorconfig
