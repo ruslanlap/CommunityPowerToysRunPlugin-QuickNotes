@@ -28,9 +28,6 @@
     <img src="https://img.shields.io/badge/C%23-.NET-512BD4" alt="C#">
     <img src="https://img.shields.io/badge/version-1.0.9-brightgreen" alt="Version">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
-  </div>
-  
-  <div>
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers">
       <img src="https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub stars">
     </a>
