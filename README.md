@@ -15,7 +15,7 @@
     </a>
   </div>
   
-  <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 10px;">
+  <div>
     <img src="https://img.shields.io/badge/PowerToys-Compatible-blue" alt="PowerToys Compatible">
     <img src="https://img.shields.io/badge/platform-Windows-lightgrey" alt="Platform">
     <a href="https://opensource.org/licenses/MIT">
