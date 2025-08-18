@@ -429,6 +429,13 @@ terminal.png
 vs-new-project.png
 vs.png
 
+# Large asset files
+assets/*.gif
+assets/copy-*.png
+assets/structure-*.png
+assets/demo*.gif
+assets/new-features.png
+
 # Project specific files to exclude
 *.userprefs
 *.usertasks
