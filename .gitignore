@@ -430,7 +430,6 @@ vs-new-project.png
 vs.png
 
 # Large asset files
-assets/copy-*.png
 assets/structure-*.png
 
 # Project specific files to exclude
