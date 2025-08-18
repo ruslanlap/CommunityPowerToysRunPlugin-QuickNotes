@@ -42,6 +42,7 @@
     <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
       <img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome PowerToys Run Plugins">
     </a>
+  </div>
 </div>
 
 <details>
