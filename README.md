@@ -30,7 +30,7 @@
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
   </div>
   
-  <div style="display: flex; flex-wrap: wrap; gap: 2px; justify-content: center; margin-top: 5px;">
+  <div style="display: flex; flex-wrap: wrap; justify-content: center; margin-top: 5px;">
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers">
       <img src="https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub stars">
     </a>
