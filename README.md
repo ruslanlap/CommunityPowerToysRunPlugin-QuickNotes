@@ -43,9 +43,6 @@
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases">
       <img src="https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total" alt="GitHub all releases">
     </a>
-  </div>
-  
-  <div>
     <img src="https://img.shields.io/badge/Made%20with-❤️-red" alt="Made with Love">
     <img src="https://img.shields.io/badge/Awesome-Yes-orange" alt="Awesome">
     <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
