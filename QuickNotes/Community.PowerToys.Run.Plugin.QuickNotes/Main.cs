@@ -131,6 +131,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             "undo",
             "sort",
             "tagstyle",
+            "markdown",
+            "md",
         };
 
         // Опис команд
@@ -150,7 +152,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             { "unpin", "Unpin note 📎" },
             { "undo", "Undo last deletion ↩️" },
             { "sort", "Sort notes by date or text 🔄" },
-            { "tagstyle", "Change tag display style (bold/italic) ✨" }
+            { "tagstyle", "Change tag display style (bold/italic) ✨" },
+            { "markdown", "Create multi-line markdown note 📝" },
+            { "md", "Create multi-line markdown note 📝" }
         };
 
         // --- Ініціалізація плагіна ---
@@ -205,8 +209,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             // Формат timestamp: [YYYY-MM-DD HH:MM:SS] 
             if (noteText.Length >= 22 && noteText[0] == '[' && noteText[20] == ']' && noteText[21] == ' ')
-                return noteText.Substring(22).Trim();
-            return noteText.Trim();
+                return DecodeMultiLineNote(noteText.Substring(22).Trim());
+            return DecodeMultiLineNote(noteText.Trim());
         }
 
         // Допоміжний метод: відкинути timestamp і #теги
@@ -425,6 +429,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     return SortNotes(args);
                 case "tagstyle":
                     return ToggleTagStyle(args);
+                case "markdown":
+                case "md":
+                    return CreateMarkdownNote(args);
                 default:
                     return AddNoteCommand(searchText);
             }
@@ -440,7 +447,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 // Generate a new GUID
                 var newId = "Q" + Guid.NewGuid().ToString("N"); 
                 var timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
-                var entryLine = $"[id:{newId}] [{timestamp}] {note.Trim()}";
+                
+                // Handle multi-line notes by encoding them
+                var encodedNote = EncodeMultiLineNote(note.Trim());
+                var entryLine = $"[id:{newId}] [{timestamp}] {encodedNote}";
 
                 using (var fs = new FileStream(_notesPath, FileMode.Append, FileAccess.Write, FileShare.Read))
                 using (var writer = new StreamWriter(fs))
@@ -459,6 +469,56 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 Context?.API.ShowMsg("Error creating note", ex.Message);
             }
+        }
+
+        // --- Encode/Decode multi-line notes for storage ---
+        private string EncodeMultiLineNote(string note)
+        {
+            // Replace newlines with a special marker for storage
+            return note.Replace("\r\n", "⟨NL⟩").Replace("\n", "⟨NL⟩").Replace("\r", "⟨NL⟩");
+        }
+
+        private string DecodeMultiLineNote(string encodedNote)
+        {
+            // Restore newlines from storage
+            return encodedNote.Replace("⟨NL⟩", "\n");
+        }
+
+        // --- Create Markdown Note Command ---
+        private List<Result> CreateMarkdownNote(string initialText = "")
+        {
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = "Create Markdown Note",
+                    SubTitle = "Open multi-line editor for markdown notes with live preview",
+                    IcoPath = IconPath,
+                    Score = 1000,
+                    Action = _ =>
+                    {
+                        try
+                        {
+                            var dialog = new MultiLineInputDialog(initialText);
+                            dialog.ShowDialog();
+                            
+                            if (dialog.DialogResult && !string.IsNullOrWhiteSpace(dialog.ResultText))
+                            {
+                                CreateNote(dialog.ResultText);
+                                Context?.API.ShowMsg("Markdown Note Saved", "Your multi-line markdown note has been saved successfully!");
+                                Context?.API.ChangeQuery("qq", true); // Refresh the notes list
+                            }
+                            
+                            return true;
+                        }
+                        catch (Exception ex)
+                        {
+                            Context?.API.ShowMsg("Error", $"Failed to open markdown editor: {ex.Message}");
+                            return false;
+                        }
+                    }
+                }
+            };
         }
 
         private List<Result> AddNoteCommand(string noteText)
@@ -539,6 +599,17 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         // --- Форматування тексту для відображення ---
         private string FormatTextForDisplay(string text)
         {
+            // Headers (must be processed before other formatting)
+            text = Regex.Replace(text, @"^### (.+)$", "▶ $1", RegexOptions.Multiline);
+            text = Regex.Replace(text, @"^## (.+)$", "▶▶ $1", RegexOptions.Multiline);
+            text = Regex.Replace(text, @"^# (.+)$", "▶▶▶ $1", RegexOptions.Multiline);
+
+            // Code blocks: ```code``` (must be processed before inline code)
+            text = Regex.Replace(text, @"```([\s\S]*?)```", m => $"┌─ CODE ─┐\n{m.Groups[1].Value.Trim()}\n└─────────┘", RegexOptions.Multiline);
+
+            // Inline code: `code`
+            text = Regex.Replace(text, @"`([^`]+)`", "⟨$1⟩");
+
             // Bold formatting: **text** or __text__
             text = Regex.Replace(text, @"\*\*(.*?)\*\*|__(.*?)__", m =>
                 $"【{(m.Groups[1].Success ? m.Groups[1].Value : m.Groups[2].Value)}】");
@@ -549,6 +620,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             // Highlight: ==text==
             text = Regex.Replace(text, @"==(.*?)==", m => $"《{m.Groups[1].Value}》");
+
+            // Lists
+            text = Regex.Replace(text, @"^- (.+)$", "• $1", RegexOptions.Multiline);
+            text = Regex.Replace(text, @"^\d+\. (.+)$", "① $1", RegexOptions.Multiline);
 
             // Make hashtags bold or italic based on _useItalicForTags
             if (_useItalicForTags)
@@ -650,8 +725,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private Result CreateNoteResult(NoteEntry note, string subTitle, string? displayText = null, Func<ActionContext, bool>? customAction = null)
         {
             var noteText = displayText ?? note.Text;
-            var formatted = FormatTextForDisplay(noteText);
-            var title = $"{(note.IsPinned ? "[P] " : "")}[{note.DisplayIndex}] {formatted}";
+            var decodedText = DecodeMultiLineNote(noteText);
+            var formatted = FormatTextForDisplay(decodedText);
+            
+            // For display, show only first line if it's multi-line
+            var displayFormatted = formatted.Contains('\n') ? formatted.Split('\n')[0] + "..." : formatted;
+            var title = $"{(note.IsPinned ? "[P] " : "")}[{note.DisplayIndex}] {displayFormatted}";
 
             return new Result
             {
@@ -660,7 +739,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 IcoPath = IconPath,
                 ToolTipData = new ToolTipData(
                     "Note Details",
-                    $"ID: {note.Id}\nDisplay Index: {note.DisplayIndex}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {note.Text}\n\nTip: Right-click for copy options or edit."
+                    $"ID: {note.Id}\nDisplay Index: {note.DisplayIndex}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {DecodeMultiLineNote(note.Text)}\n\nTip: Right-click for copy options or edit."
                 ),
                 ContextData = note,
                 Action = customAction ?? (c =>

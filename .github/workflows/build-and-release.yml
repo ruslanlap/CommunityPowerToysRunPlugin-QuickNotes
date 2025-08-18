@@ -217,12 +217,20 @@ jobs:
           
           ![QuickNotes Logo](https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png)
           
-          ## ✨ What's New
+          ## ✨ What's New in v${{ steps.get_version.outputs.VERSION }}
           
-          <!-- Add your release highlights here -->
-          - 🚀 Performance improvements
-          - 🐛 Bug fixes
-          - ✨ New features
+          ### 📝 Major Feature: Full Markdown Support!
+          - **Multi-line Markdown Editor** with live preview
+          - **Rich formatting**: Headers, code blocks, lists, and more
+          - **New commands**: `qq markdown` or `qq md` to open editor
+          - **Seamless integration** with existing notes
+          
+          ### 🚀 Enhanced Features
+          - Headers: `#`, `##`, `###` → ▶▶▶, ▶▶, ▶
+          - Code blocks: ``` → Bordered display
+          - Inline code: `` `code` `` → ⟨code⟩
+          - Lists: `-` → •, `1.` → ①
+          - Multi-line storage with backward compatibility
           
           ## 📥 Installation
           
@@ -236,6 +244,7 @@ jobs:
           | Command | Description |
           |---------|-------------|
           | `qq <text>` | Create a new note |
+          | `qq markdown` or `qq md` | Create multi-line markdown note |
           | `qq help` | Show help information |
           | `qq search <word>` | Search notes |
           | `qq edit <number>` | Edit a specific note |

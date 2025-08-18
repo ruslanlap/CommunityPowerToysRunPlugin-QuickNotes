@@ -18,7 +18,7 @@
     <!-- Other important properties -->
     <RootNamespace>Community.PowerToys.Run.Plugin.QuickNotes</RootNamespace>
     <AssemblyName>Community.PowerToys.Run.Plugin.QuickNotes</AssemblyName>
-    <Version>1.0.8</Version>
+    <Version>1.0.9</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -42,6 +42,14 @@
     <None Include="Images\*.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <!-- XAML files for multi-line dialog -->
+  <ItemGroup>
+    <Page Include="MultiLineInputDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
   </ItemGroup>
 
   <!-- Exclude unnecessary PowerToys DLLs from publish output -->

@@ -1,0 +1,140 @@
+<Window x:Class="Community.PowerToys.Run.Plugin.QuickNotes.MultiLineInputDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="QuickNotes - Markdown Editor" 
+        Height="500" Width="700"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        MinHeight="400" MinWidth="600"
+        Background="#2D2D30"
+        Foreground="White">
+    
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="#3F3F46"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#007ACC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="8,4"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="3">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#007ACC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style TargetType="TextBox">
+            <Setter Property="Background" Value="#1E1E1E"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderBrush" Value="#3F3F46"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontFamily" Value="Consolas, Monaco, 'Courier New', monospace"/>
+            <Setter Property="FontSize" Value="12"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Orientation="Vertical" Margin="0,0,0,10">
+            <TextBlock Text="Create Markdown Note" FontSize="16" FontWeight="Bold" Margin="0,0,0,5"/>
+            <TextBlock Text="Use markdown syntax for formatting. Press Ctrl+Enter to save, Escape to cancel." 
+                       FontSize="11" Foreground="#CCCCCC"/>
+        </StackPanel>
+        
+        <!-- Text Editor -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- Input Panel -->
+            <DockPanel Grid.Column="0">
+                <TextBlock DockPanel.Dock="Top" Text="Markdown Input:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <TextBox x:Name="InputTextBox" 
+                         TextWrapping="Wrap" 
+                         AcceptsReturn="True" 
+                         AcceptsTab="True"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
+                         Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            
+            <!-- Splitter -->
+            <GridSplitter Grid.Column="1" 
+                          HorizontalAlignment="Stretch" 
+                          Background="#3F3F46"/>
+            
+            <!-- Preview Panel -->
+            <DockPanel Grid.Column="2">
+                <TextBlock DockPanel.Dock="Top" Text="Preview:" FontWeight="Bold" Margin="0,0,0,5"/>
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <TextBlock x:Name="PreviewTextBlock" 
+                               TextWrapping="Wrap" 
+                               Background="#252526"
+                               Padding="10"
+                               FontFamily="Segoe UI"
+                               Text="{Binding PreviewText}"/>
+                </ScrollViewer>
+            </DockPanel>
+        </Grid>
+        
+        <!-- Markdown Help -->
+        <Expander Grid.Row="2" Header="Markdown Syntax Help" Margin="0,10,0,10" Foreground="White">
+            <TextBlock Margin="10" FontSize="11" Foreground="#CCCCCC">
+                <Run Text="**Bold** or __Bold__"/>
+                <LineBreak/>
+                <Run Text="*Italic* or _Italic_"/>
+                <LineBreak/>
+                <Run Text="==Highlight=="/>
+                <LineBreak/>
+                <Run Text="# Header 1"/>
+                <LineBreak/>
+                <Run Text="## Header 2"/>
+                <LineBreak/>
+                <Run Text="### Header 3"/>
+                <LineBreak/>
+                <Run Text="- List item"/>
+                <LineBreak/>
+                <Run Text="1. Numbered list"/>
+                <LineBreak/>
+                <Run Text="`inline code`"/>
+                <LineBreak/>
+                <Run Text="```"/>
+                <LineBreak/>
+                <Run Text="code block"/>
+                <LineBreak/>
+                <Run Text="```"/>
+                <LineBreak/>
+                <Run Text="#tags for organization"/>
+            </TextBlock>
+        </Expander>
+        
+        <!-- Buttons -->
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Save Note (Ctrl+Enter)" Click="SaveButton_Click" IsDefault="True"/>
+            <Button Content="Cancel (Esc)" Click="CancelButton_Click" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

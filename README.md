@@ -158,7 +158,8 @@ $url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/rele
 - ⏱️ **Timestamp Recording** - Each note is saved with a timestamp for easy reference
 - 🔔 **Notification System** - Get confirmation when notes are saved, edited, or deleted
 - 🔗 **URL Detection** - Automatically detects and allows opening URLs in notes
-- ✨ **Text Formatting** - Format notes with Markdown-style syntax for bold, italic, and highlights
+- ✨ **Full Markdown Support** - Complete markdown formatting with headers, code blocks, lists, and more
+- 📝 **Multi-Line Notes** - Rich editor with live preview for longer, structured notes
 - 🏷️ **Customizable Tag Style** - Toggle between bold or italic formatting for tags
 - 💡 **Command Auto-suggestions** - Get real-time command suggestions as you type use Tab key it's easy
 
@@ -250,6 +251,7 @@ $url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/rele
 | `qq backup` or `qq export` | Backup notes (opens file explorer) | `qq backup` |
 | `qq tagstyle bold` | Set tag style to bold | `qq tagstyle bold` |
 | `qq tagstyle italic` | Set tag style to italic | `qq tagstyle italic` |
+| `qq markdown` or `qq md` | Create multi-line markdown note | `qq markdown` |
 
 </div>
 
@@ -267,10 +269,19 @@ $url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/rele
 - URLs in notes are automatically detected and can be opened via the context menu
 - Use `qq help` anytime to see all available commands
 - Type any command partially to see auto-suggestions (e.g., type `qq s` to see `search`, `sort`, etc.)
-- Format your notes with Markdown-style syntax:
+- **NEW: Multi-line Markdown Notes**:
+  - Use `qq markdown` or `qq md` to open the rich editor
+  - Live preview shows formatted output as you type
+  - Support for headers (`# ## ###`), code blocks (` ``` `), lists (`- 1.`)
+  - Press `Ctrl+Enter` to save, `Escape` to cancel
+- Format your notes with full Markdown syntax:
   - **Bold text**: Use `**text**` or `__text__`
   - *Italic text*: Use `*text*` or `_text_`
   - ==Highlighted text==: Use `==text==`
+  - `Inline code`: Use `` `code` ``
+  - Code blocks: Use ``` for multi-line code
+  - Headers: Use `#`, `##`, `###` for different levels
+  - Lists: Use `-` for bullets, `1.` for numbered
   - #tags are automatically formatted based on your tag style setting
 - Toggle tag formatting style with `qq tagstyle bold` or `qq tagstyle italic`
 
@@ -390,6 +401,8 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 - ~~Easy copy notes~~
 - ~~Autosuggestions commands~~
 - ~~Rich text formatting~~
+- ~~Multi-line markdown notes~~
+- ~~Code syntax highlighting~~
 - Cloud sync options
 - Reminder functionality
 - Git integration
