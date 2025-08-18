@@ -253,8 +253,3 @@ For more detailed implementation information, see the [IMPLEMENTATION_SUMMARY.md
   <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
     <img src="https://img.shields.io/badge/View_All_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="View All Releases">
   </a>
-
-  <p>Made with ❤️ by <a href="https://github.com/ruslanlap">ruslanlap</a></p>
-  
-  <a href="#-powertoys-run-quicknotes-plugin">Back to top ⬆️</a>
-</div>
