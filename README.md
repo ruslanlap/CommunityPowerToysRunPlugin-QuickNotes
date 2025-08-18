@@ -126,6 +126,10 @@ Open PowerToys Run (default: <kbd>Alt</kbd> + <kbd>Space</kbd>) and use these co
 <div align="center">
   <p><img src="assets/demo.gif" width="650" alt="QuickNotes Demo"/></p>
   <p><i>QuickNotes in action</i></p>
+  
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/tree/main/assets">
+    <img src="https://img.shields.io/badge/View_More_Demos-4285F4?style=for-the-badge&logo=video&logoColor=white" alt="More Demos">
+  </a>
 </div>
 
 ## 📁 Data Storage
