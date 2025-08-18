@@ -414,6 +414,25 @@ CommunityPowerToysRunPlugin-QuickNotes.wiki/
 # OS specific files
 .DS_Store
 Thumb.db
-.gitignore
-gitignore
-.editorconfig
+
+# IDE and editor files
+.idea/
+.vscode/
+*.sublime-*
+
+# Script files that should be excluded
+dotnet-install.sh
+
+# Image files that should be in releases only
+icon.png
+terminal.png
+vs-new-project.png
+vs.png
+
+# Project specific files to exclude
+*.userprefs
+*.usertasks
+
+# Temporary files
+.~*
+*~
