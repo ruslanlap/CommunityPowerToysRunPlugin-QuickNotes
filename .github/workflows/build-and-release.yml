@@ -2,9 +2,9 @@ name: Build and Release QuickNotes
 
 on:
   push:
-    branches:
-      - main
-      - master
+    # branches:
+    #   - main
+    #   - master
     tags:
       - 'v*'
 
