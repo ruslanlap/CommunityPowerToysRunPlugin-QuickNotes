@@ -237,19 +237,3 @@ This robust architecture makes QuickNotes not just a simple note-taking plugin, 
 
 For more detailed implementation information, see the [IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md) file.
 
----
-
-<div align="center">
-  <h2>📥 Download Latest Version</h2>
-  
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
-    <img src="https://img.shields.io/badge/Download-x64_64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
-  </a>
-  
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip">
-    <img src="https://img.shields.io/badge/Download-ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
-  </a>
-  
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
-    <img src="https://img.shields.io/badge/View_All_Releases-181717?style=for-the-badge&logo=github&logoColor=white" alt="View All Releases">
-  </a>
