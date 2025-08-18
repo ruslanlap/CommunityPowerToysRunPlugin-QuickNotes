@@ -68,9 +68,9 @@ Looking for detailed documentation, usage examples, or troubleshooting? Check ou
 - [Installation instructions](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Installation)
 - [Main commands & usage](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Commands)
 - [Features](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Features)
-- [FAQ](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/FAQ)
+- [FAQ](wiki/FAQ.md)
 - [Troubleshooting](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Troubleshooting)
-- [Contributing guidelines](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/wiki/Contributing)
+- [Contributing guidelines](wiki/Contributing.md)
 
 ## 📋 Table of Contents
 
@@ -342,7 +342,7 @@ The QuickNotes plugin has a clean, modular architecture designed for maintainabi
   <img src="./assets/structure-1.png" alt="Project Structure" width="800">
   <p><i>High-level project structure overview</i></p>
 
-For a detailed breakdown of the project structure, see the [structure.md](structure.md) file.
+For a detailed breakdown of the project structure, see the [structure.md](docs/structure.md) file.
 
 </div>
 
@@ -399,20 +399,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
   <p><i>**Powerful context menu features: Edit notes, Copy to clipboard, Pin important items, Delete notes, and Detect URL and Open URLs directly from your notes in your browser**</i></p>
 </div>
 
-**Feature Ideas We'd Love to See:**
-- ~~Tag system for notes~~
-- ~~Easy copy notes~~
-- ~~Autosuggestions commands~~
-- ~~Rich text formatting~~
-- ~~Multi-line markdown notes~~
-- ~~Code syntax highlighting~~
-- Cloud sync options
-- Reminder functionality
-- Git integration
-- More effect 
-- More styled
-- ~~Notes to be pinned~~
-
 ## ☕ Support & Donate
 
 If you find QuickNotes useful and want to support further development, you can buy me a coffee!
@@ -462,8 +448,6 @@ The QuickNotes plugin is built around a robust and well-structured implementatio
 - **Sort Capabilities**: Implements flexible sorting by date or alphabetically
 - **Autocomplete**: Provides intelligent command suggestions as you type
 
-
-
 The implementation prioritizes user experience with features like:
 - Clean content copying (stripping timestamps and tags)
 - Intelligent display of pinned vs. regular notes
@@ -472,6 +456,8 @@ The implementation prioritizes user experience with features like:
 - Flexible search capabilities
 
 This robust architecture makes QuickNotes not just a simple note-taking plugin, but a powerful productivity tool that seamlessly integrates with PowerToys Run.
+
+For more detailed implementation information, see the [IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md) file.
 
 ---
 
