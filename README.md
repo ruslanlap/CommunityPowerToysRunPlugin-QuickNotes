@@ -45,7 +45,7 @@
     </a>
   </div>
   
-  <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 5px;">
+  <div>
     <img src="https://img.shields.io/badge/Made%20with-❤️-red" alt="Made with Love">
     <img src="https://img.shields.io/badge/Awesome-Yes-orange" alt="Awesome">
     <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
