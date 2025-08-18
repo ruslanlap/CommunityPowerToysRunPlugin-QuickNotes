@@ -15,7 +15,7 @@
     </a>
   </div>
   
-  <div>
+  <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 10px;">
     <img src="https://img.shields.io/badge/PowerToys-Compatible-blue" alt="PowerToys Compatible">
     <img src="https://img.shields.io/badge/platform-Windows-lightgrey" alt="Platform">
     <a href="https://opensource.org/licenses/MIT">
@@ -28,6 +28,9 @@
     <img src="https://img.shields.io/badge/C%23-.NET-512BD4" alt="C#">
     <img src="https://img.shields.io/badge/version-1.0.9-brightgreen" alt="Version">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
+  </div>
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 5px;">
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers">
       <img src="https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub stars">
     </a>
@@ -40,6 +43,9 @@
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases">
       <img src="https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total" alt="GitHub all releases">
     </a>
+  </div>
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; margin-top: 5px;">
     <img src="https://img.shields.io/badge/Made%20with-❤️-red" alt="Made with Love">
     <img src="https://img.shields.io/badge/Awesome-Yes-orange" alt="Awesome">
     <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
