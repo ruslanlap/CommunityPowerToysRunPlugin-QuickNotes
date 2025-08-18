@@ -44,13 +44,7 @@
     </None>
   </ItemGroup>
 
-  <!-- XAML files for multi-line dialog -->
-  <ItemGroup>
-    <Page Include="MultiLineInputDialog.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-  </ItemGroup>
+  <!-- XAML files are automatically included by the SDK with UseWPF=true -->
 
   <!-- Exclude unnecessary PowerToys DLLs from publish output -->
   <Target Name="ExcludePowerToysDlls" BeforeTargets="PublishResolveAssemblies">
