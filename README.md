@@ -9,10 +9,10 @@
   
   <!-- Download Badges -->
   <div style="margin: 20px 0;">
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-x64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
     </a>
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-arm64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
     </a>
   </div>
@@ -24,8 +24,9 @@
 
 ```text
 
-f69e72fdf4088a61c6f0c909f3fb1eaa52c6223d46aa0adccee8a63af2e7125b  QuickNotes-1.0.8-x64.zip
-27ccca1bdfd83844301da68a3dfcd5854fad6c96322cf613b7a4b49dfa019c00  QuickNotes-1.0.8-arm64.zip
+# Checksums will be updated after v1.0.9 release
+# QuickNotes-1.0.9-x64.zip
+# QuickNotes-1.0.9-arm64.zip
 
 ```
 </details>
@@ -40,7 +41,7 @@ f69e72fdf4088a61c6f0c909f3fb1eaa52c6223d46aa0adccee8a63af2e7125b  QuickNotes-1.0
   ![Maintenance](https://img.shields.io/maintenance/yes/2025)
   [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
   ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.8-brightgreen)
+  ![Version](https://img.shields.io/badge/version-1.0.9-brightgreen)
   ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
   [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
   [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
@@ -52,7 +53,9 @@ f69e72fdf4088a61c6f0c909f3fb1eaa52c6223d46aa0adccee8a63af2e7125b  QuickNotes-1.0
     <img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome PowerToys Run Plugins">
 </div>
 
-> 🚀 **New in v1.0.8**: Now fully compliant with PowerToys Run plugin validation requirements. Fixed file naming conventions, added proper checksums, and optimized dependencies. Also includes previous improvements for duplicate timestamps and export functionality. [See changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/CHANGELOG.md)
+> 🚀 **New in v1.0.9**: Improved multi-line note handling with better code snippet support. Now using JSON escaping for newlines instead of special markers, making code snippets cleaner and more compatible. Also fixed GitHub Actions workflow for better release management. [See changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/CHANGELOG.md)
+>
+> 🔄 **Previous Update in v1.0.8**: Now fully compliant with PowerToys Run plugin validation requirements. Fixed file naming conventions, added proper checksums, and optimized dependencies. Also includes previous improvements for duplicate timestamps and export functionality.
 >
 > 🔄 **Previous Update in v1.0.7**: Enhanced note deletion system with improved user experience. The deletion process now provides clearer confirmation dialogs, better error handling, and more reliable identification of notes using their unique IDs. [Release notes](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/release_notes_v1.0.7.md)
 >
@@ -118,7 +121,7 @@ For a one-command installation, run this in PowerShell (as Administrator):
 
 ```powershell
 # Download and install the latest version
-$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-x64.zip"
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip"
 $pluginPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\PowerToys Run\Plugins\QuickNotes"
 New-Item -ItemType Directory -Force -Path $pluginPath | Out-Null
 Invoke-WebRequest -Uri $url -OutFile "$env:TEMP\QuickNotes.zip"
@@ -130,7 +133,7 @@ Write-Host "QuickNotes plugin has been installed. Please restart PowerToys." -Fo
 Or for ARM64 systems:
 
 ```powershell
-$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-arm64.zip"
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip"
 # Rest of the script remains the same
 ```
 
@@ -269,12 +272,12 @@ $url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/rele
 - URLs in notes are automatically detected and can be opened via the context menu
 - Use `qq help` anytime to see all available commands
 - Type any command partially to see auto-suggestions (e.g., type `qq s` to see `search`, `sort`, etc.)
-- **NEW: Multi-line Markdown Notes**:
+- **IMPROVED: Multi-line Markdown Notes**:
   - Use `qq markdown` or `qq md` to open the rich editor
   - Live preview shows formatted output as you type
   - Support for headers (`# ## ###`), code blocks (` ``` `), lists (`- 1.`)
   - Press `Ctrl+Enter` to save, `Escape` to cancel
-- Format your notes with full Markdown syntax:
+- Format your notes with full Markdown syntax (now with improved code snippet support):
   - **Bold text**: Use `**text**` or `__text__`
   - *Italic text*: Use `*text*` or `_text_`
   - ==Highlighted text==: Use `==text==`
@@ -475,11 +478,11 @@ This robust architecture makes QuickNotes not just a simple note-taking plugin, 
 <div align="center">
   <h2>📥 Download Latest Version</h2>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
     <img src="https://img.shields.io/badge/Download-x64_64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
   </a>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.8/QuickNotes-1.0.8-arm64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip">
     <img src="https://img.shields.io/badge/Download-ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
   </a>
   
