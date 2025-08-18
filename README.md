@@ -10,23 +10,38 @@
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
     </a>
-    <div>
-     ![PowerToys Compatible](https://img.shields.io/badge/PowerToys-Compatible-blue)
-  ![Platform](https://img.shields.io/badge/platform-Windows-lightgrey)
-  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-  ![Maintenance](https://img.shields.io/maintenance/yes/2025)
-  [![Build Status](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions)
-  ![C#](https://img.shields.io/badge/C%23-.NET-512BD4)
-  ![Version](https://img.shields.io/badge/version-1.0.9-brightgreen)
-  ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)
-  [![GitHub stars](https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers)
-  [![GitHub issues](https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues)
-  [![GitHub release (latest by date)](https://img.shields.io/github/v/release/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes?label=latest)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest)
-  [![GitHub all releases](https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total)](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases)
-  ![Made with Love](https://img.shields.io/badge/Made%20with-❤️-red)
-  ![Awesome](https://img.shields.io/badge/Awesome-Yes-orange)
-  <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
-    <img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome PowerToys Run Plugins">
+  </div>
+  
+  <div>
+    <img src="https://img.shields.io/badge/PowerToys-Compatible-blue" alt="PowerToys Compatible">
+    <img src="https://img.shields.io/badge/platform-Windows-lightgrey" alt="Platform">
+    <a href="https://opensource.org/licenses/MIT">
+      <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
+    </a>
+    <img src="https://img.shields.io/maintenance/yes/2025" alt="Maintenance">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions">
+      <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg" alt="Build Status">
+    </a>
+    <img src="https://img.shields.io/badge/C%23-.NET-512BD4" alt="C#">
+    <img src="https://img.shields.io/badge/version-1.0.9-brightgreen" alt="Version">
+    <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers">
+      <img src="https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub stars">
+    </a>
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/issues">
+      <img src="https://img.shields.io/github/issues/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub issues">
+    </a>
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/latest">
+      <img src="https://img.shields.io/github/v/release/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes?label=latest" alt="GitHub release">
+    </a>
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases">
+      <img src="https://img.shields.io/github/downloads/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/total" alt="GitHub all releases">
+    </a>
+    <img src="https://img.shields.io/badge/Made%20with-❤️-red" alt="Made with Love">
+    <img src="https://img.shields.io/badge/Awesome-Yes-orange" alt="Awesome">
+    <a href="https://github.com/hlaueriksson/awesome-powertoys-run-plugins">
+      <img src="https://awesome.re/mentioned-badge.svg" alt="Mentioned in Awesome PowerToys Run Plugins">
+    </a>
 </div>
 
 <details>
