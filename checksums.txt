@@ -1,2 +1,0 @@
-76ecbbde721056fc10cedeb2e310b87bcdfd76594bad3c7df83397c5de01aaab  QuickNotes-1.0.8-arm64.zip
-7aaf6c1fc890fe7463a911e217ba487729e87378e38f7aa4e3af3b17ca86c399  QuickNotes-1.0.8-x64.zip
