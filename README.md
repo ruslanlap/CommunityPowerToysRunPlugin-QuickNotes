@@ -7,10 +7,10 @@
   <h2>Create, manage, and search notes directly from PowerToys Run</h2>
   
   <div>
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-x64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
     </a>
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-arm64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
     </a>
   </div>
@@ -26,7 +26,7 @@
       <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg" alt="Build Status">
     </a>
     <img src="https://img.shields.io/badge/C%23-.NET-512BD4" alt="C#">
-    <img src="https://img.shields.io/badge/version-1.0.9-brightgreen" alt="Version">
+    <img src="https://img.shields.io/badge/version-1.0.10-brightgreen" alt="Version">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers">
       <img src="https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub stars">
@@ -52,11 +52,14 @@
 <summary>SHA256 Checksums</summary>
 
 ```text
-# Checksums will be updated after v1.0.9 release
-# QuickNotes-1.0.9-x64.zip
-# QuickNotes-1.0.9-arm64.zip
+# QuickNotes-1.0.10-x64.zip
+# QuickNotes-1.0.10-arm64.zip
+# Checksums will be generated during release build
 ```
+
 </details>
+
+> 🔄 **v1.0.10**: Added Git Sync feature with detailed settings for commit configuration. And notes is stored in Git repository, for backup and sync. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/Release.md/CHANGELOG.md)
 
 > 🚀 **v1.0.9**: Improved multi-line notes with better code snippet support. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/Release.md/CHANGELOG.md)
 >
@@ -78,7 +81,7 @@ For detailed documentation, visit the [QuickNotes Wiki](https://github.com/rusla
 
 ### Quick Install
 
-1. Download the [x64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip) or [ARM64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip) version
+1. Download the [x64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-x64.zip) or [ARM64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-arm64.zip) version
 2. Extract to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\`
 3. Restart PowerToys
 4. Start using with `Alt+Space` then type `qq`
@@ -129,6 +132,9 @@ Open PowerToys Run (default: <kbd>Alt</kbd> + <kbd>Space</kbd>) and use these co
 | `qq sort alpha` | Sort notes alphabetically |
 | `qq backup` | Backup notes |
 | `qq markdown` | Create multi-line markdown note |
+| `qq sync` | Sync notes to Git repository |
+| `qq restore` | Restore notes from Git repository |
+
 ### 👉 Quick Tips
 
 - Press <kbd>Enter</kbd> on a note to copy it to clipboard
@@ -144,6 +150,29 @@ Open PowerToys Run (default: <kbd>Alt</kbd> + <kbd>Space</kbd>) and use these co
 - Type `qq` then press <kbd>Tab</kbd> for command suggestions
 - URLs in notes are automatically detected and clickable
 
+## ☁️ Git Sync
+
+QuickNotes supports syncing your notes to a Git repository. This is a great way to back up your notes and sync them across multiple computers.
+
+### Setup
+
+1. **Enable Git Sync in Settings**:
+    - Open PowerToys settings.
+    - Go to the QuickNotes plugin settings.
+    - Check the "Enable Git Sync" checkbox.
+2. **Configure Git Settings**:
+    - **Git Repository URL**: The URL of the Git repository you want to sync to. Both HTTPS and SSH URLs are supported. For example: `https://github.com/user/repo.git` or `git@github.com:user/repo.git`.
+    - **Git Branch**: The branch you want to sync to. Defaults to `main`.
+    - **Git Username**: Your Git username.
+    - **Git Email**: Your Git email address.
+
+### Usage
+
+- `qq sync`: This command will commit and push your notes to the remote repository.
+- `qq restore`: This command will pull the latest version of your notes from the remote repository. It will create a local backup of your notes before restoring.
+
+**Authentication**: The plugin uses your system's Git credentials. If you are using HTTPS, it's recommended to use a Personal Access Token (PAT) instead of a password. For SSH, make sure your SSH key is configured correctly.
+
 ## 🎬 Demo
 
 <div align="center">
@@ -158,6 +187,7 @@ Open PowerToys Run (default: <kbd>Alt</kbd> + <kbd>Space</kbd>) and use these co
 ## 📁 Data Storage
 
 QuickNotes stores all your notes in a simple text file at:
+
 ```
 %LOCALAPPDATA%\Microsoft\PowerToys\QuickNotes\notes.txt
 ```
@@ -165,12 +195,14 @@ QuickNotes stores all your notes in a simple text file at:
 ## 🛠️ Building from Source
 
 ### Prerequisites
+
 - Visual Studio 2022 or later
 - .NET SDK
 - [Microsoft PowerToys](https://github.com/microsoft/PowerToys) installed
 - Windows 10 or later
 
 ### Build Steps
+
 1. Clone the repository
 2. Open the solution in Visual Studio
 3. Build the solution: `dotnet build -c Release`
@@ -188,12 +220,12 @@ Contributions are welcome! Please check the [Contributing Guidelines](wiki/Contr
 
 <details>
   <summary><b>Can I sync my notes across devices?</b></summary>
-  <p>The plugin doesn't have built-in sync, but you can place the notes.txt file in a cloud-synced folder and create a symbolic link to it.</p>
+  <p>Yes, you can use the built-in Git Sync feature to sync your notes across devices. See the "Git Sync" section for more details.</p>
 </details>
 
 <details>
   <summary><b>What if I accidentally delete all my notes?</b></summary>
-  <p>If you've created backups using the <code>qq backup</code> command, you can restore from those. Otherwise, you might be able to recover from Windows File History if enabled.</p>
+  <p>If you've created backups using the <code>qq backup</code> command, you can restore from those. If you are using Git Sync, you can restore your notes from the remote repository using `qq restore`. Otherwise, you might be able to recover from Windows File History if enabled.</p>
 </details>
 
 <details>
@@ -233,7 +265,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
   <a href="#-powertoys-run-quicknotes-plugin">Back to top ⬆️</a>
 </div>
 
-
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
@@ -254,6 +285,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Autocomplete**: Provides intelligent command suggestions as you type
 
 The implementation prioritizes user experience with features like:
+
 - Clean content copying (stripping timestamps and tags)
 - Intelligent display of pinned vs. regular notes
 - Comprehensive error handling
@@ -263,4 +295,3 @@ The implementation prioritizes user experience with features like:
 This robust architecture makes QuickNotes not just a simple note-taking plugin, but a powerful productivity tool that seamlessly integrates with PowerToys Run.
 
 For more detailed implementation information, see the [IMPLEMENTATION_SUMMARY.md](docs/IMPLEMENTATION_SUMMARY.md) file.
-

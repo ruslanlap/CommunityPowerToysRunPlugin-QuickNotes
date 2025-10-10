@@ -144,7 +144,30 @@ jobs:
           )
           foreach ($file in $exclude) {
             $path = Join-Path "$artifactDir/QuickNotes" $file
-            if (Test-Path $path) { Remove-Item $path -Force }
+            if (Test-Path $path) {
+              Write-Host "Removing: $file"
+              Remove-Item $path -Force
+            }
+          }
+
+          # Ensure LibGit2Sharp dependencies are present
+          Write-Host "Checking for LibGit2Sharp dependencies..."
+          $requiredFiles = @('LibGit2Sharp.dll', 'git2-106a5f2.dll')
+          foreach ($file in $requiredFiles) {
+            $path = Join-Path "$artifactDir/QuickNotes" $file
+            if (Test-Path $path) {
+              Write-Host "✓ Found: $file"
+            } else {
+              Write-Warning "⚠️ Missing: $file - Git sync may not work!"
+            }
+          }
+
+          # Check for runtimes folder (LibGit2Sharp native libs)
+          $runtimesPath = Join-Path "$artifactDir/QuickNotes" "runtimes"
+          if (Test-Path $runtimesPath) {
+            Write-Host "✓ Found runtimes folder for LibGit2Sharp native libraries"
+          } else {
+            Write-Warning "⚠️ Missing runtimes folder - Git sync may not work!"
           }
         shell: pwsh
 
@@ -218,6 +241,12 @@ jobs:
           ![QuickNotes Logo](https://raw.githubusercontent.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/master/QuickNotes/Community.PowerToys.Run.Plugin.QuickNotes/Images/quicknotes.dark.png)
           
           ## ✨ What's New in v${{ steps.get_version.outputs.VERSION }}
+          - 🔄 Added Git Sync feature with detailed settings for commit configuration. And notes is stored in Git repository, for backup and sync.
+          - 🚀 Improved multi-line notes with better code snippet support.
+          - 🔄 PowerToys Run plugin validation compliance, optimized dependencies
+          - 🔄 Enhanced note deletion with better confirmation dialogs and ID-based identification
+          - 📝 Reworked note management system fixing critical bugs with deletion and editing
+
           
           ### 📝 Major Feature: Full Markdown Support!
           - **Multi-line Markdown Editor** with live preview

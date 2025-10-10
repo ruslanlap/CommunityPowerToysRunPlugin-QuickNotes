@@ -34,7 +34,6 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
 
         public string ResultText { get; private set; } = string.Empty;
-        public bool DialogResult { get; private set; } = false;
 
         public MultiLineInputDialog(string initialText = "")
         {

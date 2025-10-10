@@ -8,9 +8,11 @@ using System.Text;
 using System.Text.RegularExpressions; // For highlighting and URL detection
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Controls;
 using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Microsoft.VisualBasic; // For InputBox
+using Microsoft.PowerToys.Settings.UI.Library;
 
 namespace Community.PowerToys.Run.Plugin.QuickNotes
 {
@@ -89,7 +91,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
     }
 
-    public class Main : IPlugin, IContextMenu, IPluginI18n, IDisposable, IDelayedExecutionPlugin
+    public class Main : IPlugin, IContextMenu, IPluginI18n, IDisposable, IDelayedExecutionPlugin, ISettingProvider
     {
         // --- Constants ---
         public static string PluginID => "2083308C581F4D36B0C02E69A2FD91D7";
@@ -113,6 +115,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         // Форматування тегів
         private bool _useItalicForTags = false; // Використовується у FormatTextForDisplay
 
+        private QuickNotesSettings _settings = new QuickNotesSettings();
+        private GitSyncService? _gitSyncService;
+
         // Команди автодоповнення
         private readonly List<string> _commands = new List<string>
         {
@@ -133,6 +138,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             "tagstyle",
             "markdown",
             "md",
+            "sync",
+            "restore"
         };
 
         // Опис команд
@@ -154,8 +161,100 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             { "sort", "Sort notes by date or text 🔄" },
             { "tagstyle", "Change tag display style (bold/italic) ✨" },
             { "markdown", "Create multi-line markdown note 📝" },
-            { "md", "Create multi-line markdown note 📝" }
+            { "md", "Create multi-line markdown note 📝" },
+            { "sync", "Sync notes to Git repository ☁️" },
+            { "restore", "Restore notes from Git repository ☁️" }
         };
+
+        // Setting keys
+        private const string EnableGitSyncKey = "EnableGitSync";
+        private const string GitRepositoryUrlKey = "GitRepositoryUrl";
+        private const string GitBranchKey = "GitBranch";
+        private const string GitUsernameKey = "GitUsername";
+        private const string GitEmailKey = "GitEmail";
+
+        public Control CreateSettingPanel()
+        {
+            // Not used - settings are managed via AdditionalOptions
+            return new UserControl();
+        }
+
+        // ISettingProvider
+        public IEnumerable<PluginAdditionalOption> AdditionalOptions =>
+        [
+            new()
+            {
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Checkbox,
+                Key = EnableGitSyncKey,
+                DisplayLabel = "Enable Git Sync",
+                DisplayDescription = "Enable automatic synchronization with Git repository",
+                Value = false,
+            },
+            new()
+            {
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
+                Key = GitRepositoryUrlKey,
+                DisplayLabel = "Git Repository URL",
+                DisplayDescription = "Example: https://github.com/username/notes.git",
+                TextBoxMaxLength = 500,
+            },
+            new()
+            {
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
+                Key = GitBranchKey,
+                DisplayLabel = "Git Branch",
+                DisplayDescription = "Branch name (default: main)",
+                TextBoxMaxLength = 100,
+            },
+            new()
+            {
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
+                Key = GitUsernameKey,
+                DisplayLabel = "Git Username (optional)",
+                DisplayDescription = "Uses global git config if empty",
+                TextBoxMaxLength = 100,
+            },
+            new()
+            {
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
+                Key = GitEmailKey,
+                DisplayLabel = "Git Email (optional)",
+                DisplayDescription = "Uses global git config if empty",
+                TextBoxMaxLength = 200,
+            },
+        ];
+
+        public void UpdateSettings(PowerLauncherPluginSettings settings)
+        {
+            if (settings?.AdditionalOptions == null) return;
+
+            try
+            {
+                _settings.EnableGitSync = settings.AdditionalOptions.FirstOrDefault(x => x.Key == EnableGitSyncKey)?.Value ?? false;
+                _settings.GitRepositoryUrl = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitRepositoryUrlKey)?.TextValue ?? string.Empty;
+                _settings.GitBranch = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitBranchKey)?.TextValue ?? "main";
+                _settings.GitUsername = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitUsernameKey)?.TextValue ?? string.Empty;
+                _settings.GitEmail = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitEmailKey)?.TextValue ?? string.Empty;
+
+                // Recreate git service if enabled
+                if (_settings.EnableGitSync && !string.IsNullOrEmpty(_settings.GitRepositoryUrl))
+                {
+                    var notesDirectory = Path.GetDirectoryName(_notesPath) ?? string.Empty;
+                    if (!string.IsNullOrEmpty(notesDirectory))
+                    {
+                        _gitSyncService = new GitSyncService(notesDirectory, _settings);
+                    }
+                }
+                else
+                {
+                    _gitSyncService = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Exception("QuickNotes: Failed to update settings", ex, typeof(Main));
+            }
+        }
 
         // --- Ініціалізація плагіна ---
         public void Init(PluginInitContext context)
@@ -189,6 +288,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                   nameof(Init),
                                   66);
                 }
+                if (_settings.EnableGitSync)
+                {
+                    var notesDirectory = Path.GetDirectoryName(_notesPath) ?? throw new InvalidOperationException("Notes directory not found");
+                    _gitSyncService = new GitSyncService(notesDirectory, _settings);
+                }
             }
             catch (Exception ex)
             {
@@ -203,6 +307,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 }
             }
         }
+        public void SaveSettings()
+        {
+            // Settings are persisted in memory and applied when the panel is shown
+            // PowerToys will handle settings persistence through the ISettingProvider interface
+        }
+
 
         // Допоміжний метод: відкинути timestamp
         private string StripTimestamp(string noteText)
@@ -432,10 +542,231 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 case "markdown":
                 case "md":
                     return CreateMarkdownNote(args);
+                case "sync":
+                    return SyncNotes();
+                case "restore":
+                    return RestoreNotes();
                 default:
                     return AddNoteCommand(searchText);
             }
         }
+
+        private List<Result> SyncNotes()
+        {
+            if (!_settings.EnableGitSync)
+            {
+                return new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "⚠️ Git Sync is not enabled",
+                        SubTitle = "Enable it in PowerToys Settings → PowerToys Run → Plugins → QuickNotes",
+                        IcoPath = IconPath,
+                        Action = _ =>
+                        {
+                            Context?.API.ShowMsg("Git Sync Disabled",
+                                "Go to PowerToys Settings → PowerToys Run → Plugins → QuickNotes → Additional Options\n\n" +
+                                "1. Check 'Enable Git Sync'\n" +
+                                "2. Set your Git Repository URL\n" +
+                                "3. Configure branch (default: main)\n" +
+                                "4. Optionally set username and email");
+                            return true;
+                        }
+                    }
+                };
+            }
+
+            if (string.IsNullOrEmpty(_settings.GitRepositoryUrl))
+            {
+                return new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "⚠️ Git Repository not configured",
+                        SubTitle = "Click to see setup instructions",
+                        IcoPath = IconPath,
+                        Action = _ =>
+                        {
+                            Context?.API.ShowMsg("Configure Git Repository",
+                                "Go to PowerToys Settings → QuickNotes → Additional Options\n\n" +
+                                "Set your repository URL:\n" +
+                                "• HTTPS: https://github.com/username/notes.git\n" +
+                                "• SSH: git@github.com:username/notes.git");
+                            return true;
+                        }
+                    }
+                };
+            }
+
+            if (_gitSyncService == null)
+            {
+                var notesDirectory = Path.GetDirectoryName(_notesPath) ?? string.Empty;
+                if (!string.IsNullOrEmpty(notesDirectory))
+                {
+                    _gitSyncService = new GitSyncService(notesDirectory, _settings);
+                }
+            }
+
+            if (_gitSyncService == null)
+            {
+                return SingleInfoResult("❌ Git Sync Error", "Could not initialize Git Sync service.");
+            }
+
+            // Return a result that will trigger sync when user presses Enter
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = "☁️ Sync notes to Git repository",
+                    SubTitle = $"Repository: {_settings.GitRepositoryUrl} | Branch: {_settings.GitBranch} | Press Enter to sync",
+                    IcoPath = IconPath,
+                    Action = _ =>
+                    {
+                        // Run sync in background task to avoid blocking UI
+                        System.Threading.Tasks.Task.Run(() =>
+                        {
+                            var progressMessages = new List<string>();
+                            void Handler(string msg) => progressMessages.Add(msg);
+                            _gitSyncService.ProgressChanged += Handler;
+
+                            try
+                            {
+                                var (success, message) = _gitSyncService.SyncToGit();
+
+                                // Show result dialog on UI thread
+                                System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+                                {
+                                    var progressDetail = string.Join("\n", progressMessages);
+                                    if (progressMessages.Count > 0)
+                                    {
+                                        Context?.API.ShowMsg(success ? "✅ Sync Completed" : "❌ Sync Failed",
+                                            $"{message}\n\nDetails:\n{progressDetail}");
+                                    }
+                                    else
+                                    {
+                                        Context?.API.ShowMsg(success ? "✅ Sync Completed" : "❌ Sync Failed", message);
+                                    }
+                                });
+                            }
+                            finally
+                            {
+                                _gitSyncService.ProgressChanged -= Handler;
+                            }
+                        });
+                        return true;
+                    }
+                }
+            };
+        }
+
+        private List<Result> RestoreNotes()
+        {
+            if (!_settings.EnableGitSync)
+            {
+                return new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "⚠️ Git Sync is not enabled",
+                        SubTitle = "Enable it in PowerToys Settings → PowerToys Run → Plugins → QuickNotes",
+                        IcoPath = IconPath,
+                        Action = _ =>
+                        {
+                            Context?.API.ShowMsg("Git Sync Disabled",
+                                "Go to PowerToys Settings → PowerToys Run → Plugins → QuickNotes → Additional Options\n\n" +
+                                "1. Check 'Enable Git Sync'\n" +
+                                "2. Set your Git Repository URL\n" +
+                                "3. Configure branch (default: main)\n" +
+                                "4. Optionally set username and email");
+                            return true;
+                        }
+                    }
+                };
+            }
+
+            if (string.IsNullOrEmpty(_settings.GitRepositoryUrl))
+            {
+                return new List<Result>
+                {
+                    new Result
+                    {
+                        Title = "⚠️ Git Repository not configured",
+                        SubTitle = "Click to see setup instructions",
+                        IcoPath = IconPath,
+                        Action = _ =>
+                        {
+                            Context?.API.ShowMsg("Configure Git Repository",
+                                "Go to PowerToys Settings → QuickNotes → Additional Options\n\n" +
+                                "Set your repository URL:\n" +
+                                "• HTTPS: https://github.com/username/notes.git\n" +
+                                "• SSH: git@github.com:username/notes.git");
+                            return true;
+                        }
+                    }
+                };
+            }
+
+            if (_gitSyncService == null)
+            {
+                var notesDirectory = Path.GetDirectoryName(_notesPath) ?? string.Empty;
+                if (!string.IsNullOrEmpty(notesDirectory))
+                {
+                    _gitSyncService = new GitSyncService(notesDirectory, _settings);
+                }
+            }
+
+            if (_gitSyncService == null)
+            {
+                return SingleInfoResult("❌ Git Sync Error", "Could not initialize Git Sync service.");
+            }
+
+            // Show warning message
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = "⚠️ Restore notes from Git repository?",
+                    SubTitle = $"Repository: {_settings.GitRepositoryUrl} | Branch: {_settings.GitBranch} | This will replace your local notes. Press Enter to continue.",
+                    IcoPath = IconPath,
+                    Action = _ =>
+                    {
+                        // Run restore in background task to avoid blocking UI
+                        System.Threading.Tasks.Task.Run(() =>
+                        {
+                            var progressMessages = new List<string>();
+                            void Handler(string msg) => progressMessages.Add(msg);
+                            _gitSyncService.ProgressChanged += Handler;
+
+                            try
+                            {
+                                var (success, message) = _gitSyncService.RestoreFromGit();
+
+                                // Show result dialog on UI thread
+                                System.Windows.Application.Current?.Dispatcher.Invoke(() =>
+                                {
+                                    var progressDetail = string.Join("\n", progressMessages);
+                                    if (progressMessages.Count > 0)
+                                    {
+                                        Context?.API.ShowMsg(success ? "✅ Restore Completed" : "❌ Restore Failed",
+                                            $"{message}\n\nDetails:\n{progressDetail}");
+                                    }
+                                    else
+                                    {
+                                        Context?.API.ShowMsg(success ? "✅ Restore Completed" : "❌ Restore Failed", message);
+                                    }
+                                });
+                            }
+                            finally
+                            {
+                                _gitSyncService.ProgressChanged -= Handler;
+                            }
+                        });
+                        return true;
+                    }
+                }
+            };
+        }
+
 
         // --- Додавання нотатки з GUID ---
         private void CreateNote(string note)
@@ -500,9 +831,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         try
                         {
                             var dialog = new MultiLineInputDialog(initialText);
-                            dialog.ShowDialog();
+                            var result = dialog.ShowDialog();
                             
-                            if (dialog.DialogResult && !string.IsNullOrWhiteSpace(dialog.ResultText))
+                            if (result == true && !string.IsNullOrWhiteSpace(dialog.ResultText))
                             {
                                 CreateNote(dialog.ResultText);
                                 Context?.API.ShowMsg("Markdown Note Saved", "Your multi-line markdown note has been saved successfully!");

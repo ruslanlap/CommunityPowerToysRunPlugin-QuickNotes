@@ -18,7 +18,7 @@
     <!-- Other important properties -->
     <RootNamespace>Community.PowerToys.Run.Plugin.QuickNotes</RootNamespace>
     <AssemblyName>Community.PowerToys.Run.Plugin.QuickNotes</AssemblyName>
-    <Version>1.0.9</Version>
+    <Version>1.0.10</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -26,12 +26,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
-  <!-- Package references with exclusions -->
+  <!-- Package references -->
   <ItemGroup>
-    <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.91.0">
-      <ExcludeAssets>runtime</ExcludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+     <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.90.0" />
+     <PackageReference Include="System.Text.Json" Version="9.0.0" />
   </ItemGroup>
 
   <!-- Additional files to include in the output -->
@@ -43,27 +41,4 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
-  <!-- XAML files are automatically included by the SDK with UseWPF=true -->
-
-  <!-- Exclude unnecessary PowerToys DLLs from publish output -->
-  <Target Name="ExcludePowerToysDlls" BeforeTargets="PublishResolveAssemblies">
-    <ItemGroup>
-      <ResolvedAssembliesToPublish Remove="@(ResolvedAssembliesToPublish)" Condition="
-        $([System.String]::new(%(Filename)).StartsWith('PowerToys.')) OR
-        $([System.String]::new(%(Filename)).StartsWith('Wox.'))
-      " />
-    </ItemGroup>
-  </Target>
-
-  <!-- Remove unnecessary DLLs from build output for packaging -->
-  <Target Name="RemovePowerToysDlls" AfterTargets="Build">
-    <ItemGroup>
-      <UnwantedFiles Include="$(OutputPath)PowerToys.*.dll" />
-      <UnwantedFiles Include="$(OutputPath)PowerToys.*.pdb" />
-      <UnwantedFiles Include="$(OutputPath)Wox.*.dll" />
-      <UnwantedFiles Include="$(OutputPath)Wox.*.pdb" />
-    </ItemGroup>
-    <Delete Files="@(UnwantedFiles)" />
-  </Target>
 </Project>
