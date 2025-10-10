@@ -90,7 +90,7 @@ For detailed documentation, visit the [QuickNotes Wiki](https://github.com/rusla
 
 ```powershell
 # Download and install the latest version (x64)
-$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip"
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-x64.zip"
 $pluginPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\PowerToys Run\Plugins\QuickNotes"
 New-Item -ItemType Directory -Force -Path $pluginPath | Out-Null
 Invoke-WebRequest -Uri $url -OutFile "$env:TEMP\QuickNotes.zip"
@@ -248,11 +248,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <h2>📥 Download Latest Version</h2>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-x64.zip">
     <img src="https://img.shields.io/badge/Download-x64_64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
   </a>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.9/QuickNotes-1.0.9-arm64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.10/QuickNotes-1.0.10-arm64.zip">
     <img src="https://img.shields.io/badge/Download-ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
   </a>
   
