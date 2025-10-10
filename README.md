@@ -59,9 +59,9 @@
 
 </details>
 
-> 🔄 **v1.0.10**: Added Git Sync feature with detailed settings for commit configuration. And notes is stored in Git repository, for backup and sync. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/Release.md/CHANGELOG.md)
+> 🔄 **v1.0.10**: Added Git Sync feature with detailed settings for commit configuration. And notes is stored in Git repository, for backup and sync. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
 
-> 🚀 **v1.0.9**: Improved multi-line notes with better code snippet support. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/main/Release.md/CHANGELOG.md)
+> 🚀 **v1.0.9**: Improved multi-line notes with better code snippet support. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
 >
 > 🔄 **v1.0.8**: PowerToys Run plugin validation compliance, optimized dependencies
 >
