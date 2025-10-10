@@ -59,6 +59,10 @@
 
 </details>
 
+<div align="center">
+  <img src="assets/image.png" alt="v1.0.10 MEGA RELEASE - Git Sync Feature" style="width:100%;max-width:600px;">
+</div>
+
 > 🚀 **v1.0.10 - MEGA RELEASE**: 🎉 **Git Sync Feature** - The game-changer you've been waiting for! Sync your notes across all devices with GitHub integration. Never lose a note again! [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
 
 > 🚀 **v1.0.9**: Improved multi-line notes with better code snippet support. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
