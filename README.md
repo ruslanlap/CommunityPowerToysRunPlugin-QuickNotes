@@ -59,7 +59,7 @@
 
 </details>
 
-> 🔄 **v1.0.10**: Added Git Sync feature with detailed settings for commit configuration. And notes is stored in Git repository, for backup and sync. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
+> 🚀 **v1.0.10 - MEGA RELEASE**: 🎉 **Git Sync Feature** - The game-changer you've been waiting for! Sync your notes across all devices with GitHub integration. Never lose a note again! [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
 
 > 🚀 **v1.0.9**: Improved multi-line notes with better code snippet support. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
 >
@@ -101,6 +101,7 @@ Write-Host "QuickNotes plugin has been installed. Please restart PowerToys." -Fo
 
 ## ✨ Features
 
+- 🚀 **☁️ Git Sync** - **NEW!** Sync notes across all devices with GitHub integration
 - 📝 **Quick Note Creation** - Instantly save notes with a simple command
 - 🔍 **Powerful Search** - Find notes with highlighted search terms
 - 🏷️ **Tag Support** - Add #tags to notes and search by tag
@@ -150,9 +151,9 @@ Open PowerToys Run (default: <kbd>Alt</kbd> + <kbd>Space</kbd>) and use these co
 - Type `qq` then press <kbd>Tab</kbd> for command suggestions
 - URLs in notes are automatically detected and clickable
 
-## ☁️ Git Sync
+## ☁️ Git Sync - 🚀 **MEGA FEATURE!**
 
-QuickNotes supports syncing your notes to a Git repository. This is a great way to back up your notes and sync them across multiple computers.
+**The game-changer you've been waiting for!** QuickNotes now supports syncing your notes to a Git repository. This is the ultimate way to back up your notes and sync them across multiple computers. Never lose a note again!
 
 ### Setup
 
