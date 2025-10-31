@@ -97,6 +97,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         public static string PluginID => "2083308C581F4D36B0C02E69A2FD91D7";
         private static readonly Regex UrlRegex = new Regex(@"\b(https?://|www\.)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private const string NotesFileName = "notes.txt"; // Центральний файл
+        private const string CUSTOM_PATH_ENV_VAR = "QUICKNOTES_CUSTOM_PATH";
 
         // --- Properties ---
         public string Name => "QuickNotes";
@@ -265,7 +266,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 UpdateIconPath(Context.API.GetCurrentTheme());
                 Context.API.ThemeChanged += OnThemeChanged;
 
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var customPath = Environment.GetEnvironmentVariable(CUSTOM_PATH_ENV_VAR);
+                var appDataPath = string.IsNullOrEmpty(customPath)
+                    ? Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                    : customPath;
+                    
                 var powerToysPath = Path.Combine(appDataPath, "Microsoft", "PowerToys", "QuickNotes");
                 if (!Directory.Exists(powerToysPath))
                     Directory.CreateDirectory(powerToysPath);
