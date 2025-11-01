@@ -267,11 +267,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 Context.API.ThemeChanged += OnThemeChanged;
 
                 var customPath = Environment.GetEnvironmentVariable(CUSTOM_PATH_ENV_VAR);
-                var appDataPath = string.IsNullOrEmpty(customPath)
-                    ? Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                var powerToysPath = string.IsNullOrEmpty(customPath)
+                    ? Path.Combine(appDataPath, "Microsoft", "PowerToys", "QuickNotes")
                     : customPath;
-                    
-                var powerToysPath = Path.Combine(appDataPath, "Microsoft", "PowerToys", "QuickNotes");
+                
                 if (!Directory.Exists(powerToysPath))
                     Directory.CreateDirectory(powerToysPath);
 
