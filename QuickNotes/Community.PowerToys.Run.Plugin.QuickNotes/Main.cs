@@ -98,6 +98,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private static readonly Regex UrlRegex = new Regex(@"\b(https?://|www\.)\S+\b", RegexOptions.IgnoreCase | RegexOptions.Compiled);
         private const string NotesFileName = "notes.txt"; // Центральний файл
         private const string CUSTOM_PATH_ENV_VAR = "QUICKNOTES_CUSTOM_PATH";
+        private const string NotesFolderPathKey = "NotesFolderPath";
 
         // --- Properties ---
         public string Name => "QuickNotes";
@@ -185,6 +186,15 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         [
             new()
             {
+                PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
+                Key = NotesFolderPathKey,
+                DisplayLabel = "Notes folder path",
+                DisplayDescription = "Leave empty to use the default AppData location. The folder will be created if it does not exist.",
+                TextBoxMaxLength = 500,
+                PlaceholderText = @"Example: C:\Users\User\Documents\QuickNotes",
+            },
+            new()
+            {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Checkbox,
                 Key = EnableGitSyncKey,
                 DisplayLabel = "Enable Git Sync",
@@ -231,14 +241,17 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             try
             {
+                _settings.NotesFolderPath = settings.AdditionalOptions.FirstOrDefault(x => x.Key == NotesFolderPathKey)?.TextValue ?? string.Empty;
                 _settings.EnableGitSync = settings.AdditionalOptions.FirstOrDefault(x => x.Key == EnableGitSyncKey)?.Value ?? false;
                 _settings.GitRepositoryUrl = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitRepositoryUrlKey)?.TextValue ?? string.Empty;
                 _settings.GitBranch = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitBranchKey)?.TextValue ?? "main";
                 _settings.GitUsername = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitUsernameKey)?.TextValue ?? string.Empty;
                 _settings.GitEmail = settings.AdditionalOptions.FirstOrDefault(x => x.Key == GitEmailKey)?.TextValue ?? string.Empty;
 
+                InitializeNotesStorage();
+
                 // Recreate git service if enabled
-                if (_settings.EnableGitSync && !string.IsNullOrEmpty(_settings.GitRepositoryUrl))
+                if (_settings.EnableGitSync && !string.IsNullOrEmpty(_settings.GitRepositoryUrl) && _isInitialized)
                 {
                     var notesDirectory = Path.GetDirectoryName(_notesPath) ?? string.Empty;
                     if (!string.IsNullOrEmpty(notesDirectory))
@@ -266,34 +279,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 UpdateIconPath(Context.API.GetCurrentTheme());
                 Context.API.ThemeChanged += OnThemeChanged;
 
-                var customPath = Environment.GetEnvironmentVariable(CUSTOM_PATH_ENV_VAR);
-                var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-                var powerToysPath = string.IsNullOrEmpty(customPath)
-                    ? Path.Combine(appDataPath, "Microsoft", "PowerToys", "QuickNotes")
-                    : customPath;
-                
-                if (!Directory.Exists(powerToysPath))
-                    Directory.CreateDirectory(powerToysPath);
+                InitializeNotesStorage();
 
-                _notesPath = Path.Combine(powerToysPath, NotesFileName);
-                if (!File.Exists(_notesPath))
-                    File.WriteAllText(_notesPath, string.Empty);
-
-                try
-                {
-                    File.AppendAllText(_notesPath, string.Empty); // Перевірка доступу на запис
-                    _isInitialized = true;
-                }
-                catch (Exception ex)
-                {
-                    _isInitialized = false;
-                    Log.Exception("QuickNotes: Failed to access notes file", ex,
-                                  typeof(Main),
-                                  "Community.PowerToys.Run.Plugin.QuickNotes.Main",
-                                  nameof(Init),
-                                  66);
-                }
-                if (_settings.EnableGitSync)
+                if (_settings.EnableGitSync && _isInitialized)
                 {
                     var notesDirectory = Path.GetDirectoryName(_notesPath) ?? throw new InvalidOperationException("Notes directory not found");
                     _gitSyncService = new GitSyncService(notesDirectory, _settings);
@@ -316,6 +304,60 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             // Settings are persisted in memory and applied when the panel is shown
             // PowerToys will handle settings persistence through the ISettingProvider interface
+        }
+
+        private void InitializeNotesStorage()
+        {
+            try
+            {
+                var notesDirectory = ResolveNotesDirectory();
+                if (string.IsNullOrWhiteSpace(notesDirectory))
+                {
+                    throw new InvalidOperationException("Notes directory path is empty");
+                }
+
+                notesDirectory = Environment.ExpandEnvironmentVariables(notesDirectory.Trim());
+                notesDirectory = Path.GetFullPath(notesDirectory);
+
+                if (!Directory.Exists(notesDirectory))
+                {
+                    Directory.CreateDirectory(notesDirectory);
+                }
+
+                _notesPath = Path.Combine(notesDirectory, NotesFileName);
+
+                if (!File.Exists(_notesPath))
+                {
+                    File.WriteAllText(_notesPath, string.Empty);
+                }
+
+                File.AppendAllText(_notesPath, string.Empty);
+                _isInitialized = true;
+            }
+            catch (Exception ex)
+            {
+                _isInitialized = false;
+                _notesPath = string.Empty;
+                Log.Exception("QuickNotes: Failed to initialize notes storage", ex, typeof(Main));
+            }
+        }
+
+        private string ResolveNotesDirectory()
+        {
+            var customPathSetting = _settings?.NotesFolderPath?.Trim();
+            if (!string.IsNullOrEmpty(customPathSetting))
+            {
+                return customPathSetting;
+            }
+
+            var customPathEnv = Environment.GetEnvironmentVariable(CUSTOM_PATH_ENV_VAR);
+            if (!string.IsNullOrEmpty(customPathEnv))
+            {
+                return customPathEnv;
+            }
+
+            var appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            return Path.Combine(appDataPath, "Microsoft", "PowerToys", "QuickNotes");
         }
 
 
