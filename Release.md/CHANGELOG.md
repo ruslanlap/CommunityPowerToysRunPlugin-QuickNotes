@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [1.0.12] - 2026-02-05
 
 ### Added
-- �🇳 Chinese localization support with full translation
+- 🇨🇳 Chinese localization support with full translation
 - 🇺🇦 Ukrainian localization support with full translations for 130+ strings
 - Comprehensive localization tests for English, Ukrainian, and Chinese
 
