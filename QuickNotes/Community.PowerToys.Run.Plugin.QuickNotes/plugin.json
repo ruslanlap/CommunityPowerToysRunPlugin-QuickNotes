@@ -4,7 +4,7 @@
   "IsGlobal": false,
   "Name": "QuickNotes",
   "Author": "ruslanlap",
-  "Version": "1.0.11",
+  "Version": "1.0.12",
   "Language": "csharp",
   "Website": "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes",
   "ExecuteFileName": "Community.PowerToys.Run.Plugin.QuickNotes.dll",
