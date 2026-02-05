@@ -13,6 +13,7 @@ using Wox.Plugin;
 using Wox.Plugin.Logger;
 using Microsoft.VisualBasic; // For InputBox
 using Microsoft.PowerToys.Settings.UI.Library;
+using Community.PowerToys.Run.Plugin.QuickNotes.Properties;
 
 namespace Community.PowerToys.Run.Plugin.QuickNotes
 {
@@ -101,8 +102,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private const string NotesFolderPathKey = "NotesFolderPath";
 
         // --- Properties ---
-        public string Name => "QuickNotes";
-        public string Description => "Save, view, manage, search, tag, and pin quick notes";
+        public string Name => Resources.PluginName;
+        public string Description => Resources.PluginDescription;
 
         private PluginInitContext? Context { get; set; }
         private string? IconPath { get; set; }
@@ -145,27 +146,27 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         };
 
         // Опис команд
-        private readonly Dictionary<string, string> _commandDescriptions = new Dictionary<string, string>
+        private Dictionary<string, string> CommandDescriptions => new Dictionary<string, string>
         {
-            { "help", "Show help with available commands ℹ️" },
-            { "backup", "Create a backup of notes 💾" },
-            { "export", "Export notes to a file 💾" },
-            { "edit", "Edit note by number 📝" },
-            { "view", "View note details 👁️" },
-            { "delall", "Delete all notes 💣" },
-            { "del", "Delete note by number 🗑️" },
-            { "delete", "Delete note by number 🗑️" },
-            { "search", "Search notes by text 🔍" },
-            { "searchtag", "Search notes by tag 🏷️" },
-            { "pin", "Pin note to top of list 📌" },
-            { "unpin", "Unpin note 📎" },
-            { "undo", "Undo last deletion ↩️" },
-            { "sort", "Sort notes by date or text 🔄" },
-            { "tagstyle", "Change tag display style (bold/italic) ✨" },
-            { "markdown", "Create multi-line markdown note 📝" },
-            { "md", "Create multi-line markdown note 📝" },
-            { "sync", "Sync notes to Git repository ☁️" },
-            { "restore", "Restore notes from Git repository ☁️" }
+            { "help", Resources.CommandHelp },
+            { "backup", Resources.CommandBackup },
+            { "export", Resources.CommandExport },
+            { "edit", Resources.CommandEdit },
+            { "view", Resources.CommandView },
+            { "delall", Resources.CommandDelAll },
+            { "del", Resources.CommandDel },
+            { "delete", Resources.CommandDel },
+            { "search", Resources.CommandSearch },
+            { "searchtag", Resources.CommandSearchTag },
+            { "pin", Resources.CommandPin },
+            { "unpin", Resources.CommandUnpin },
+            { "undo", Resources.CommandUndo },
+            { "sort", Resources.CommandSort },
+            { "tagstyle", Resources.CommandTagStyle },
+            { "markdown", Resources.CommandMarkdown },
+            { "md", Resources.CommandMarkdown },
+            { "sync", Resources.CommandSync },
+            { "restore", Resources.CommandRestore }
         };
 
         // Setting keys
@@ -188,49 +189,49 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
                 Key = NotesFolderPathKey,
-                DisplayLabel = "Notes folder path",
-                DisplayDescription = "Leave empty to use the default AppData location. The folder will be created if it does not exist.",
+                DisplayLabel = Resources.SettingsNotesFolderPath,
+                DisplayDescription = Resources.SettingsNotesFolderPathDesc,
                 TextBoxMaxLength = 500,
-                PlaceholderText = @"Example: C:\Users\User\Documents\QuickNotes",
+                PlaceholderText = Resources.SettingsNotesFolderPathPlaceholder,
             },
             new()
             {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Checkbox,
                 Key = EnableGitSyncKey,
-                DisplayLabel = "Enable Git Sync",
-                DisplayDescription = "Enable automatic synchronization with Git repository",
+                DisplayLabel = Resources.SettingsEnableGitSync,
+                DisplayDescription = Resources.SettingsEnableGitSyncDesc,
                 Value = false,
             },
             new()
             {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
                 Key = GitRepositoryUrlKey,
-                DisplayLabel = "Git Repository URL",
-                DisplayDescription = "Example: https://github.com/username/notes.git",
+                DisplayLabel = Resources.SettingsGitRepositoryUrl,
+                DisplayDescription = Resources.SettingsGitRepositoryUrlDesc,
                 TextBoxMaxLength = 500,
             },
             new()
             {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
                 Key = GitBranchKey,
-                DisplayLabel = "Git Branch",
-                DisplayDescription = "Branch name (default: main)",
+                DisplayLabel = Resources.SettingsGitBranch,
+                DisplayDescription = Resources.SettingsGitBranchDesc,
                 TextBoxMaxLength = 100,
             },
             new()
             {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
                 Key = GitUsernameKey,
-                DisplayLabel = "Git Username (optional)",
-                DisplayDescription = "Uses global git config if empty",
+                DisplayLabel = Resources.SettingsGitUsername,
+                DisplayDescription = Resources.SettingsGitUsernameDesc,
                 TextBoxMaxLength = 100,
             },
             new()
             {
                 PluginOptionType = PluginAdditionalOption.AdditionalOptionType.Textbox,
                 Key = GitEmailKey,
-                DisplayLabel = "Git Email (optional)",
-                DisplayDescription = "Uses global git config if empty",
+                DisplayLabel = Resources.SettingsGitEmail,
+                DisplayDescription = Resources.SettingsGitEmailDesc,
                 TextBoxMaxLength = 200,
             },
         ];
@@ -410,7 +411,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     suggestions.Add(new Result
                     {
                         Title = cmd,
-                        SubTitle = _commandDescriptions.ContainsKey(cmd) ? _commandDescriptions[cmd] : $"Execute command '{cmd}'",
+                        SubTitle = CommandDescriptions.ContainsKey(cmd) ? CommandDescriptions[cmd] : string.Format(Resources.ExecuteCommand, cmd),
                         IcoPath = IconPath,
                         Score = 1000,
                         Action = _ =>
@@ -435,8 +436,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 suggestions.Add(new Result
                 {
-                    Title = $"Add note: {searchText}",
-                    SubTitle = "Press Enter to save this note (with timestamp)",
+                    Title = string.Format(Resources.AddNote, searchText),
+                    SubTitle = Resources.AddNoteSubtitle,
                     IcoPath = IconPath,
                     Score = 10,
                     Action = _ =>
@@ -444,7 +445,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         if (execute)
                         {
                             CreateNote(searchText);
-                            Context?.API.ShowMsg("Note saved", $"Saved: {searchText}");
+                            Context?.API.ShowMsg(Resources.NoteSaved, string.Format(Resources.NoteSavedDesc, searchText));
                             return true;
                         }
                         return false;
@@ -476,7 +477,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         public List<Result> Query(Query query)
         {
             if (!_isInitialized)
-                return ErrorResult("QuickNotes not initialized", "Plugin not initialized properly. Please restart PowerToys.");
+                return ErrorResult(Resources.NotInitialized, Resources.NotInitializedDesc);
 
             var originalSearch = query.Search?.Trim() ?? string.Empty;
             var searchText = CleanupQuery(originalSearch);
@@ -494,8 +495,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     new Result
                     {
-                        Title = "Duplicate 'qq' detected",
-                        SubTitle = $"Using '{searchText}' instead. No need to type 'qq' twice.",
+                        Title = Resources.DuplicateQQDetected,
+                        SubTitle = string.Format(Resources.DuplicateQQDetectedDesc, searchText),
                         IcoPath = IconPath,
                         Score = 5000,
                         Action = _ => false
@@ -519,7 +520,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         results.Add(new Result
                         {
                             Title = cmd,
-                            SubTitle = _commandDescriptions.ContainsKey(cmd) ? _commandDescriptions[cmd] : $"Execute command '{cmd}'",
+                            SubTitle = CommandDescriptions.ContainsKey(cmd) ? CommandDescriptions[cmd] : string.Format(Resources.ExecuteCommand, cmd),
                             IcoPath = IconPath,
                             Score = 1000,
                             Action = _ =>
@@ -531,13 +532,14 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     }
                     results.Add(new Result
                     {
-                        Title = $"Add note: {searchText}",
-                        SubTitle = "Press Enter to save this note (with timestamp)",
+                        Title = string.Format(Resources.AddNote, searchText),
+                        SubTitle = Resources.AddNoteSubtitle,
                         IcoPath = IconPath,
                         Score = 50,
                                             Action = _ =>
                     {
                         CreateNote(searchText);
+                        Context?.API.ShowMsg(Resources.NoteSaved, string.Format(Resources.NoteSavedDesc, searchText));
                         return true;
                     }
                     });
@@ -606,17 +608,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     new Result
                     {
-                        Title = "⚠️ Git Sync is not enabled",
-                        SubTitle = "Enable it in PowerToys Settings → PowerToys Run → Plugins → QuickNotes",
+                        Title = Resources.GitSyncNotEnabled,
+                        SubTitle = Resources.GitSyncNotEnabledSubtitle,
                         IcoPath = IconPath,
                         Action = _ =>
                         {
-                            Context?.API.ShowMsg("Git Sync Disabled",
-                                "Go to PowerToys Settings → PowerToys Run → Plugins → QuickNotes → Additional Options\n\n" +
-                                "1. Check 'Enable Git Sync'\n" +
-                                "2. Set your Git Repository URL\n" +
-                                "3. Configure branch (default: main)\n" +
-                                "4. Optionally set username and email");
+                            Context?.API.ShowMsg(Resources.GitSyncDisabled, Resources.GitSyncDisabledInstructions);
                             return true;
                         }
                     }
@@ -629,16 +626,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     new Result
                     {
-                        Title = "⚠️ Git Repository not configured",
-                        SubTitle = "Click to see setup instructions",
+                        Title = Resources.GitRepoNotConfigured,
+                        SubTitle = Resources.GitRepoNotConfiguredSubtitle,
                         IcoPath = IconPath,
                         Action = _ =>
                         {
-                            Context?.API.ShowMsg("Configure Git Repository",
-                                "Go to PowerToys Settings → QuickNotes → Additional Options\n\n" +
-                                "Set your repository URL:\n" +
-                                "• HTTPS: https://github.com/username/notes.git\n" +
-                                "• SSH: git@github.com:username/notes.git");
+                            Context?.API.ShowMsg(Resources.ConfigureGitRepo, Resources.ConfigureGitRepoInstructions);
                             return true;
                         }
                     }
@@ -656,7 +649,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             if (_gitSyncService == null)
             {
-                return SingleInfoResult("❌ Git Sync Error", "Could not initialize Git Sync service.");
+                return SingleInfoResult(Resources.GitSyncError, Resources.GitSyncErrorDesc);
             }
 
             // Return a result that will trigger sync when user presses Enter
@@ -664,8 +657,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 new Result
                 {
-                    Title = "☁️ Sync notes to Git repository",
-                    SubTitle = $"Repository: {_settings.GitRepositoryUrl} | Branch: {_settings.GitBranch} | Press Enter to sync",
+                    Title = Resources.SyncNotesToGit,
+                    SubTitle = string.Format(Resources.SyncNotesToGitSubtitle, _settings.GitRepositoryUrl, _settings.GitBranch),
                     IcoPath = IconPath,
                     Action = _ =>
                     {
@@ -686,12 +679,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                     var progressDetail = string.Join("\n", progressMessages);
                                     if (progressMessages.Count > 0)
                                     {
-                                        Context?.API.ShowMsg(success ? "✅ Sync Completed" : "❌ Sync Failed",
-                                            $"{message}\n\nDetails:\n{progressDetail}");
+                                        Context?.API.ShowMsg(success ? Resources.SyncCompleted : Resources.SyncFailed,
+                                            $"{message}\n\n{Resources.Details}\n{progressDetail}");
                                     }
                                     else
                                     {
-                                        Context?.API.ShowMsg(success ? "✅ Sync Completed" : "❌ Sync Failed", message);
+                                        Context?.API.ShowMsg(success ? Resources.SyncCompleted : Resources.SyncFailed, message);
                                     }
                                 });
                             }
@@ -714,17 +707,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     new Result
                     {
-                        Title = "⚠️ Git Sync is not enabled",
-                        SubTitle = "Enable it in PowerToys Settings → PowerToys Run → Plugins → QuickNotes",
+                        Title = Resources.GitSyncNotEnabled,
+                        SubTitle = Resources.GitSyncNotEnabledSubtitle,
                         IcoPath = IconPath,
                         Action = _ =>
                         {
-                            Context?.API.ShowMsg("Git Sync Disabled",
-                                "Go to PowerToys Settings → PowerToys Run → Plugins → QuickNotes → Additional Options\n\n" +
-                                "1. Check 'Enable Git Sync'\n" +
-                                "2. Set your Git Repository URL\n" +
-                                "3. Configure branch (default: main)\n" +
-                                "4. Optionally set username and email");
+                            Context?.API.ShowMsg(Resources.GitSyncDisabled, Resources.GitSyncDisabledInstructions);
                             return true;
                         }
                     }
@@ -737,16 +725,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 {
                     new Result
                     {
-                        Title = "⚠️ Git Repository not configured",
-                        SubTitle = "Click to see setup instructions",
+                        Title = Resources.GitRepoNotConfigured,
+                        SubTitle = Resources.GitRepoNotConfiguredSubtitle,
                         IcoPath = IconPath,
                         Action = _ =>
                         {
-                            Context?.API.ShowMsg("Configure Git Repository",
-                                "Go to PowerToys Settings → QuickNotes → Additional Options\n\n" +
-                                "Set your repository URL:\n" +
-                                "• HTTPS: https://github.com/username/notes.git\n" +
-                                "• SSH: git@github.com:username/notes.git");
+                            Context?.API.ShowMsg(Resources.ConfigureGitRepo, Resources.ConfigureGitRepoInstructions);
                             return true;
                         }
                     }
@@ -764,7 +748,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             if (_gitSyncService == null)
             {
-                return SingleInfoResult("❌ Git Sync Error", "Could not initialize Git Sync service.");
+                return SingleInfoResult(Resources.GitSyncError, Resources.GitSyncErrorDesc);
             }
 
             // Show warning message
@@ -772,8 +756,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 new Result
                 {
-                    Title = "⚠️ Restore notes from Git repository?",
-                    SubTitle = $"Repository: {_settings.GitRepositoryUrl} | Branch: {_settings.GitBranch} | This will replace your local notes. Press Enter to continue.",
+                    Title = Resources.RestoreFromGit,
+                    SubTitle = string.Format(Resources.RestoreFromGitSubtitle, _settings.GitRepositoryUrl, _settings.GitBranch),
                     IcoPath = IconPath,
                     Action = _ =>
                     {
@@ -794,12 +778,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                     var progressDetail = string.Join("\n", progressMessages);
                                     if (progressMessages.Count > 0)
                                     {
-                                        Context?.API.ShowMsg(success ? "✅ Restore Completed" : "❌ Restore Failed",
-                                            $"{message}\n\nDetails:\n{progressDetail}");
+                                        Context?.API.ShowMsg(success ? Resources.RestoreCompleted : Resources.RestoreFailed,
+                                            $"{message}\n\n{Resources.Details}\n{progressDetail}");
                                     }
                                     else
                                     {
-                                        Context?.API.ShowMsg(success ? "✅ Restore Completed" : "❌ Restore Failed", message);
+                                        Context?.API.ShowMsg(success ? Resources.RestoreCompleted : Resources.RestoreFailed, message);
                                     }
                                 });
                             }
@@ -841,11 +825,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
             catch (IOException ex) when ((ex.HResult & 0x0000FFFF) == 32)
             {
-                Context?.API.ShowMsg("File in use", "Notes file is used by another process. Please try again shortly.");
+                Context?.API.ShowMsg(Resources.FileInUse, Resources.FileInUseDesc);
             }
             catch (Exception ex)
             {
-                Context?.API.ShowMsg("Error creating note", ex.Message);
+                Context?.API.ShowMsg(Resources.ErrorCreatingNote, ex.Message);
             }
         }
 
@@ -869,8 +853,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 new Result
                 {
-                    Title = "Create Markdown Note",
-                    SubTitle = "Open multi-line editor for markdown notes with live preview",
+                    Title = Resources.CreateMarkdownNote,
+                    SubTitle = Resources.CreateMarkdownNoteSubtitle,
                     IcoPath = IconPath,
                     Score = 1000,
                     Action = _ =>
@@ -883,7 +867,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             if (result == true && !string.IsNullOrWhiteSpace(dialog.ResultText))
                             {
                                 CreateNote(dialog.ResultText);
-                                Context?.API.ShowMsg("Markdown Note Saved", "Your multi-line markdown note has been saved successfully!");
+                                Context?.API.ShowMsg(Resources.MarkdownNoteSaved, Resources.MarkdownNoteSavedDesc);
                                 Context?.API.ChangeQuery("qq", true); // Refresh the notes list
                             }
                             
@@ -891,7 +875,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         }
                         catch (Exception ex)
                         {
-                            Context?.API.ShowMsg("Error", $"Failed to open markdown editor: {ex.Message}");
+                            Context?.API.ShowMsg(Resources.Error, string.Format(Resources.FailedToOpenMarkdownEditor, ex.Message));
                             return false;
                         }
                     }
@@ -908,8 +892,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             {
                 new Result
                 {
-                    Title = $"Add note: {noteText}",
-                    SubTitle = "Press Enter to save this note (with timestamp)",
+                    Title = string.Format(Resources.AddNote, noteText),
+                    SubTitle = Resources.AddNoteSubtitle,
                     IcoPath = IconPath,
                     Action = _ =>
                     {
@@ -924,7 +908,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private List<Result> SearchNotes(string searchTerm)
         {
             if (string.IsNullOrWhiteSpace(searchTerm))
-                return SingleInfoResult("Search QuickNotes", "Usage: qq search <term>");
+                return SingleInfoResult(Resources.SearchQuickNotes, Resources.SearchUsage);
 
             var notes = ReadNotes();
             var matches = notes
@@ -932,15 +916,13 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 .ToList();
 
             if (!matches.Any())
-                return SingleInfoResult("No matches found", $"No notes contain '{searchTerm}'.");
+                return SingleInfoResult(Resources.NoMatchesFound, string.Format(Resources.NoNotesContain, searchTerm));
 
             var results = new List<Result>();
             foreach (var match in matches)
             {
                 var highlighted = HighlightMatch(match.Text, searchTerm);
-                results.Add(CreateNoteResult(match,
-                    $"Press Enter to copy | Shift+Enter for content only | Ctrl+Click to Edit",
-                    highlighted));
+                results.Add(CreateNoteResult(match, Resources.SearchNoteSubtitle, highlighted));
             }
             return results;
         }
@@ -954,7 +936,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private List<Result> SearchTag(string tag)
         {
             if (string.IsNullOrWhiteSpace(tag))
-                return SingleInfoResult("Search by Tag", "Usage: qq searchtag <tag> (e.g., qq searchtag work)");
+                return SingleInfoResult(Resources.SearchByTag, Resources.SearchByTagUsage);
 
             var tagSearch = tag.StartsWith('#') ? tag : "#" + tag;
             var notes = ReadNotes();
@@ -963,13 +945,13 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 .ToList();
 
             if (!matches.Any())
-                return SingleInfoResult("No matches found", $"No notes found with tag '{tagSearch}'.");
+                return SingleInfoResult(Resources.NoMatchesFound, string.Format(Resources.NoNotesWithTag, tagSearch));
 
             var results = new List<Result>();
             foreach (var match in matches)
             {
                 var highlighted = HighlightMatch(match.Text, tagSearch);
-                results.Add(CreateNoteResult(match, $"Found note with tag '{tagSearch}'. Enter to copy.", highlighted));
+                results.Add(CreateNoteResult(match, string.Format(Resources.FoundNoteWithTag, tagSearch), highlighted));
             }
             return results;
         }
@@ -1018,16 +1000,16 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (style.Equals("bold", StringComparison.OrdinalIgnoreCase))
             {
                 _useItalicForTags = false;
-                return SingleInfoResult("Tag style set to bold", "Tags will now appear as 【#tag】", true);
+                return SingleInfoResult(Resources.TagStyleSetToBold, Resources.TagStyleBoldDesc, true);
             }
             else if (style.Equals("italic", StringComparison.OrdinalIgnoreCase))
             {
                 _useItalicForTags = true;
-                return SingleInfoResult("Tag style set to italic", "Tags will now appear as 〈#tag〉", true);
+                return SingleInfoResult(Resources.TagStyleSetToItalic, Resources.TagStyleItalicDesc, true);
             }
             else
             {
-                return SingleInfoResult("Invalid tag style", "Use 'qq tagstyle bold' or 'qq tagstyle italic'");
+                return SingleInfoResult(Resources.InvalidTagStyle, Resources.InvalidTagStyleDesc);
             }
         }
 
@@ -1048,7 +1030,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
             if (pinned.Any())
             {
-                results.Add(new Result { Title = "--- Pinned Notes ---", IcoPath = IconPath, Action = _ => false });
+                results.Add(new Result { Title = Resources.PinnedNotes, IcoPath = IconPath, Action = _ => false });
                 foreach (var note in pinned)
                 {
                     var highlighted = string.IsNullOrWhiteSpace(currentSearch)
@@ -1056,7 +1038,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         : HighlightMatch(note.Text, currentSearch);
 
                     results.Add(CreateNoteResult(note,
-                        $"Pinned | Enter to copy clean content (no timestamp/tags) | Ctrl+Click to Edit | qq unpin {note.DisplayIndex}",
+                        string.Format(Resources.PinnedNoteSubtitle, note.DisplayIndex),
                         highlighted));
                 }
             }
@@ -1064,7 +1046,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (regular.Any())
             {
                 if (pinned.Any())
-                    results.Add(new Result { Title = "--- Notes ---", IcoPath = IconPath, Action = _ => false });
+                    results.Add(new Result { Title = Resources.Notes, IcoPath = IconPath, Action = _ => false });
 
                 foreach (var note in regular)
                 {
@@ -1072,18 +1054,16 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         ? note.Text
                         : HighlightMatch(note.Text, currentSearch);
 
-                    results.Add(CreateNoteResult(note,
-                        $"Press Enter to copy without timestamp | Ctrl+C for full note | Ctrl+Click to Edit",
-                        highlighted));
+                    results.Add(CreateNoteResult(note, Resources.NoteSubtitle, highlighted));
                 }
             }
 
             if (!pinned.Any() && !regular.Any())
             {
                 if (string.IsNullOrEmpty(currentSearch))
-                    results.Add(SingleInfoResult("No notes found", "Type 'qq <your note>' to add one, or 'qq help' for commands.").First());
+                    results.Add(SingleInfoResult(Resources.NoNotesFound, Resources.NoNotesFoundDesc).First());
                 else
-                    results.Add(SingleInfoResult($"No notes match '{currentSearch}'", "Try a different search or add a new note.").First());
+                    results.Add(SingleInfoResult(string.Format(Resources.NoNotesMatch, currentSearch), Resources.NoNotesMatchDesc).First());
             }
 
             if (!string.IsNullOrWhiteSpace(currentSearch))
@@ -1116,8 +1096,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 SubTitle = subTitle,
                 IcoPath = IconPath,
                 ToolTipData = new ToolTipData(
-                    "Note Details",
-                    $"ID: {note.Id}\nDisplay Index: {note.DisplayIndex}\nPinned: {note.IsPinned}\nCreated: {(note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : "Unknown")}\nText: {DecodeMultiLineNote(note.Text)}\n\nTip: Right-click for copy options or edit."
+                    Resources.NoteDetails,
+                    string.Format(Resources.NoteDetailsTooltip, note.Id, note.DisplayIndex, note.IsPinned, 
+                        note.Timestamp != DateTime.MinValue ? note.Timestamp.ToString("g") : Resources.Unknown, 
+                        DecodeMultiLineNote(note.Text))
                 ),
                 ContextData = note,
                 Action = customAction ?? (c =>
@@ -1130,7 +1112,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     }
                     catch (Exception ex)
                     {
-                        Context?.API.ShowMsg("Error", $"Failed to copy note: {ex.Message}");
+                        Context?.API.ShowMsg(Resources.Error, string.Format(Resources.FailedToCopyNote, ex.Message));
                         return false;
                     }
                 })
@@ -1164,8 +1146,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 if (noteToDelete.entry == null)
                 {
                     var available = notes.Select(n => n.entry.DisplayIndex).OrderBy(x => x).ToList();
-                    return SingleInfoResult("Note not found",
-                        $"Note number {targetIndex} does not exist.\nAvailable: {string.Join(", ", available)}");
+                    return SingleInfoResult(Resources.NoteNotFound,
+                        string.Format(Resources.NoteNotFoundDesc, targetIndex, string.Join(", ", available)));
                 }
 
                 // Якщо не підтверджено - показуємо запит на підтвердження
@@ -1175,8 +1157,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     {
                         new Result
                         {
-                            Title = "Confirm Deletion",
-                            SubTitle = $"Delete note #{targetIndex}?\n{Truncate(StripTimestamp(noteToDelete.entry.Text), 100)}\nPress Enter to confirm",
+                            Title = Resources.ConfirmDeletion,
+                            SubTitle = string.Format(Resources.ConfirmDeleteNote, targetIndex, Truncate(StripTimestamp(noteToDelete.entry.Text), 100)),
                             IcoPath = IconPath,
                             Score = 1000,
                             Action = _ =>
@@ -1189,8 +1171,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         },
                         new Result
                         {
-                            Title = "Cancel",
-                            SubTitle = "Keep this note",
+                            Title = Resources.Cancel,
+                            SubTitle = Resources.KeepThisNote,
                             IcoPath = IconPath,
                             Score = 999,
                             Action = _ => true
@@ -1220,8 +1202,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         {
                             new Result
                             {
-                                Title = "Confirm Deletion",
-                                SubTitle = $"Delete note #{exactMatches[0].entry.DisplayIndex}?\n{Truncate(StripTimestamp(exactMatches[0].entry.Text), 100)}\nPress Enter to confirm",
+                                Title = Resources.ConfirmDeletion,
+                                SubTitle = string.Format(Resources.ConfirmDeleteNote, exactMatches[0].entry.DisplayIndex, Truncate(StripTimestamp(exactMatches[0].entry.Text), 100)),
                                 IcoPath = IconPath,
                                 Score = 1000,
                                 Action = _ =>
@@ -1233,8 +1215,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             },
                             new Result
                             {
-                                Title = "Cancel",
-                                SubTitle = "Keep this note",
+                                Title = Resources.Cancel,
+                                SubTitle = Resources.KeepThisNote,
                                 IcoPath = IconPath,
                                 Action = _ => true
                             }
@@ -1250,8 +1232,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     {
                         new Result
                         {
-                            Title = "Multiple matching notes found",
-                            SubTitle = "Please select a specific note to delete:",
+                            Title = Resources.MultipleMatchingNotes,
+                            SubTitle = Resources.SelectNoteToDelete,
                             IcoPath = IconPath,
                             Score = 1000
                         }
@@ -1261,8 +1243,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     {
                         results.Add(new Result
                         {
-                            Title = $"Delete #{match.entry.DisplayIndex}: {Truncate(StripTimestamp(match.entry.Text), 70)}",
-                            SubTitle = match.entry.IsPinned ? "[PINNED] Press Enter to delete" : "Press Enter to delete",
+                            Title = string.Format(Resources.DeleteNoteNumber, match.entry.DisplayIndex, Truncate(StripTimestamp(match.entry.Text), 70)),
+                            SubTitle = match.entry.IsPinned ? Resources.PinnedPressEnterToDelete : Resources.PressEnterToDelete,
                             IcoPath = IconPath,
                             Score = 900 - match.entry.DisplayIndex,
                             Action = _ =>
@@ -1291,8 +1273,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             {
                                 new Result
                                 {
-                                    Title = "Confirm Deletion",
-                                    SubTitle = $"Delete note #{partialMatches[0].entry.DisplayIndex}?\n{Truncate(StripTimestamp(partialMatches[0].entry.Text), 100)}\nPress Enter to confirm",
+                                    Title = Resources.ConfirmDeletion,
+                                    SubTitle = string.Format(Resources.ConfirmDeleteNote, partialMatches[0].entry.DisplayIndex, Truncate(StripTimestamp(partialMatches[0].entry.Text), 100)),
                                     IcoPath = IconPath,
                                     Score = 1000,
                                     Action = _ =>
@@ -1304,8 +1286,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                 },
                                 new Result
                                 {
-                                    Title = "Cancel",
-                                    SubTitle = "Keep this note",
+                                    Title = Resources.Cancel,
+                                    SubTitle = Resources.KeepThisNote,
                                     IcoPath = IconPath,
                                     Action = _ => true
                                 }
@@ -1321,8 +1303,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         {
                             new Result
                             {
-                                Title = "Multiple partial matching notes found",
-                                SubTitle = "Please select a specific note to delete:",
+                                Title = Resources.MultiplePartialMatchingNotes,
+                                SubTitle = Resources.SelectNoteToDelete,
                                 IcoPath = IconPath,
                                 Score = 1000
                             }
@@ -1332,8 +1314,8 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         {
                             results.Add(new Result
                             {
-                                Title = $"Delete #{match.entry.DisplayIndex}: {Truncate(StripTimestamp(match.entry.Text), 70)}", 
-                                SubTitle = match.entry.IsPinned ? "[PINNED] Press Enter to delete" : "Press Enter to delete",
+                                Title = string.Format(Resources.DeleteNoteNumber, match.entry.DisplayIndex, Truncate(StripTimestamp(match.entry.Text), 70)), 
+                                SubTitle = match.entry.IsPinned ? Resources.PinnedPressEnterToDelete : Resources.PressEnterToDelete,
                                 IcoPath = IconPath,
                                 Score = 900 - match.entry.DisplayIndex,
                                 Action = _ =>
@@ -1348,7 +1330,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     }
                     else
                     {
-                        return SingleInfoResult("Note not found", $"No note with content '{indexOrText}' was found. Try using the note number instead.");
+                        return SingleInfoResult(Resources.NoteNotFound, string.Format(Resources.NoteNotFoundByContent, indexOrText));
                     }
                 }
             }
@@ -1366,7 +1348,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 var lineToRemove = rawLines.FirstOrDefault(line => line.StartsWith(idPrefix));
                 if (lineToRemove == null)
                 {
-                    return ErrorResult("Note not found", "The note was not found in the file. It may have been deleted already.");
+                    return ErrorResult(Resources.NoteNotFound, Resources.NoteNotFoundInFile);
                 }
 
                 // Зберігаємо для Undo
@@ -1378,13 +1360,13 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
                 // Показуємо користувачу короткий текст нотатки
                 var displayText = StripTimestamp(noteToRemove.Text);
-                return SingleInfoResult("Note deleted",
-                    $"Removed note #{noteToRemove.DisplayIndex}: {Truncate(displayText, 60)}\nTip: Use 'qq undo' to restore the note.", true);
+                return SingleInfoResult(Resources.NoteDeleted,
+                    string.Format(Resources.NoteDeletedDesc, noteToRemove.DisplayIndex, Truncate(displayText, 60)), true);
             }
             catch (Exception ex)
             {
-                return ErrorResult("Error deleting note", 
-                    $"Could not delete note: {ex.Message}\nPlease try again or restart PowerToys Run.");
+                return ErrorResult(Resources.ErrorDeletingNote, 
+                    string.Format(Resources.ErrorDeletingNoteDesc, ex.Message));
             }
         }
 
@@ -1399,7 +1381,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (noteToUpdate == null)
             {
                 var available = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
-                return SingleInfoResult("Note not found", $"Note #{displayIndex} does not exist. Available: {string.Join(", ", available)}");
+                return SingleInfoResult(Resources.NoteNotFound, string.Format(Resources.NoteDoesNotExist, displayIndex, string.Join(", ", available)));
             }
 
             try
@@ -1408,7 +1390,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 var idPrefix = $"[id:{noteToUpdate.Id}]";
                 var index = rawLines.FindIndex(line => line.StartsWith(idPrefix));
                 if (index < 0)
-                    return ErrorResult("Note not found", "Could not find the note in the file.");
+                    return ErrorResult(Resources.NoteNotFound, Resources.CouldNotFindNoteInFile);
 
                 var entryToChange = NoteEntry.Parse(rawLines[index]);
                 entryToChange.IsPinned = pin;
@@ -1416,11 +1398,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 WriteNotes(rawLines);
 
                 _lastDeletedNoteRaw = null;
-                return SingleInfoResult($"Note {(pin ? "pinned" : "unpinned")}", $"[{displayIndex}] {entryToChange.Text}", true);
+                return SingleInfoResult(pin ? Resources.NotePinned : Resources.NoteUnpinned, $"[{displayIndex}] {entryToChange.Text}", true);
             }
             catch (Exception ex)
             {
-                return ErrorResult($"Error {(pin ? "pinning" : "unpinning")} note", ex.Message);
+                return ErrorResult(pin ? Resources.ErrorPinningNote : Resources.ErrorUnpinningNote, ex.Message);
             }
         }
 
@@ -1428,7 +1410,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             var notes = ReadNotes();
             if (!notes.Any())
-                return SingleInfoResult("No notes to sort", "");
+                return SingleInfoResult(Resources.NoNotesToSort, "");
 
             var sortType = args.ToLowerInvariant().Trim();
             var descending = sortType.EndsWith(" desc");
@@ -1455,7 +1437,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                                .ThenBy(n => n.DisplayIndex);
                     break;
                 default:
-                    return SingleInfoResult("Invalid sort type", "Use 'qq sort date [asc|desc]' or 'qq sort alpha [asc|desc]'");
+                    return SingleInfoResult(Resources.InvalidSortType, Resources.InvalidSortTypeDesc);
             }
 
             try
@@ -1463,11 +1445,11 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 var linesToWrite = sorted.Select(n => n.ToFileLine()).ToList();
                 WriteNotes(linesToWrite);
                 _lastDeletedNoteRaw = null;
-                return SingleInfoResult("Notes sorted", $"Sorted by {sortType} {(descending ? "descending" : (ascending ? "ascending" : "(default asc)"))}", true);
+                return SingleInfoResult(Resources.NotesSorted, string.Format(Resources.NotesSortedDesc, sortType, descending ? Resources.Descending : (ascending ? Resources.Ascending : Resources.DefaultAsc)), true);
             }
             catch (Exception ex)
             {
-                return ErrorResult("Error sorting notes", ex.Message);
+                return ErrorResult(Resources.ErrorSortingNotes, ex.Message);
             }
         }
 
@@ -1481,20 +1463,20 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (noteToEdit == null)
             {
                 var available = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
-                return SingleInfoResult("Note not found", $"Note #{displayIndex} does not exist. Available: {string.Join(", ", available)}");
+                return SingleInfoResult(Resources.NoteNotFound, string.Format(Resources.NoteDoesNotExist, displayIndex, string.Join(", ", available)));
             }
 
             return new List<Result>
             {
                 new Result
                 {
-                    Title = $"Edit note #{displayIndex}",
-                    SubTitle = $"Press Enter to edit: {Truncate(StripTimestamp(noteToEdit.Text), 60)}",
+                    Title = string.Format(Resources.EditNoteNumber, displayIndex),
+                    SubTitle = string.Format(Resources.EditNoteSubtitle, Truncate(StripTimestamp(noteToEdit.Text), 60)),
                     IcoPath = IconPath,
                     Action = _ =>
                     {
                         var textToEdit = StripTimestamp(noteToEdit.Text);
-                        var newText = Interaction.InputBox($"Edit note #{displayIndex}", "Edit QuickNote", textToEdit);
+                        var newText = Interaction.InputBox(string.Format(Resources.EditNoteNumber, displayIndex), Resources.EditQuickNote, textToEdit);
                         if (string.IsNullOrEmpty(newText) || newText == textToEdit)
                         {
                             return true;
@@ -1515,7 +1497,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             var index = rawLines.FindIndex(line => line.StartsWith(idPrefix));
                             if (index < 0)
                             {
-                                Context?.API.ShowMsg("Error", "Could not find the note in the file.", IconPath);
+                                Context?.API.ShowMsg(Resources.Error, Resources.CouldNotFindNoteInFile, IconPath);
                                 return true;
                             }
 
@@ -1526,7 +1508,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         }
                         catch (Exception ex)
                         {
-                            Context?.API.ShowMsg("Error saving edited note", ex.Message, IconPath);
+                            Context?.API.ShowMsg(Resources.ErrorSavingEditedNote, ex.Message, IconPath);
                             return true;
                         }
                     }
@@ -1537,7 +1519,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         private void EditNoteInline(NoteEntry note)
         {
             var textToEdit = StripTimestamp(note.Text);
-            var newText = Interaction.InputBox($"Edit note #{note.DisplayIndex}", "Edit QuickNote", textToEdit);
+            var newText = Interaction.InputBox(string.Format(Resources.EditNoteNumber, note.DisplayIndex), Resources.EditQuickNote, textToEdit);
             if (string.IsNullOrEmpty(newText) || newText == textToEdit)
             {
                 return;
@@ -1556,7 +1538,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 var index = rawLines.FindIndex(line => line.StartsWith(idPrefix));
                 if (index < 0)
                 {
-                    Context?.API.ShowMsg("Error", "Could not find note to save edit. Refresh and retry.", IconPath);
+                    Context?.API.ShowMsg(Resources.Error, Resources.CouldNotFindNoteToSaveEdit, IconPath);
                     return;
                 }
 
@@ -1567,7 +1549,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
             catch (Exception ex)
             {
-                Context?.API.ShowMsg("Error saving note", ex.Message, IconPath);
+                Context?.API.ShowMsg(Resources.ErrorSavingNote, ex.Message, IconPath);
             }
         }
 
@@ -1581,10 +1563,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             if (note == null)
             {
                 var available = notes.Select(n => n.DisplayIndex).OrderBy(x => x).ToList();
-                return SingleInfoResult("Note not found", $"Note #{displayIndex} does not exist. Available: {string.Join(", ", available)}");
+                return SingleInfoResult(Resources.NoteNotFound, string.Format(Resources.NoteDoesNotExist, displayIndex, string.Join(", ", available)));
             }
 
-            return new List<Result> { CreateNoteResult(note, "Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for options") };
+            return new List<Result> { CreateNoteResult(note, Resources.ViewNoteSubtitle) };
         }
 
         private List<Result> BackupNotes()
@@ -1592,7 +1574,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             try
             {
                 if (!File.Exists(_notesPath))
-                    return SingleInfoResult("No notes file to backup", "The notes file doesn't exist.");
+                    return SingleInfoResult(Resources.NoNotesFileToBackup, Resources.NotesFileDoesntExist);
 
                 var notesDir = Path.GetDirectoryName(_notesPath)!;
                 var backupFile = Path.Combine(notesDir, $"notes_backup_{DateTime.Now:yyyyMMdd_HHmmss}.txt");
@@ -1607,12 +1589,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     Log.Exception("Failed to open backup folder", ex, GetType());
                 }
 
-                return SingleInfoResult("Backup created",
-                    $"Backup saved to: {backupFile}\nBackup folder opened.", true);
+                return SingleInfoResult(Resources.BackupCreated,
+                    string.Format(Resources.BackupCreatedDesc, backupFile), true);
             }
             catch (Exception ex)
             {
-                return ErrorResult("Error creating backup", ex.Message);
+                return ErrorResult(Resources.ErrorCreatingBackup, ex.Message);
             }
         }
 
@@ -1621,12 +1603,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             try
             {
                 if (!File.Exists(_notesPath))
-                    return SingleInfoResult("No notes file to export", "The notes file doesn't exist.");
+                    return SingleInfoResult(Resources.NoNotesFileToExport, Resources.NotesFileDoesntExist);
 
                 var notes = ReadNotes();
                 if (!notes.Any())
                 {
-                    return SingleInfoResult("No notes to export", "Your notes file is empty.");
+                    return SingleInfoResult(Resources.NoNotesToExport, Resources.NotesFileEmpty);
                 }
 
                 var notesDir = Path.GetDirectoryName(_notesPath)!;
@@ -1655,12 +1637,12 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     Log.Exception("Failed to open export folder", ex, GetType());
                 }
 
-                return SingleInfoResult("Export created",
-                    $"Export saved to: {exportFile}\nExport folder opened.", true);
+                return SingleInfoResult(Resources.ExportCreated,
+                    string.Format(Resources.ExportCreatedDesc, exportFile), true);
             }
             catch (Exception ex)
             {
-                return ErrorResult("Error creating export", ex.Message);
+                return ErrorResult(Resources.ErrorCreatingExport, ex.Message);
             }
         }
 
@@ -1671,19 +1653,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
 
         private Result HelpResult()
         {
-            var helpText =
-                "qq <text>              Add note ✏️       | qq pin <N>             Pin note 📌\n" +
-                "qq search <text>        Search notes 🔍      | qq searchtag <tag>     Search by tag\n" +
-                "qq view <N>              View note         | qq sort <field> <dir>  Sort notes\n" +
-                "qq edit <N> <new text>   Edit note ✏️      | qq pin/unpin <N>     Pin/unpin note 📌\n" +
-                "qq del <N>             Delete note 🗑️    | qq backup/export       Backup/Export notes 💾\n" +
-                "qq delall              Delete all notes    | qq undo                Undo last delete\n" +
-                "qq tagstyle <style>    hash/fancy style";
-
             return new Result
             {
-                Title = "QuickNotes Help",
-                SubTitle = helpText,
+                Title = Resources.QuickNotesHelp,
+                SubTitle = Resources.HelpText,
                 IcoPath = IconPath,
                 Action = _ => false
             };
@@ -1716,7 +1689,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
             catch (Exception ex)
             {
-                Context?.API.ShowMsg("Error reading notes", ex.Message);
+                Context?.API.ShowMsg(Resources.ErrorReadingNotes, ex.Message);
                 return new List<NoteEntry>();
             }
         }
@@ -1741,7 +1714,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
             catch (Exception ex)
             {
-                Context?.API.ShowMsg("Error reading notes", ex.Message);
+                Context?.API.ShowMsg(Resources.ErrorReadingNotes, ex.Message);
                 return new List<string>();
             }
         }
@@ -1768,7 +1741,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             }
             catch (Exception ex)
             {
-                Context?.API.ShowMsg("Error writing notes", ex.Message);
+                Context?.API.ShowMsg(Resources.ErrorWritingNotes, ex.Message);
             }
         }
 
@@ -1783,22 +1756,22 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         {
             if (!int.TryParse(indexStr, out displayIndex) || displayIndex <= 0)
             {
-                errorResult = SingleInfoResult("Invalid note number", "Specify a valid positive number. E.g. 'qq del 3'");
+                errorResult = SingleInfoResult(Resources.InvalidNoteNumber, Resources.InvalidNoteNumberDesc);
                 return false;
             }
 
             var notes = ReadNotes();
             if (!notes.Any())
             {
-                errorResult = SingleInfoResult("No notes found", "No notes to operate on. Add a note first.");
+                errorResult = SingleInfoResult(Resources.NoNotesFound, Resources.NoNotesToOperate);
                 return false;
             }
 
             var maxIdx = notes.Max(n => n.DisplayIndex);
             if (displayIndex > maxIdx)
             {
-                errorResult = SingleInfoResult("Invalid note number",
-                    $"Note #{displayIndex} does not exist. Highest is {maxIdx}.\nAvailable: {string.Join(", ", notes.Select(n => n.DisplayIndex).OrderBy(x => x))}");
+                errorResult = SingleInfoResult(Resources.InvalidNoteNumber,
+                    string.Format(Resources.NoteNumberDoesNotExist, displayIndex, maxIdx, string.Join(", ", notes.Select(n => n.DisplayIndex).OrderBy(x => x))));
                 return false;
             }
 
@@ -1848,7 +1821,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 items.Add(new ContextMenuResult
                 {
                     PluginName = Name,
-                    Title = "Copy Full Note (with timestamp)",
+                    Title = Resources.CopyFullNote,
                     FontFamily = "Segoe MDL2 Assets",
                     Glyph = "\uE8C8",
                     AcceleratorKey = Key.C,
@@ -1862,7 +1835,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         }
                         catch (Exception ex)
                         {
-                            Context?.API.ShowMsg("Error", $"Failed to copy: {ex.Message}");
+                            Context?.API.ShowMsg(Resources.Error, string.Format(Resources.FailedToCopy, ex.Message));
                             return false;
                         }
                     }
@@ -1873,7 +1846,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 items.Add(new ContextMenuResult
                 {
                     PluginName = Name,
-                    Title = "Copy Clean Content (no timestamp, no tags)",
+                    Title = Resources.CopyCleanContent,
                     FontFamily = "Segoe MDL2 Assets",
                     Glyph = "\uE8C9",
                     AcceleratorKey = Key.C,
@@ -1887,7 +1860,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                         }
                         catch (Exception ex)
                         {
-                            Context?.API.ShowMsg("Error", $"Failed to copy: {ex.Message}");
+                            Context?.API.ShowMsg(Resources.Error, string.Format(Resources.FailedToCopy, ex.Message));
                             return false;
                         }
                     }
@@ -1897,7 +1870,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 items.Add(new ContextMenuResult
                 {
                     PluginName = Name,
-                    Title = "Edit Note...",
+                    Title = Resources.EditNote,
                     FontFamily = "Segoe MDL2 Assets",
                     Glyph = "\uE70F",
                     AcceleratorKey = Key.E,
@@ -1913,7 +1886,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 items.Add(new ContextMenuResult
                 {
                     PluginName = Name,
-                    Title = "Delete Note",
+                    Title = Resources.DeleteNote,
                     FontFamily = "Segoe MDL2 Assets",
                     Glyph = "\uE74D",
                     AcceleratorKey = Key.Delete,
@@ -1928,7 +1901,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                 items.Add(new ContextMenuResult
                 {
                     PluginName = Name,
-                    Title = note.IsPinned ? "Unpin Note" : "Pin Note",
+                    Title = note.IsPinned ? Resources.UnpinNote : Resources.PinNote,
                     FontFamily = "Segoe MDL2 Assets",
                     Glyph = note.IsPinned ? "\uE77A" : "\uE718",
                     Action = _ =>
@@ -1949,7 +1922,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     items.Add(new ContextMenuResult
                     {
                         PluginName = Name,
-                        Title = $"Open URL: {url.Substring(0, Math.Min(url.Length, 40))}{(url.Length > 40 ? "..." : "")}",
+                        Title = string.Format(Resources.OpenUrl, url.Substring(0, Math.Min(url.Length, 40)) + (url.Length > 40 ? "..." : "")),
                         FontFamily = "Segoe MDL2 Assets",
                         Glyph = "\uE774",
                         AcceleratorKey = Key.U,
@@ -1963,7 +1936,7 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                             }
                             catch (Exception ex)
                             {
-                                Context?.API.ShowMsg("Error", $"Could not open URL: {ex.Message}");
+                                Context?.API.ShowMsg(Resources.Error, string.Format(Resources.CouldNotOpenUrl, ex.Message));
                                 return false;
                             }
                         }

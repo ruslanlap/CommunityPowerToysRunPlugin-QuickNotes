@@ -1,0 +1,701 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Plugin Info -->
+  <data name="PluginName" xml:space="preserve">
+    <value>QuickNotes</value>
+    <comment>The name of the plugin</comment>
+  </data>
+  <data name="PluginDescription" xml:space="preserve">
+    <value>Save, view, manage, search, tag, and pin quick notes</value>
+    <comment>The description of the plugin</comment>
+  </data>
+
+  <!-- Command Descriptions -->
+  <data name="CommandHelp" xml:space="preserve">
+    <value>Show help with available commands ℹ️</value>
+  </data>
+  <data name="CommandBackup" xml:space="preserve">
+    <value>Create a backup of notes 💾</value>
+  </data>
+  <data name="CommandExport" xml:space="preserve">
+    <value>Export notes to a file 💾</value>
+  </data>
+  <data name="CommandEdit" xml:space="preserve">
+    <value>Edit note by number 📝</value>
+  </data>
+  <data name="CommandView" xml:space="preserve">
+    <value>View note details 👁️</value>
+  </data>
+  <data name="CommandDelAll" xml:space="preserve">
+    <value>Delete all notes 💣</value>
+  </data>
+  <data name="CommandDel" xml:space="preserve">
+    <value>Delete note by number 🗑️</value>
+  </data>
+  <data name="CommandSearch" xml:space="preserve">
+    <value>Search notes by text 🔍</value>
+  </data>
+  <data name="CommandSearchTag" xml:space="preserve">
+    <value>Search notes by tag 🏷️</value>
+  </data>
+  <data name="CommandPin" xml:space="preserve">
+    <value>Pin note to top of list 📌</value>
+  </data>
+  <data name="CommandUnpin" xml:space="preserve">
+    <value>Unpin note 📎</value>
+  </data>
+  <data name="CommandUndo" xml:space="preserve">
+    <value>Undo last deletion ↩️</value>
+  </data>
+  <data name="CommandSort" xml:space="preserve">
+    <value>Sort notes by date or text 🔄</value>
+  </data>
+  <data name="CommandTagStyle" xml:space="preserve">
+    <value>Change tag display style (bold/italic) ✨</value>
+  </data>
+  <data name="CommandMarkdown" xml:space="preserve">
+    <value>Create multi-line markdown note 📝</value>
+  </data>
+  <data name="CommandSync" xml:space="preserve">
+    <value>Sync notes to Git repository ☁️</value>
+  </data>
+  <data name="CommandRestore" xml:space="preserve">
+    <value>Restore notes from Git repository ☁️</value>
+  </data>
+
+  <!-- Settings Labels -->
+  <data name="SettingsNotesFolderPath" xml:space="preserve">
+    <value>Notes folder path</value>
+  </data>
+  <data name="SettingsNotesFolderPathDesc" xml:space="preserve">
+    <value>Leave empty to use the default AppData location. The folder will be created if it does not exist.</value>
+  </data>
+  <data name="SettingsNotesFolderPathPlaceholder" xml:space="preserve">
+    <value>Example: C:\Users\User\Documents\QuickNotes</value>
+  </data>
+  <data name="SettingsEnableGitSync" xml:space="preserve">
+    <value>Enable Git Sync</value>
+  </data>
+  <data name="SettingsEnableGitSyncDesc" xml:space="preserve">
+    <value>Enable automatic synchronization with Git repository</value>
+  </data>
+  <data name="SettingsGitRepositoryUrl" xml:space="preserve">
+    <value>Git Repository URL</value>
+  </data>
+  <data name="SettingsGitRepositoryUrlDesc" xml:space="preserve">
+    <value>Example: https://github.com/username/notes.git</value>
+  </data>
+  <data name="SettingsGitBranch" xml:space="preserve">
+    <value>Git Branch</value>
+  </data>
+  <data name="SettingsGitBranchDesc" xml:space="preserve">
+    <value>Branch name (default: main)</value>
+  </data>
+  <data name="SettingsGitUsername" xml:space="preserve">
+    <value>Git Username (optional)</value>
+  </data>
+  <data name="SettingsGitUsernameDesc" xml:space="preserve">
+    <value>Uses global git config if empty</value>
+  </data>
+  <data name="SettingsGitEmail" xml:space="preserve">
+    <value>Git Email (optional)</value>
+  </data>
+  <data name="SettingsGitEmailDesc" xml:space="preserve">
+    <value>Uses global git config if empty</value>
+  </data>
+
+  <!-- Messages and Titles -->
+  <data name="NotInitialized" xml:space="preserve">
+    <value>QuickNotes not initialized</value>
+  </data>
+  <data name="NotInitializedDesc" xml:space="preserve">
+    <value>Plugin not initialized properly. Please restart PowerToys.</value>
+  </data>
+  <data name="DuplicateQQDetected" xml:space="preserve">
+    <value>Duplicate 'qq' detected</value>
+  </data>
+  <data name="DuplicateQQDetectedDesc" xml:space="preserve">
+    <value>Using '{0}' instead. No need to type 'qq' twice.</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Add note: {0}</value>
+  </data>
+  <data name="AddNoteSubtitle" xml:space="preserve">
+    <value>Press Enter to save this note (with timestamp)</value>
+  </data>
+  <data name="ExecuteCommand" xml:space="preserve">
+    <value>Execute command '{0}'</value>
+  </data>
+  <data name="NoteSaved" xml:space="preserve">
+    <value>Note saved</value>
+  </data>
+  <data name="NoteSavedDesc" xml:space="preserve">
+    <value>Saved: {0}</value>
+  </data>
+  <data name="FileInUse" xml:space="preserve">
+    <value>File in use</value>
+  </data>
+  <data name="FileInUseDesc" xml:space="preserve">
+    <value>Notes file is used by another process. Please try again shortly.</value>
+  </data>
+  <data name="ErrorCreatingNote" xml:space="preserve">
+    <value>Error creating note</value>
+  </data>
+
+  <!-- Git Sync Messages -->
+  <data name="GitSyncNotEnabled" xml:space="preserve">
+    <value>⚠️ Git Sync is not enabled</value>
+  </data>
+  <data name="GitSyncNotEnabledSubtitle" xml:space="preserve">
+    <value>Enable it in PowerToys Settings → PowerToys Run → Plugins → QuickNotes</value>
+  </data>
+  <data name="GitSyncDisabled" xml:space="preserve">
+    <value>Git Sync Disabled</value>
+  </data>
+  <data name="GitSyncDisabledInstructions" xml:space="preserve">
+    <value>Go to PowerToys Settings → PowerToys Run → Plugins → QuickNotes → Additional Options
+
+1. Check 'Enable Git Sync'
+2. Set your Git Repository URL
+3. Configure branch (default: main)
+4. Optionally set username and email</value>
+  </data>
+  <data name="GitRepoNotConfigured" xml:space="preserve">
+    <value>⚠️ Git Repository not configured</value>
+  </data>
+  <data name="GitRepoNotConfiguredSubtitle" xml:space="preserve">
+    <value>Click to see setup instructions</value>
+  </data>
+  <data name="ConfigureGitRepo" xml:space="preserve">
+    <value>Configure Git Repository</value>
+  </data>
+  <data name="ConfigureGitRepoInstructions" xml:space="preserve">
+    <value>Go to PowerToys Settings → QuickNotes → Additional Options
+
+Set your repository URL:
+• HTTPS: https://github.com/username/notes.git
+• SSH: git@github.com:username/notes.git</value>
+  </data>
+  <data name="GitSyncError" xml:space="preserve">
+    <value>❌ Git Sync Error</value>
+  </data>
+  <data name="GitSyncErrorDesc" xml:space="preserve">
+    <value>Could not initialize Git Sync service.</value>
+  </data>
+  <data name="SyncNotesToGit" xml:space="preserve">
+    <value>☁️ Sync notes to Git repository</value>
+  </data>
+  <data name="SyncNotesToGitSubtitle" xml:space="preserve">
+    <value>Repository: {0} | Branch: {1} | Press Enter to sync</value>
+  </data>
+  <data name="SyncCompleted" xml:space="preserve">
+    <value>✅ Sync Completed</value>
+  </data>
+  <data name="SyncFailed" xml:space="preserve">
+    <value>❌ Sync Failed</value>
+  </data>
+  <data name="RestoreFromGit" xml:space="preserve">
+    <value>⚠️ Restore notes from Git repository?</value>
+  </data>
+  <data name="RestoreFromGitSubtitle" xml:space="preserve">
+    <value>Repository: {0} | Branch: {1} | This will replace your local notes. Press Enter to continue.</value>
+  </data>
+  <data name="RestoreCompleted" xml:space="preserve">
+    <value>✅ Restore Completed</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>❌ Restore Failed</value>
+  </data>
+
+  <!-- Markdown Editor -->
+  <data name="CreateMarkdownNote" xml:space="preserve">
+    <value>Create Markdown Note</value>
+  </data>
+  <data name="CreateMarkdownNoteSubtitle" xml:space="preserve">
+    <value>Open multi-line editor for markdown notes with live preview</value>
+  </data>
+  <data name="MarkdownNoteSaved" xml:space="preserve">
+    <value>Markdown Note Saved</value>
+  </data>
+  <data name="MarkdownNoteSavedDesc" xml:space="preserve">
+    <value>Your multi-line markdown note has been saved successfully!</value>
+  </data>
+  <data name="FailedToOpenMarkdownEditor" xml:space="preserve">
+    <value>Failed to open markdown editor: {0}</value>
+  </data>
+
+  <!-- Search -->
+  <data name="SearchQuickNotes" xml:space="preserve">
+    <value>Search QuickNotes</value>
+  </data>
+  <data name="SearchUsage" xml:space="preserve">
+    <value>Usage: qq search &lt;term&gt;</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>No matches found</value>
+  </data>
+  <data name="NoNotesContain" xml:space="preserve">
+    <value>No notes contain '{0}'.</value>
+  </data>
+  <data name="SearchByTag" xml:space="preserve">
+    <value>Search by Tag</value>
+  </data>
+  <data name="SearchByTagUsage" xml:space="preserve">
+    <value>Usage: qq searchtag &lt;tag&gt; (e.g., qq searchtag work)</value>
+  </data>
+  <data name="NoNotesWithTag" xml:space="preserve">
+    <value>No notes found with tag '{0}'.</value>
+  </data>
+  <data name="FoundNoteWithTag" xml:space="preserve">
+    <value>Found note with tag '{0}'. Enter to copy.</value>
+  </data>
+
+  <!-- Tag Style -->
+  <data name="TagStyleSetToBold" xml:space="preserve">
+    <value>Tag style set to bold</value>
+  </data>
+  <data name="TagStyleBoldDesc" xml:space="preserve">
+    <value>Tags will now appear as 【#tag】</value>
+  </data>
+  <data name="TagStyleSetToItalic" xml:space="preserve">
+    <value>Tag style set to italic</value>
+  </data>
+  <data name="TagStyleItalicDesc" xml:space="preserve">
+    <value>Tags will now appear as 〈#tag〉</value>
+  </data>
+  <data name="InvalidTagStyle" xml:space="preserve">
+    <value>Invalid tag style</value>
+  </data>
+  <data name="InvalidTagStyleDesc" xml:space="preserve">
+    <value>Use 'qq tagstyle bold' or 'qq tagstyle italic'</value>
+  </data>
+
+  <!-- Notes Display -->
+  <data name="PinnedNotes" xml:space="preserve">
+    <value>--- Pinned Notes ---</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>--- Notes ---</value>
+  </data>
+  <data name="PinnedNoteSubtitle" xml:space="preserve">
+    <value>Pinned | Enter to copy clean content (no timestamp/tags) | Ctrl+Click to Edit | qq unpin {0}</value>
+  </data>
+  <data name="NoteSubtitle" xml:space="preserve">
+    <value>Press Enter to copy without timestamp | Ctrl+C for full note | Ctrl+Click to Edit</value>
+  </data>
+  <data name="SearchNoteSubtitle" xml:space="preserve">
+    <value>Press Enter to copy | Shift+Enter for content only | Ctrl+Click to Edit</value>
+  </data>
+  <data name="NoNotesFound" xml:space="preserve">
+    <value>No notes found</value>
+  </data>
+  <data name="NoNotesFoundDesc" xml:space="preserve">
+    <value>Type 'qq &lt;your note&gt;' to add one, or 'qq help' for commands.</value>
+  </data>
+  <data name="NoNotesMatch" xml:space="preserve">
+    <value>No notes match '{0}'</value>
+  </data>
+  <data name="NoNotesMatchDesc" xml:space="preserve">
+    <value>Try a different search or add a new note.</value>
+  </data>
+  <data name="NoteDetails" xml:space="preserve">
+    <value>Note Details</value>
+  </data>
+  <data name="NoteDetailsTooltip" xml:space="preserve">
+    <value>ID: {0}
+Display Index: {1}
+Pinned: {2}
+Created: {3}
+Text: {4}
+
+Tip: Right-click for copy options or edit.</value>
+  </data>
+
+  <!-- Delete -->
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Confirm Deletion</value>
+  </data>
+  <data name="ConfirmDeleteNote" xml:space="preserve">
+    <value>Delete note #{0}?
+{1}
+Press Enter to confirm</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="KeepThisNote" xml:space="preserve">
+    <value>Keep this note</value>
+  </data>
+  <data name="NoteNotFound" xml:space="preserve">
+    <value>Note not found</value>
+  </data>
+  <data name="NoteNotFoundDesc" xml:space="preserve">
+    <value>Note number {0} does not exist.
+Available: {1}</value>
+  </data>
+  <data name="MultipleMatchingNotes" xml:space="preserve">
+    <value>Multiple matching notes found</value>
+  </data>
+  <data name="MultiplePartialMatchingNotes" xml:space="preserve">
+    <value>Multiple partial matching notes found</value>
+  </data>
+  <data name="SelectNoteToDelete" xml:space="preserve">
+    <value>Please select a specific note to delete:</value>
+  </data>
+  <data name="DeleteNoteNumber" xml:space="preserve">
+    <value>Delete #{0}: {1}</value>
+  </data>
+  <data name="PinnedPressEnterToDelete" xml:space="preserve">
+    <value>[PINNED] Press Enter to delete</value>
+  </data>
+  <data name="PressEnterToDelete" xml:space="preserve">
+    <value>Press Enter to delete</value>
+  </data>
+  <data name="NoteNotFoundByContent" xml:space="preserve">
+    <value>No note with content '{0}' was found. Try using the note number instead.</value>
+  </data>
+  <data name="NoteNotFoundInFile" xml:space="preserve">
+    <value>The note was not found in the file. It may have been deleted already.</value>
+  </data>
+  <data name="NoteDeleted" xml:space="preserve">
+    <value>Note deleted</value>
+  </data>
+  <data name="NoteDeletedDesc" xml:space="preserve">
+    <value>Removed note #{0}: {1}
+Tip: Use 'qq undo' to restore the note.</value>
+  </data>
+  <data name="ErrorDeletingNote" xml:space="preserve">
+    <value>Error deleting note</value>
+  </data>
+  <data name="ErrorDeletingNoteDesc" xml:space="preserve">
+    <value>Could not delete note: {0}
+Please try again or restart PowerToys Run.</value>
+  </data>
+
+  <!-- Pin/Unpin -->
+  <data name="NotePinned" xml:space="preserve">
+    <value>Note pinned</value>
+  </data>
+  <data name="NoteUnpinned" xml:space="preserve">
+    <value>Note unpinned</value>
+  </data>
+  <data name="ErrorPinningNote" xml:space="preserve">
+    <value>Error pinning note</value>
+  </data>
+  <data name="ErrorUnpinningNote" xml:space="preserve">
+    <value>Error unpinning note</value>
+  </data>
+
+  <!-- Sort -->
+  <data name="NoNotesToSort" xml:space="preserve">
+    <value>No notes to sort</value>
+  </data>
+  <data name="InvalidSortType" xml:space="preserve">
+    <value>Invalid sort type</value>
+  </data>
+  <data name="InvalidSortTypeDesc" xml:space="preserve">
+    <value>Use 'qq sort date [asc|desc]' or 'qq sort alpha [asc|desc]'</value>
+  </data>
+  <data name="NotesSorted" xml:space="preserve">
+    <value>Notes sorted</value>
+  </data>
+  <data name="NotesSortedDesc" xml:space="preserve">
+    <value>Sorted by {0} {1}</value>
+  </data>
+  <data name="ErrorSortingNotes" xml:space="preserve">
+    <value>Error sorting notes</value>
+  </data>
+
+  <!-- Edit -->
+  <data name="EditNoteNumber" xml:space="preserve">
+    <value>Edit note #{0}</value>
+  </data>
+  <data name="EditNoteSubtitle" xml:space="preserve">
+    <value>Press Enter to edit: {0}</value>
+  </data>
+  <data name="EditQuickNote" xml:space="preserve">
+    <value>Edit QuickNote</value>
+  </data>
+  <data name="ErrorSavingEditedNote" xml:space="preserve">
+    <value>Error saving edited note</value>
+  </data>
+  <data name="CouldNotFindNoteInFile" xml:space="preserve">
+    <value>Could not find the note in the file.</value>
+  </data>
+  <data name="CouldNotFindNoteToSaveEdit" xml:space="preserve">
+    <value>Could not find note to save edit. Refresh and retry.</value>
+  </data>
+  <data name="ErrorSavingNote" xml:space="preserve">
+    <value>Error saving note</value>
+  </data>
+
+  <!-- View -->
+  <data name="ViewNoteSubtitle" xml:space="preserve">
+    <value>Press Enter to copy without timestamp | Ctrl+C for full note | Right-click for options</value>
+  </data>
+
+  <!-- Backup/Export -->
+  <data name="NoNotesFileToBackup" xml:space="preserve">
+    <value>No notes file to backup</value>
+  </data>
+  <data name="NotesFileDoesntExist" xml:space="preserve">
+    <value>The notes file doesn't exist.</value>
+  </data>
+  <data name="BackupCreated" xml:space="preserve">
+    <value>Backup created</value>
+  </data>
+  <data name="BackupCreatedDesc" xml:space="preserve">
+    <value>Backup saved to: {0}
+Backup folder opened.</value>
+  </data>
+  <data name="ErrorCreatingBackup" xml:space="preserve">
+    <value>Error creating backup</value>
+  </data>
+  <data name="NoNotesFileToExport" xml:space="preserve">
+    <value>No notes file to export</value>
+  </data>
+  <data name="NoNotesToExport" xml:space="preserve">
+    <value>No notes to export</value>
+  </data>
+  <data name="NotesFileEmpty" xml:space="preserve">
+    <value>Your notes file is empty.</value>
+  </data>
+  <data name="ExportCreated" xml:space="preserve">
+    <value>Export created</value>
+  </data>
+  <data name="ExportCreatedDesc" xml:space="preserve">
+    <value>Export saved to: {0}
+Export folder opened.</value>
+  </data>
+  <data name="ErrorCreatingExport" xml:space="preserve">
+    <value>Error creating export</value>
+  </data>
+
+  <!-- Help -->
+  <data name="QuickNotesHelp" xml:space="preserve">
+    <value>QuickNotes Help</value>
+  </data>
+  <data name="HelpText" xml:space="preserve">
+    <value>qq &lt;text&gt;              Add note ✏️       | qq pin &lt;N&gt;             Pin note 📌
+qq search &lt;text&gt;        Search notes 🔍      | qq searchtag &lt;tag&gt;     Search by tag
+qq view &lt;N&gt;              View note         | qq sort &lt;field&gt; &lt;dir&gt;  Sort notes
+qq edit &lt;N&gt; &lt;new text&gt;   Edit note ✏️      | qq pin/unpin &lt;N&gt;     Pin/unpin note 📌
+qq del &lt;N&gt;             Delete note 🗑️    | qq backup/export       Backup/Export notes 💾
+qq delall              Delete all notes    | qq undo                Undo last delete
+qq tagstyle &lt;style&gt;    hash/fancy style</value>
+  </data>
+
+  <!-- Delete All -->
+  <data name="ConfirmDeleteAll" xml:space="preserve">
+    <value>Confirm deletion of ALL notes</value>
+  </data>
+  <data name="ConfirmDeleteAllDesc" xml:space="preserve">
+    <value>This will permanently delete all {0} notes. Are you sure?</value>
+  </data>
+  <data name="KeepYourNotes" xml:space="preserve">
+    <value>Keep your notes (no changes made)</value>
+  </data>
+  <data name="AllNotesDeleted" xml:space="preserve">
+    <value>All notes deleted</value>
+  </data>
+  <data name="AllNotesDeletedDesc" xml:space="preserve">
+    <value>All notes have been permanently deleted. You can find a backup in the same folder.</value>
+  </data>
+  <data name="NoNotesToDelete" xml:space="preserve">
+    <value>No notes to delete</value>
+  </data>
+  <data name="NotesFileAlreadyEmpty" xml:space="preserve">
+    <value>Your notes file is already empty.</value>
+  </data>
+  <data name="ErrorDeletingAllNotes" xml:space="preserve">
+    <value>Error deleting all notes</value>
+  </data>
+
+  <!-- Undo -->
+  <data name="NothingToUndo" xml:space="preserve">
+    <value>Nothing to undo</value>
+  </data>
+  <data name="NothingToUndoDesc" xml:space="preserve">
+    <value>No recently deleted note. Delete one first.</value>
+  </data>
+  <data name="NoteRestored" xml:space="preserve">
+    <value>Note restored</value>
+  </data>
+  <data name="NoteRestoredDesc" xml:space="preserve">
+    <value>Restored note{0}.
+{1}</value>
+  </data>
+  <data name="ErrorRestoringNote" xml:space="preserve">
+    <value>Error restoring note</value>
+  </data>
+
+  <!-- Validation -->
+  <data name="InvalidNoteNumber" xml:space="preserve">
+    <value>Invalid note number</value>
+  </data>
+  <data name="InvalidNoteNumberDesc" xml:space="preserve">
+    <value>Specify a valid positive number. E.g. 'qq del 3'</value>
+  </data>
+  <data name="NoNotesToOperate" xml:space="preserve">
+    <value>No notes to operate on. Add a note first.</value>
+  </data>
+  <data name="NoteNumberDoesNotExist" xml:space="preserve">
+    <value>Note #{0} does not exist. Highest is {1}.
+Available: {2}</value>
+  </data>
+  <data name="NoteDoesNotExist" xml:space="preserve">
+    <value>Note #{0} does not exist. Available: {1}</value>
+  </data>
+
+  <!-- Context Menu -->
+  <data name="CopyFullNote" xml:space="preserve">
+    <value>Copy Full Note (with timestamp)</value>
+  </data>
+  <data name="CopyCleanContent" xml:space="preserve">
+    <value>Copy Clean Content (no timestamp, no tags)</value>
+  </data>
+  <data name="EditNote" xml:space="preserve">
+    <value>Edit Note...</value>
+  </data>
+  <data name="DeleteNote" xml:space="preserve">
+    <value>Delete Note</value>
+  </data>
+  <data name="PinNote" xml:space="preserve">
+    <value>Pin Note</value>
+  </data>
+  <data name="UnpinNote" xml:space="preserve">
+    <value>Unpin Note</value>
+  </data>
+  <data name="OpenUrl" xml:space="preserve">
+    <value>Open URL: {0}</value>
+  </data>
+  <data name="FailedToCopy" xml:space="preserve">
+    <value>Failed to copy: {0}</value>
+  </data>
+  <data name="CouldNotOpenUrl" xml:space="preserve">
+    <value>Could not open URL: {0}</value>
+  </data>
+  <data name="FailedToCopyNote" xml:space="preserve">
+    <value>Failed to copy note: {0}</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="ErrorReadingNotes" xml:space="preserve">
+    <value>Error reading notes</value>
+  </data>
+  <data name="ErrorWritingNotes" xml:space="preserve">
+    <value>Error writing notes</value>
+  </data>
+
+  <!-- Markdown Dialog -->
+  <data name="MarkdownEditorTitle" xml:space="preserve">
+    <value>QuickNotes - Markdown Editor</value>
+  </data>
+  <data name="MarkdownInput" xml:space="preserve">
+    <value>Markdown Input:</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Preview:</value>
+  </data>
+  <data name="PreviewPlaceholder" xml:space="preserve">
+    <value>Preview will appear here...</value>
+  </data>
+  <data name="MarkdownSyntaxHelp" xml:space="preserve">
+    <value>Markdown Syntax Help</value>
+  </data>
+  <data name="SaveNote" xml:space="preserve">
+    <value>Save Note (Ctrl+Enter)</value>
+  </data>
+  <data name="CancelEsc" xml:space="preserve">
+    <value>Cancel (Esc)</value>
+  </data>
+  <data name="EmptyNote" xml:space="preserve">
+    <value>Empty Note</value>
+  </data>
+  <data name="PleaseEnterText" xml:space="preserve">
+    <value>Please enter some text for your note.</value>
+  </data>
+  <data name="MarkdownEditorInstructions" xml:space="preserve">
+    <value>Use markdown syntax for formatting. Press Ctrl+Enter to save, Escape to cancel.</value>
+  </data>
+
+  <!-- Misc -->
+  <data name="Unknown" xml:space="preserve">
+    <value>Unknown</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>descending</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>ascending</value>
+  </data>
+  <data name="DefaultAsc" xml:space="preserve">
+    <value>(default asc)</value>
+  </data>
+  <data name="NowNoteNumber" xml:space="preserve">
+    <value> (now note #{0})</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Details:</value>
+  </data>
+</root>
