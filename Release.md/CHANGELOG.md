@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.12] - 2026-02-05
+
+### Added
+- �🇳 Chinese localization support with full translation
+- 🇺🇦 Ukrainian localization support with full translations for 130+ strings
+- Comprehensive localization tests for English, Ukrainian, and Chinese
+
+### Changed
+
+- Updated version to 1.0.12
+
+## [1.0.11] - 2025-11-03
+
+### Changed
+
+- Changed default folder for storing notes
+
 ## [1.0.10] - 2025-01-10
 
 ### Added
