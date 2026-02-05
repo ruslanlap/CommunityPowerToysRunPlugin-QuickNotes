@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Plugin Info / 插件信息 -->
+  <data name="PluginName" xml:space="preserve">
+    <value>快速笔记</value>
+  </data>
+  <data name="PluginDescription" xml:space="preserve">
+    <value>保存、查看、管理、搜索、标签和置顶快速笔记</value>
+  </data>
+
+  <!-- Command Descriptions / 命令描述 -->
+  <data name="CommandHelp" xml:space="preserve">
+    <value>显示帮助和可用命令 ℹ️</value>
+  </data>
+  <data name="CommandBackup" xml:space="preserve">
+    <value>创建笔记备份 💾</value>
+  </data>
+  <data name="CommandExport" xml:space="preserve">
+    <value>导出笔记到文件 💾</value>
+  </data>
+  <data name="CommandEdit" xml:space="preserve">
+    <value>按编号编辑笔记 📝</value>
+  </data>
+  <data name="CommandView" xml:space="preserve">
+    <value>查看笔记详情 👁️</value>
+  </data>
+  <data name="CommandDelAll" xml:space="preserve">
+    <value>删除所有笔记 💣</value>
+  </data>
+  <data name="CommandDel" xml:space="preserve">
+    <value>按编号删除笔记 🗑️</value>
+  </data>
+  <data name="CommandSearch" xml:space="preserve">
+    <value>按文本搜索笔记 🔍</value>
+  </data>
+  <data name="CommandSearchTag" xml:space="preserve">
+    <value>按标签搜索笔记 🏷️</value>
+  </data>
+  <data name="CommandPin" xml:space="preserve">
+    <value>将笔记置顶 📌</value>
+  </data>
+  <data name="CommandUnpin" xml:space="preserve">
+    <value>取消置顶笔记 📎</value>
+  </data>
+  <data name="CommandUndo" xml:space="preserve">
+    <value>撤销上次删除 ↩️</value>
+  </data>
+  <data name="CommandSort" xml:space="preserve">
+    <value>按日期或文本排序笔记 🔄</value>
+  </data>
+  <data name="CommandTagStyle" xml:space="preserve">
+    <value>更改标签显示样式（粗体/斜体）✨</value>
+  </data>
+  <data name="CommandMarkdown" xml:space="preserve">
+    <value>创建多行 Markdown 笔记 📝</value>
+  </data>
+  <data name="CommandSync" xml:space="preserve">
+    <value>同步笔记到 Git 仓库 ☁️</value>
+  </data>
+  <data name="CommandRestore" xml:space="preserve">
+    <value>从 Git 仓库恢复笔记 ☁️</value>
+  </data>
+
+  <!-- Settings Labels / 设置标签 -->
+  <data name="SettingsNotesFolderPath" xml:space="preserve">
+    <value>笔记文件夹路径</value>
+  </data>
+  <data name="SettingsNotesFolderPathDesc" xml:space="preserve">
+    <value>留空则使用默认的 AppData 位置。如果文件夹不存在，将自动创建。</value>
+  </data>
+  <data name="SettingsNotesFolderPathPlaceholder" xml:space="preserve">
+    <value>示例：C:\Users\用户\Documents\QuickNotes</value>
+  </data>
+  <data name="SettingsEnableGitSync" xml:space="preserve">
+    <value>启用 Git 同步</value>
+  </data>
+  <data name="SettingsEnableGitSyncDesc" xml:space="preserve">
+    <value>启用与 Git 仓库的自动同步</value>
+  </data>
+  <data name="SettingsGitRepositoryUrl" xml:space="preserve">
+    <value>Git 仓库 URL</value>
+  </data>
+  <data name="SettingsGitRepositoryUrlDesc" xml:space="preserve">
+    <value>示例：https://github.com/username/notes.git</value>
+  </data>
+  <data name="SettingsGitBranch" xml:space="preserve">
+    <value>Git 分支</value>
+  </data>
+  <data name="SettingsGitBranchDesc" xml:space="preserve">
+    <value>分支名称（默认：main）</value>
+  </data>
+  <data name="SettingsGitUsername" xml:space="preserve">
+    <value>Git 用户名（可选）</value>
+  </data>
+  <data name="SettingsGitUsernameDesc" xml:space="preserve">
+    <value>留空则使用全局 git 配置</value>
+  </data>
+  <data name="SettingsGitEmail" xml:space="preserve">
+    <value>Git 邮箱（可选）</value>
+  </data>
+  <data name="SettingsGitEmailDesc" xml:space="preserve">
+    <value>留空则使用全局 git 配置</value>
+  </data>
+
+  <!-- Messages and Titles / 消息和标题 -->
+  <data name="NotInitialized" xml:space="preserve">
+    <value>QuickNotes 未初始化</value>
+  </data>
+  <data name="NotInitializedDesc" xml:space="preserve">
+    <value>插件未正确初始化。请重启 PowerToys。</value>
+  </data>
+  <data name="DuplicateQQDetected" xml:space="preserve">
+    <value>检测到重复的 'qq'</value>
+  </data>
+  <data name="DuplicateQQDetectedDesc" xml:space="preserve">
+    <value>改用 '{0}'。无需输入两次 'qq'。</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>添加笔记：{0}</value>
+  </data>
+  <data name="AddNoteSubtitle" xml:space="preserve">
+    <value>按 Enter 保存此笔记（带时间戳）</value>
+  </data>
+  <data name="ExecuteCommand" xml:space="preserve">
+    <value>执行命令 '{0}'</value>
+  </data>
+  <data name="NoteSaved" xml:space="preserve">
+    <value>笔记已保存</value>
+  </data>
+  <data name="NoteSavedDesc" xml:space="preserve">
+    <value>已保存：{0}</value>
+  </data>
+  <data name="FileInUse" xml:space="preserve">
+    <value>文件正在使用中</value>
+  </data>
+  <data name="FileInUseDesc" xml:space="preserve">
+    <value>笔记文件正被其他程序使用。请稍后重试。</value>
+  </data>
+  <data name="ErrorCreatingNote" xml:space="preserve">
+    <value>创建笔记时出错</value>
+  </data>
+
+  <!-- Git Sync Messages / Git 同步消息 -->
+  <data name="GitSyncNotEnabled" xml:space="preserve">
+    <value>⚠️ Git 同步未启用</value>
+  </data>
+  <data name="GitSyncNotEnabledSubtitle" xml:space="preserve">
+    <value>在 PowerToys 设置 → PowerToys Run → 插件 → QuickNotes 中启用</value>
+  </data>
+  <data name="GitSyncDisabled" xml:space="preserve">
+    <value>Git 同步已禁用</value>
+  </data>
+  <data name="GitSyncDisabledInstructions" xml:space="preserve">
+    <value>前往 PowerToys 设置 → PowerToys Run → 插件 → QuickNotes → 附加选项
+
+1. 勾选"启用 Git 同步"
+2. 设置您的 Git 仓库 URL
+3. 配置分支（默认：main）
+4. 可选：设置用户名和邮箱</value>
+  </data>
+  <data name="GitRepoNotConfigured" xml:space="preserve">
+    <value>⚠️ Git 仓库未配置</value>
+  </data>
+  <data name="GitRepoNotConfiguredSubtitle" xml:space="preserve">
+    <value>点击查看设置说明</value>
+  </data>
+  <data name="ConfigureGitRepo" xml:space="preserve">
+    <value>配置 Git 仓库</value>
+  </data>
+  <data name="ConfigureGitRepoInstructions" xml:space="preserve">
+    <value>前往 PowerToys 设置 → QuickNotes → 附加选项
+
+设置您的仓库 URL：
+• HTTPS：https://github.com/username/notes.git
+• SSH：git@github.com:username/notes.git</value>
+  </data>
+  <data name="GitSyncError" xml:space="preserve">
+    <value>❌ Git 同步错误</value>
+  </data>
+  <data name="GitSyncErrorDesc" xml:space="preserve">
+    <value>无法初始化 Git 同步服务。</value>
+  </data>
+  <data name="SyncNotesToGit" xml:space="preserve">
+    <value>☁️ 同步笔记到 Git 仓库</value>
+  </data>
+  <data name="SyncNotesToGitSubtitle" xml:space="preserve">
+    <value>仓库：{0} | 分支：{1} | 按 Enter 同步</value>
+  </data>
+  <data name="SyncCompleted" xml:space="preserve">
+    <value>✅ 同步完成</value>
+  </data>
+  <data name="SyncFailed" xml:space="preserve">
+    <value>❌ 同步失败</value>
+  </data>
+  <data name="RestoreFromGit" xml:space="preserve">
+    <value>⚠️ 从 Git 仓库恢复笔记？</value>
+  </data>
+  <data name="RestoreFromGitSubtitle" xml:space="preserve">
+    <value>仓库：{0} | 分支：{1} | 这将替换您的本地笔记。按 Enter 继续。</value>
+  </data>
+  <data name="RestoreCompleted" xml:space="preserve">
+    <value>✅ 恢复完成</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>❌ 恢复失败</value>
+  </data>
+
+  <!-- Markdown Editor / Markdown 编辑器 -->
+  <data name="CreateMarkdownNote" xml:space="preserve">
+    <value>创建 Markdown 笔记</value>
+  </data>
+  <data name="CreateMarkdownNoteSubtitle" xml:space="preserve">
+    <value>打开多行编辑器，支持 Markdown 笔记实时预览</value>
+  </data>
+  <data name="MarkdownNoteSaved" xml:space="preserve">
+    <value>Markdown 笔记已保存</value>
+  </data>
+  <data name="MarkdownNoteSavedDesc" xml:space="preserve">
+    <value>您的多行 Markdown 笔记已成功保存！</value>
+  </data>
+  <data name="FailedToOpenMarkdownEditor" xml:space="preserve">
+    <value>无法打开 Markdown 编辑器：{0}</value>
+  </data>
+
+  <!-- Search / 搜索 -->
+  <data name="SearchQuickNotes" xml:space="preserve">
+    <value>搜索快速笔记</value>
+  </data>
+  <data name="SearchUsage" xml:space="preserve">
+    <value>用法：qq search &lt;关键词&gt;</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>未找到匹配项</value>
+  </data>
+  <data name="NoNotesContain" xml:space="preserve">
+    <value>没有笔记包含 '{0}'。</value>
+  </data>
+  <data name="SearchByTag" xml:space="preserve">
+    <value>按标签搜索</value>
+  </data>
+  <data name="SearchByTagUsage" xml:space="preserve">
+    <value>用法：qq searchtag &lt;标签&gt;（例如：qq searchtag work）</value>
+  </data>
+  <data name="NoNotesWithTag" xml:space="preserve">
+    <value>未找到带有标签 '{0}' 的笔记。</value>
+  </data>
+  <data name="FoundNoteWithTag" xml:space="preserve">
+    <value>找到带有标签 '{0}' 的笔记。按 Enter 复制。</value>
+  </data>
+
+  <!-- Tag Style / 标签样式 -->
+  <data name="TagStyleSetToBold" xml:space="preserve">
+    <value>标签样式设为粗体</value>
+  </data>
+  <data name="TagStyleBoldDesc" xml:space="preserve">
+    <value>标签现在将显示为【#标签】</value>
+  </data>
+  <data name="TagStyleSetToItalic" xml:space="preserve">
+    <value>标签样式设为斜体</value>
+  </data>
+  <data name="TagStyleItalicDesc" xml:space="preserve">
+    <value>标签现在将显示为〈#标签〉</value>
+  </data>
+  <data name="InvalidTagStyle" xml:space="preserve">
+    <value>无效的标签样式</value>
+  </data>
+  <data name="InvalidTagStyleDesc" xml:space="preserve">
+    <value>使用 'qq tagstyle bold' 或 'qq tagstyle italic'</value>
+  </data>
+
+  <!-- Notes Display / 笔记显示 -->
+  <data name="PinnedNotes" xml:space="preserve">
+    <value>--- 置顶笔记 ---</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>--- 笔记 ---</value>
+  </data>
+  <data name="PinnedNoteSubtitle" xml:space="preserve">
+    <value>已置顶 | 按 Enter 复制纯内容（无时间戳/标签）| Ctrl+单击编辑 | qq unpin {0}</value>
+  </data>
+  <data name="NoteSubtitle" xml:space="preserve">
+    <value>按 Enter 复制（无时间戳）| Ctrl+C 复制完整笔记 | Ctrl+单击编辑</value>
+  </data>
+  <data name="SearchNoteSubtitle" xml:space="preserve">
+    <value>按 Enter 复制 | Shift+Enter 仅复制内容 | Ctrl+单击编辑</value>
+  </data>
+  <data name="NoNotesFound" xml:space="preserve">
+    <value>未找到笔记</value>
+  </data>
+  <data name="NoNotesFoundDesc" xml:space="preserve">
+    <value>输入 'qq &lt;笔记内容&gt;' 添加笔记，或 'qq help' 查看命令。</value>
+  </data>
+  <data name="NoNotesMatch" xml:space="preserve">
+    <value>没有笔记匹配 '{0}'</value>
+  </data>
+  <data name="NoNotesMatchDesc" xml:space="preserve">
+    <value>尝试不同的搜索词或添加新笔记。</value>
+  </data>
+  <data name="NoteDetails" xml:space="preserve">
+    <value>笔记详情</value>
+  </data>
+  <data name="NoteDetailsTooltip" xml:space="preserve">
+    <value>ID：{0}
+显示序号：{1}
+已置顶：{2}
+创建时间：{3}
+内容：{4}
+
+提示：右键单击可查看复制选项或编辑。</value>
+  </data>
+
+  <!-- Delete / 删除 -->
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>确认删除</value>
+  </data>
+  <data name="ConfirmDeleteNote" xml:space="preserve">
+    <value>删除笔记 #{0}？
+{1}
+按 Enter 确认</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="KeepThisNote" xml:space="preserve">
+    <value>保留此笔记</value>
+  </data>
+  <data name="NoteNotFound" xml:space="preserve">
+    <value>未找到笔记</value>
+  </data>
+  <data name="NoteNotFoundDesc" xml:space="preserve">
+    <value>笔记编号 {0} 不存在。
+可用编号：{1}</value>
+  </data>
+  <data name="MultipleMatchingNotes" xml:space="preserve">
+    <value>找到多个匹配的笔记</value>
+  </data>
+  <data name="MultiplePartialMatchingNotes" xml:space="preserve">
+    <value>找到多个部分匹配的笔记</value>
+  </data>
+  <data name="SelectNoteToDelete" xml:space="preserve">
+    <value>请选择要删除的笔记：</value>
+  </data>
+  <data name="DeleteNoteNumber" xml:space="preserve">
+    <value>删除 #{0}：{1}</value>
+  </data>
+  <data name="PinnedPressEnterToDelete" xml:space="preserve">
+    <value>[已置顶] 按 Enter 删除</value>
+  </data>
+  <data name="PressEnterToDelete" xml:space="preserve">
+    <value>按 Enter 删除</value>
+  </data>
+  <data name="NoteNotFoundByContent" xml:space="preserve">
+    <value>未找到内容为 '{0}' 的笔记。请尝试使用笔记编号。</value>
+  </data>
+  <data name="NoteNotFoundInFile" xml:space="preserve">
+    <value>在文件中未找到该笔记。它可能已被删除。</value>
+  </data>
+  <data name="NoteDeleted" xml:space="preserve">
+    <value>笔记已删除</value>
+  </data>
+  <data name="NoteDeletedDesc" xml:space="preserve">
+    <value>已删除笔记 #{0}：{1}
+提示：使用 'qq undo' 恢复笔记。</value>
+  </data>
+  <data name="ErrorDeletingNote" xml:space="preserve">
+    <value>删除笔记时出错</value>
+  </data>
+  <data name="ErrorDeletingNoteDesc" xml:space="preserve">
+    <value>无法删除笔记：{0}
+请重试或重启 PowerToys Run。</value>
+  </data>
+
+  <!-- Pin/Unpin / 置顶/取消置顶 -->
+  <data name="NotePinned" xml:space="preserve">
+    <value>笔记已置顶</value>
+  </data>
+  <data name="NoteUnpinned" xml:space="preserve">
+    <value>笔记已取消置顶</value>
+  </data>
+  <data name="ErrorPinningNote" xml:space="preserve">
+    <value>置顶笔记时出错</value>
+  </data>
+  <data name="ErrorUnpinningNote" xml:space="preserve">
+    <value>取消置顶时出错</value>
+  </data>
+
+  <!-- Sort / 排序 -->
+  <data name="NoNotesToSort" xml:space="preserve">
+    <value>没有笔记可排序</value>
+  </data>
+  <data name="InvalidSortType" xml:space="preserve">
+    <value>无效的排序类型</value>
+  </data>
+  <data name="InvalidSortTypeDesc" xml:space="preserve">
+    <value>使用 'qq sort date [asc|desc]' 或 'qq sort alpha [asc|desc]'</value>
+  </data>
+  <data name="NotesSorted" xml:space="preserve">
+    <value>笔记已排序</value>
+  </data>
+  <data name="NotesSortedDesc" xml:space="preserve">
+    <value>按 {0} {1} 排序</value>
+  </data>
+  <data name="ErrorSortingNotes" xml:space="preserve">
+    <value>排序笔记时出错</value>
+  </data>
+
+  <!-- Edit / 编辑 -->
+  <data name="EditNoteNumber" xml:space="preserve">
+    <value>编辑笔记 #{0}</value>
+  </data>
+  <data name="EditNoteSubtitle" xml:space="preserve">
+    <value>按 Enter 编辑：{0}</value>
+  </data>
+  <data name="EditQuickNote" xml:space="preserve">
+    <value>编辑快速笔记</value>
+  </data>
+  <data name="ErrorSavingEditedNote" xml:space="preserve">
+    <value>保存编辑的笔记时出错</value>
+  </data>
+  <data name="CouldNotFindNoteInFile" xml:space="preserve">
+    <value>在文件中找不到该笔记。</value>
+  </data>
+  <data name="CouldNotFindNoteToSaveEdit" xml:space="preserve">
+    <value>无法找到笔记以保存编辑。请刷新后重试。</value>
+  </data>
+  <data name="ErrorSavingNote" xml:space="preserve">
+    <value>保存笔记时出错</value>
+  </data>
+
+  <!-- View / 查看 -->
+  <data name="ViewNoteSubtitle" xml:space="preserve">
+    <value>按 Enter 复制（无时间戳）| Ctrl+C 复制完整笔记 | 右键查看选项</value>
+  </data>
+
+  <!-- Backup/Export / 备份/导出 -->
+  <data name="NoNotesFileToBackup" xml:space="preserve">
+    <value>没有笔记文件可备份</value>
+  </data>
+  <data name="NotesFileDoesntExist" xml:space="preserve">
+    <value>笔记文件不存在。</value>
+  </data>
+  <data name="BackupCreated" xml:space="preserve">
+    <value>备份已创建</value>
+  </data>
+  <data name="BackupCreatedDesc" xml:space="preserve">
+    <value>备份已保存到：{0}
+已打开备份文件夹。</value>
+  </data>
+  <data name="ErrorCreatingBackup" xml:space="preserve">
+    <value>创建备份时出错</value>
+  </data>
+  <data name="NoNotesFileToExport" xml:space="preserve">
+    <value>没有笔记文件可导出</value>
+  </data>
+  <data name="NoNotesToExport" xml:space="preserve">
+    <value>没有笔记可导出</value>
+  </data>
+  <data name="NotesFileEmpty" xml:space="preserve">
+    <value>您的笔记文件为空。</value>
+  </data>
+  <data name="ExportCreated" xml:space="preserve">
+    <value>导出已创建</value>
+  </data>
+  <data name="ExportCreatedDesc" xml:space="preserve">
+    <value>导出已保存到：{0}
+已打开导出文件夹。</value>
+  </data>
+  <data name="ErrorCreatingExport" xml:space="preserve">
+    <value>创建导出时出错</value>
+  </data>
+
+  <!-- Help / 帮助 -->
+  <data name="QuickNotesHelp" xml:space="preserve">
+    <value>快速笔记帮助</value>
+  </data>
+  <data name="HelpText" xml:space="preserve">
+    <value>qq &lt;文本&gt;              添加笔记 ✏️       | qq pin &lt;N&gt;             置顶笔记 📌
+qq search &lt;文本&gt;        搜索笔记 🔍      | qq searchtag &lt;标签&gt;     按标签搜索
+qq view &lt;N&gt;              查看笔记         | qq sort &lt;字段&gt; &lt;方向&gt;  排序笔记
+qq edit &lt;N&gt; &lt;新文本&gt;   编辑笔记 ✏️      | qq pin/unpin &lt;N&gt;     置顶/取消 📌
+qq del &lt;N&gt;             删除笔记 🗑️    | qq backup/export       备份/导出 💾
+qq delall              删除所有笔记    | qq undo                撤销删除
+qq tagstyle &lt;样式&gt;    标签样式切换</value>
+  </data>
+
+  <!-- Delete All / 删除全部 -->
+  <data name="ConfirmDeleteAll" xml:space="preserve">
+    <value>确认删除所有笔记</value>
+  </data>
+  <data name="ConfirmDeleteAllDesc" xml:space="preserve">
+    <value>这将永久删除所有 {0} 条笔记。确定吗？</value>
+  </data>
+  <data name="KeepYourNotes" xml:space="preserve">
+    <value>保留笔记（不做更改）</value>
+  </data>
+  <data name="AllNotesDeleted" xml:space="preserve">
+    <value>所有笔记已删除</value>
+  </data>
+  <data name="AllNotesDeletedDesc" xml:space="preserve">
+    <value>所有笔记已被永久删除。您可以在同一文件夹中找到备份。</value>
+  </data>
+  <data name="NoNotesToDelete" xml:space="preserve">
+    <value>没有笔记可删除</value>
+  </data>
+  <data name="NotesFileAlreadyEmpty" xml:space="preserve">
+    <value>您的笔记文件已经是空的。</value>
+  </data>
+  <data name="ErrorDeletingAllNotes" xml:space="preserve">
+    <value>删除所有笔记时出错</value>
+  </data>
+
+  <!-- Undo / 撤销 -->
+  <data name="NothingToUndo" xml:space="preserve">
+    <value>没有可撤销的操作</value>
+  </data>
+  <data name="NothingToUndoDesc" xml:space="preserve">
+    <value>没有最近删除的笔记。请先删除一条笔记。</value>
+  </data>
+  <data name="NoteRestored" xml:space="preserve">
+    <value>笔记已恢复</value>
+  </data>
+  <data name="NoteRestoredDesc" xml:space="preserve">
+    <value>已恢复笔记{0}。
+{1}</value>
+  </data>
+  <data name="ErrorRestoringNote" xml:space="preserve">
+    <value>恢复笔记时出错</value>
+  </data>
+
+  <!-- Validation / 验证 -->
+  <data name="InvalidNoteNumber" xml:space="preserve">
+    <value>无效的笔记编号</value>
+  </data>
+  <data name="InvalidNoteNumberDesc" xml:space="preserve">
+    <value>请指定一个有效的正数。例如：'qq del 3'</value>
+  </data>
+  <data name="NoNotesToOperate" xml:space="preserve">
+    <value>没有可操作的笔记。请先添加一条笔记。</value>
+  </data>
+  <data name="NoteNumberDoesNotExist" xml:space="preserve">
+    <value>笔记 #{0} 不存在。最大编号为 {1}。
+可用编号：{2}</value>
+  </data>
+  <data name="NoteDoesNotExist" xml:space="preserve">
+    <value>笔记 #{0} 不存在。可用编号：{1}</value>
+  </data>
+
+  <!-- Context Menu / 右键菜单 -->
+  <data name="CopyFullNote" xml:space="preserve">
+    <value>复制完整笔记（含时间戳）</value>
+  </data>
+  <data name="CopyCleanContent" xml:space="preserve">
+    <value>复制纯内容（无时间戳和标签）</value>
+  </data>
+  <data name="EditNote" xml:space="preserve">
+    <value>编辑笔记...</value>
+  </data>
+  <data name="DeleteNote" xml:space="preserve">
+    <value>删除笔记</value>
+  </data>
+  <data name="PinNote" xml:space="preserve">
+    <value>置顶笔记</value>
+  </data>
+  <data name="UnpinNote" xml:space="preserve">
+    <value>取消置顶</value>
+  </data>
+  <data name="OpenUrl" xml:space="preserve">
+    <value>打开链接：{0}</value>
+  </data>
+  <data name="FailedToCopy" xml:space="preserve">
+    <value>复制失败：{0}</value>
+  </data>
+  <data name="CouldNotOpenUrl" xml:space="preserve">
+    <value>无法打开链接：{0}</value>
+  </data>
+  <data name="FailedToCopyNote" xml:space="preserve">
+    <value>复制笔记失败：{0}</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>错误</value>
+  </data>
+  <data name="ErrorReadingNotes" xml:space="preserve">
+    <value>读取笔记时出错</value>
+  </data>
+  <data name="ErrorWritingNotes" xml:space="preserve">
+    <value>写入笔记时出错</value>
+  </data>
+
+  <!-- Markdown Dialog / Markdown 对话框 -->
+  <data name="MarkdownEditorTitle" xml:space="preserve">
+    <value>快速笔记 - Markdown 编辑器</value>
+  </data>
+  <data name="MarkdownInput" xml:space="preserve">
+    <value>Markdown 输入：</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>预览：</value>
+  </data>
+  <data name="PreviewPlaceholder" xml:space="preserve">
+    <value>预览将在此处显示...</value>
+  </data>
+  <data name="MarkdownSyntaxHelp" xml:space="preserve">
+    <value>Markdown 语法帮助</value>
+  </data>
+  <data name="SaveNote" xml:space="preserve">
+    <value>保存笔记 (Ctrl+Enter)</value>
+  </data>
+  <data name="CancelEsc" xml:space="preserve">
+    <value>取消 (Esc)</value>
+  </data>
+  <data name="EmptyNote" xml:space="preserve">
+    <value>空笔记</value>
+  </data>
+  <data name="PleaseEnterText" xml:space="preserve">
+    <value>请输入笔记内容。</value>
+  </data>
+  <data name="MarkdownEditorInstructions" xml:space="preserve">
+    <value>使用 Markdown 语法进行格式化。按 Ctrl+Enter 保存，按 Escape 取消。</value>
+  </data>
+
+  <!-- Misc / 其他 -->
+  <data name="Unknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>降序</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>升序</value>
+  </data>
+  <data name="DefaultAsc" xml:space="preserve">
+    <value>（默认升序）</value>
+  </data>
+  <data name="NowNoteNumber" xml:space="preserve">
+    <value>（现为笔记 #{0}）</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>详情：</value>
+  </data>
+</root>

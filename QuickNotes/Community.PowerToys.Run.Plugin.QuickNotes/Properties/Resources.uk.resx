@@ -1,0 +1,699 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="0" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+
+  <!-- Plugin Info / Інформація про плагін -->
+  <data name="PluginName" xml:space="preserve">
+    <value>Швидкі нотатки</value>
+  </data>
+  <data name="PluginDescription" xml:space="preserve">
+    <value>Зберігайте, переглядайте, керуйте, шукайте, тегуйте та закріплюйте швидкі нотатки</value>
+  </data>
+
+  <!-- Command Descriptions / Описи команд -->
+  <data name="CommandHelp" xml:space="preserve">
+    <value>Показати довідку з доступними командами ℹ️</value>
+  </data>
+  <data name="CommandBackup" xml:space="preserve">
+    <value>Створити резервну копію нотаток 💾</value>
+  </data>
+  <data name="CommandExport" xml:space="preserve">
+    <value>Експортувати нотатки у файл 💾</value>
+  </data>
+  <data name="CommandEdit" xml:space="preserve">
+    <value>Редагувати нотатку за номером 📝</value>
+  </data>
+  <data name="CommandView" xml:space="preserve">
+    <value>Переглянути деталі нотатки 👁️</value>
+  </data>
+  <data name="CommandDelAll" xml:space="preserve">
+    <value>Видалити всі нотатки 💣</value>
+  </data>
+  <data name="CommandDel" xml:space="preserve">
+    <value>Видалити нотатку за номером 🗑️</value>
+  </data>
+  <data name="CommandSearch" xml:space="preserve">
+    <value>Шукати нотатки за текстом 🔍</value>
+  </data>
+  <data name="CommandSearchTag" xml:space="preserve">
+    <value>Шукати нотатки за тегом 🏷️</value>
+  </data>
+  <data name="CommandPin" xml:space="preserve">
+    <value>Закріпити нотатку вгорі списку 📌</value>
+  </data>
+  <data name="CommandUnpin" xml:space="preserve">
+    <value>Відкріпити нотатку 📎</value>
+  </data>
+  <data name="CommandUndo" xml:space="preserve">
+    <value>Скасувати останнє видалення ↩️</value>
+  </data>
+  <data name="CommandSort" xml:space="preserve">
+    <value>Сортувати нотатки за датою або текстом 🔄</value>
+  </data>
+  <data name="CommandTagStyle" xml:space="preserve">
+    <value>Змінити стиль відображення тегів (жирний/курсив) ✨</value>
+  </data>
+  <data name="CommandMarkdown" xml:space="preserve">
+    <value>Створити багаторядкову Markdown нотатку 📝</value>
+  </data>
+  <data name="CommandSync" xml:space="preserve">
+    <value>Синхронізувати нотатки з Git репозиторієм ☁️</value>
+  </data>
+  <data name="CommandRestore" xml:space="preserve">
+    <value>Відновити нотатки з Git репозиторію ☁️</value>
+  </data>
+
+  <!-- Settings Labels / Налаштування -->
+  <data name="SettingsNotesFolderPath" xml:space="preserve">
+    <value>Шлях до папки нотаток</value>
+  </data>
+  <data name="SettingsNotesFolderPathDesc" xml:space="preserve">
+    <value>Залиште порожнім для використання стандартного розташування AppData. Папка буде створена, якщо не існує.</value>
+  </data>
+  <data name="SettingsNotesFolderPathPlaceholder" xml:space="preserve">
+    <value>Приклад: C:\Users\Користувач\Documents\QuickNotes</value>
+  </data>
+  <data name="SettingsEnableGitSync" xml:space="preserve">
+    <value>Увімкнути Git синхронізацію</value>
+  </data>
+  <data name="SettingsEnableGitSyncDesc" xml:space="preserve">
+    <value>Увімкнути автоматичну синхронізацію з Git репозиторієм</value>
+  </data>
+  <data name="SettingsGitRepositoryUrl" xml:space="preserve">
+    <value>URL Git репозиторію</value>
+  </data>
+  <data name="SettingsGitRepositoryUrlDesc" xml:space="preserve">
+    <value>Приклад: https://github.com/username/notes.git</value>
+  </data>
+  <data name="SettingsGitBranch" xml:space="preserve">
+    <value>Гілка Git</value>
+  </data>
+  <data name="SettingsGitBranchDesc" xml:space="preserve">
+    <value>Назва гілки (за замовчуванням: main)</value>
+  </data>
+  <data name="SettingsGitUsername" xml:space="preserve">
+    <value>Ім'я користувача Git (необов'язково)</value>
+  </data>
+  <data name="SettingsGitUsernameDesc" xml:space="preserve">
+    <value>Використовує глобальну конфігурацію git, якщо порожнє</value>
+  </data>
+  <data name="SettingsGitEmail" xml:space="preserve">
+    <value>Email Git (необов'язково)</value>
+  </data>
+  <data name="SettingsGitEmailDesc" xml:space="preserve">
+    <value>Використовує глобальну конфігурацію git, якщо порожнє</value>
+  </data>
+
+  <!-- Messages and Titles / Повідомлення та заголовки -->
+  <data name="NotInitialized" xml:space="preserve">
+    <value>QuickNotes не ініціалізовано</value>
+  </data>
+  <data name="NotInitializedDesc" xml:space="preserve">
+    <value>Плагін не ініціалізовано належним чином. Будь ласка, перезапустіть PowerToys.</value>
+  </data>
+  <data name="DuplicateQQDetected" xml:space="preserve">
+    <value>Виявлено дублікат 'qq'</value>
+  </data>
+  <data name="DuplicateQQDetectedDesc" xml:space="preserve">
+    <value>Використовується '{0}' замість цього. Не потрібно вводити 'qq' двічі.</value>
+  </data>
+  <data name="AddNote" xml:space="preserve">
+    <value>Додати нотатку: {0}</value>
+  </data>
+  <data name="AddNoteSubtitle" xml:space="preserve">
+    <value>Натисніть Enter, щоб зберегти цю нотатку (з міткою часу)</value>
+  </data>
+  <data name="ExecuteCommand" xml:space="preserve">
+    <value>Виконати команду '{0}'</value>
+  </data>
+  <data name="NoteSaved" xml:space="preserve">
+    <value>Нотатку збережено</value>
+  </data>
+  <data name="NoteSavedDesc" xml:space="preserve">
+    <value>Збережено: {0}</value>
+  </data>
+  <data name="FileInUse" xml:space="preserve">
+    <value>Файл використовується</value>
+  </data>
+  <data name="FileInUseDesc" xml:space="preserve">
+    <value>Файл нотаток використовується іншим процесом. Спробуйте пізніше.</value>
+  </data>
+  <data name="ErrorCreatingNote" xml:space="preserve">
+    <value>Помилка створення нотатки</value>
+  </data>
+
+  <!-- Git Sync Messages / Повідомлення Git синхронізації -->
+  <data name="GitSyncNotEnabled" xml:space="preserve">
+    <value>⚠️ Git синхронізацію не увімкнено</value>
+  </data>
+  <data name="GitSyncNotEnabledSubtitle" xml:space="preserve">
+    <value>Увімкніть у Налаштуваннях PowerToys → PowerToys Run → Плагіни → QuickNotes</value>
+  </data>
+  <data name="GitSyncDisabled" xml:space="preserve">
+    <value>Git синхронізацію вимкнено</value>
+  </data>
+  <data name="GitSyncDisabledInstructions" xml:space="preserve">
+    <value>Перейдіть до Налаштувань PowerToys → PowerToys Run → Плагіни → QuickNotes → Додаткові параметри
+
+1. Позначте 'Увімкнути Git синхронізацію'
+2. Встановіть URL вашого Git репозиторію
+3. Налаштуйте гілку (за замовчуванням: main)
+4. За бажанням встановіть ім'я користувача та email</value>
+  </data>
+  <data name="GitRepoNotConfigured" xml:space="preserve">
+    <value>⚠️ Git репозиторій не налаштовано</value>
+  </data>
+  <data name="GitRepoNotConfiguredSubtitle" xml:space="preserve">
+    <value>Натисніть, щоб переглянути інструкції з налаштування</value>
+  </data>
+  <data name="ConfigureGitRepo" xml:space="preserve">
+    <value>Налаштувати Git репозиторій</value>
+  </data>
+  <data name="ConfigureGitRepoInstructions" xml:space="preserve">
+    <value>Перейдіть до Налаштувань PowerToys → QuickNotes → Додаткові параметри
+
+Встановіть URL вашого репозиторію:
+• HTTPS: https://github.com/username/notes.git
+• SSH: git@github.com:username/notes.git</value>
+  </data>
+  <data name="GitSyncError" xml:space="preserve">
+    <value>❌ Помилка Git синхронізації</value>
+  </data>
+  <data name="GitSyncErrorDesc" xml:space="preserve">
+    <value>Не вдалося ініціалізувати службу Git синхронізації.</value>
+  </data>
+  <data name="SyncNotesToGit" xml:space="preserve">
+    <value>☁️ Синхронізувати нотатки з Git репозиторієм</value>
+  </data>
+  <data name="SyncNotesToGitSubtitle" xml:space="preserve">
+    <value>Репозиторій: {0} | Гілка: {1} | Натисніть Enter для синхронізації</value>
+  </data>
+  <data name="SyncCompleted" xml:space="preserve">
+    <value>✅ Синхронізацію завершено</value>
+  </data>
+  <data name="SyncFailed" xml:space="preserve">
+    <value>❌ Синхронізація не вдалася</value>
+  </data>
+  <data name="RestoreFromGit" xml:space="preserve">
+    <value>⚠️ Відновити нотатки з Git репозиторію?</value>
+  </data>
+  <data name="RestoreFromGitSubtitle" xml:space="preserve">
+    <value>Репозиторій: {0} | Гілка: {1} | Це замінить ваші локальні нотатки. Натисніть Enter для продовження.</value>
+  </data>
+  <data name="RestoreCompleted" xml:space="preserve">
+    <value>✅ Відновлення завершено</value>
+  </data>
+  <data name="RestoreFailed" xml:space="preserve">
+    <value>❌ Відновлення не вдалося</value>
+  </data>
+
+  <!-- Markdown Editor / Редактор Markdown -->
+  <data name="CreateMarkdownNote" xml:space="preserve">
+    <value>Створити Markdown нотатку</value>
+  </data>
+  <data name="CreateMarkdownNoteSubtitle" xml:space="preserve">
+    <value>Відкрити багаторядковий редактор для Markdown нотаток з попереднім переглядом</value>
+  </data>
+  <data name="MarkdownNoteSaved" xml:space="preserve">
+    <value>Markdown нотатку збережено</value>
+  </data>
+  <data name="MarkdownNoteSavedDesc" xml:space="preserve">
+    <value>Вашу багаторядкову Markdown нотатку успішно збережено!</value>
+  </data>
+  <data name="FailedToOpenMarkdownEditor" xml:space="preserve">
+    <value>Не вдалося відкрити редактор Markdown: {0}</value>
+  </data>
+
+  <!-- Search / Пошук -->
+  <data name="SearchQuickNotes" xml:space="preserve">
+    <value>Пошук швидких нотаток</value>
+  </data>
+  <data name="SearchUsage" xml:space="preserve">
+    <value>Використання: qq search &lt;запит&gt;</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>Збігів не знайдено</value>
+  </data>
+  <data name="NoNotesContain" xml:space="preserve">
+    <value>Жодна нотатка не містить '{0}'.</value>
+  </data>
+  <data name="SearchByTag" xml:space="preserve">
+    <value>Пошук за тегом</value>
+  </data>
+  <data name="SearchByTagUsage" xml:space="preserve">
+    <value>Використання: qq searchtag &lt;тег&gt; (наприклад, qq searchtag робота)</value>
+  </data>
+  <data name="NoNotesWithTag" xml:space="preserve">
+    <value>Нотаток з тегом '{0}' не знайдено.</value>
+  </data>
+  <data name="FoundNoteWithTag" xml:space="preserve">
+    <value>Знайдено нотатку з тегом '{0}'. Enter для копіювання.</value>
+  </data>
+
+  <!-- Tag Style / Стиль тегів -->
+  <data name="TagStyleSetToBold" xml:space="preserve">
+    <value>Стиль тегів встановлено на жирний</value>
+  </data>
+  <data name="TagStyleBoldDesc" xml:space="preserve">
+    <value>Теги тепер відображатимуться як 【#тег】</value>
+  </data>
+  <data name="TagStyleSetToItalic" xml:space="preserve">
+    <value>Стиль тегів встановлено на курсив</value>
+  </data>
+  <data name="TagStyleItalicDesc" xml:space="preserve">
+    <value>Теги тепер відображатимуться як 〈#тег〉</value>
+  </data>
+  <data name="InvalidTagStyle" xml:space="preserve">
+    <value>Недійсний стиль тегів</value>
+  </data>
+  <data name="InvalidTagStyleDesc" xml:space="preserve">
+    <value>Використовуйте 'qq tagstyle bold' або 'qq tagstyle italic'</value>
+  </data>
+
+  <!-- Notes Display / Відображення нотаток -->
+  <data name="PinnedNotes" xml:space="preserve">
+    <value>--- Закріплені нотатки ---</value>
+  </data>
+  <data name="Notes" xml:space="preserve">
+    <value>--- Нотатки ---</value>
+  </data>
+  <data name="PinnedNoteSubtitle" xml:space="preserve">
+    <value>Закріплено | Enter для копіювання чистого вмісту (без мітки часу/тегів) | Ctrl+Click для редагування | qq unpin {0}</value>
+  </data>
+  <data name="NoteSubtitle" xml:space="preserve">
+    <value>Натисніть Enter для копіювання без мітки часу | Ctrl+C для повної нотатки | Ctrl+Click для редагування</value>
+  </data>
+  <data name="SearchNoteSubtitle" xml:space="preserve">
+    <value>Натисніть Enter для копіювання | Shift+Enter лише для вмісту | Ctrl+Click для редагування</value>
+  </data>
+  <data name="NoNotesFound" xml:space="preserve">
+    <value>Нотаток не знайдено</value>
+  </data>
+  <data name="NoNotesFoundDesc" xml:space="preserve">
+    <value>Введіть 'qq &lt;ваша нотатка&gt;' щоб додати, або 'qq help' для команд.</value>
+  </data>
+  <data name="NoNotesMatch" xml:space="preserve">
+    <value>Жодна нотатка не відповідає '{0}'</value>
+  </data>
+  <data name="NoNotesMatchDesc" xml:space="preserve">
+    <value>Спробуйте інший пошук або додайте нову нотатку.</value>
+  </data>
+  <data name="NoteDetails" xml:space="preserve">
+    <value>Деталі нотатки</value>
+  </data>
+  <data name="NoteDetailsTooltip" xml:space="preserve">
+    <value>ID: {0}
+Індекс відображення: {1}
+Закріплено: {2}
+Створено: {3}
+Текст: {4}
+
+Порада: Клацніть правою кнопкою миші для параметрів копіювання або редагування.</value>
+  </data>
+
+  <!-- Delete / Видалення -->
+  <data name="ConfirmDeletion" xml:space="preserve">
+    <value>Підтвердження видалення</value>
+  </data>
+  <data name="ConfirmDeleteNote" xml:space="preserve">
+    <value>Видалити нотатку #{0}?
+{1}
+Натисніть Enter для підтвердження</value>
+  </data>
+  <data name="Cancel" xml:space="preserve">
+    <value>Скасувати</value>
+  </data>
+  <data name="KeepThisNote" xml:space="preserve">
+    <value>Залишити цю нотатку</value>
+  </data>
+  <data name="NoteNotFound" xml:space="preserve">
+    <value>Нотатку не знайдено</value>
+  </data>
+  <data name="NoteNotFoundDesc" xml:space="preserve">
+    <value>Нотатка з номером {0} не існує.
+Доступні: {1}</value>
+  </data>
+  <data name="MultipleMatchingNotes" xml:space="preserve">
+    <value>Знайдено кілька відповідних нотаток</value>
+  </data>
+  <data name="MultiplePartialMatchingNotes" xml:space="preserve">
+    <value>Знайдено кілька частково відповідних нотаток</value>
+  </data>
+  <data name="SelectNoteToDelete" xml:space="preserve">
+    <value>Будь ласка, виберіть конкретну нотатку для видалення:</value>
+  </data>
+  <data name="DeleteNoteNumber" xml:space="preserve">
+    <value>Видалити #{0}: {1}</value>
+  </data>
+  <data name="PinnedPressEnterToDelete" xml:space="preserve">
+    <value>[ЗАКРІПЛЕНО] Натисніть Enter для видалення</value>
+  </data>
+  <data name="PressEnterToDelete" xml:space="preserve">
+    <value>Натисніть Enter для видалення</value>
+  </data>
+  <data name="NoteNotFoundByContent" xml:space="preserve">
+    <value>Нотатку з вмістом '{0}' не знайдено. Спробуйте використати номер нотатки.</value>
+  </data>
+  <data name="NoteNotFoundInFile" xml:space="preserve">
+    <value>Нотатку не знайдено у файлі. Можливо, її вже видалено.</value>
+  </data>
+  <data name="NoteDeleted" xml:space="preserve">
+    <value>Нотатку видалено</value>
+  </data>
+  <data name="NoteDeletedDesc" xml:space="preserve">
+    <value>Видалено нотатку #{0}: {1}
+Порада: Використовуйте 'qq undo' для відновлення нотатки.</value>
+  </data>
+  <data name="ErrorDeletingNote" xml:space="preserve">
+    <value>Помилка видалення нотатки</value>
+  </data>
+  <data name="ErrorDeletingNoteDesc" xml:space="preserve">
+    <value>Не вдалося видалити нотатку: {0}
+Спробуйте ще раз або перезапустіть PowerToys Run.</value>
+  </data>
+
+  <!-- Pin/Unpin / Закріплення/Відкріплення -->
+  <data name="NotePinned" xml:space="preserve">
+    <value>Нотатку закріплено</value>
+  </data>
+  <data name="NoteUnpinned" xml:space="preserve">
+    <value>Нотатку відкріплено</value>
+  </data>
+  <data name="ErrorPinningNote" xml:space="preserve">
+    <value>Помилка закріплення нотатки</value>
+  </data>
+  <data name="ErrorUnpinningNote" xml:space="preserve">
+    <value>Помилка відкріплення нотатки</value>
+  </data>
+
+  <!-- Sort / Сортування -->
+  <data name="NoNotesToSort" xml:space="preserve">
+    <value>Немає нотаток для сортування</value>
+  </data>
+  <data name="InvalidSortType" xml:space="preserve">
+    <value>Недійсний тип сортування</value>
+  </data>
+  <data name="InvalidSortTypeDesc" xml:space="preserve">
+    <value>Використовуйте 'qq sort date [asc|desc]' або 'qq sort alpha [asc|desc]'</value>
+  </data>
+  <data name="NotesSorted" xml:space="preserve">
+    <value>Нотатки відсортовано</value>
+  </data>
+  <data name="NotesSortedDesc" xml:space="preserve">
+    <value>Відсортовано за {0} {1}</value>
+  </data>
+  <data name="ErrorSortingNotes" xml:space="preserve">
+    <value>Помилка сортування нотаток</value>
+  </data>
+
+  <!-- Edit / Редагування -->
+  <data name="EditNoteNumber" xml:space="preserve">
+    <value>Редагувати нотатку #{0}</value>
+  </data>
+  <data name="EditNoteSubtitle" xml:space="preserve">
+    <value>Натисніть Enter для редагування: {0}</value>
+  </data>
+  <data name="EditQuickNote" xml:space="preserve">
+    <value>Редагувати швидку нотатку</value>
+  </data>
+  <data name="ErrorSavingEditedNote" xml:space="preserve">
+    <value>Помилка збереження відредагованої нотатки</value>
+  </data>
+  <data name="CouldNotFindNoteInFile" xml:space="preserve">
+    <value>Не вдалося знайти нотатку у файлі.</value>
+  </data>
+  <data name="CouldNotFindNoteToSaveEdit" xml:space="preserve">
+    <value>Не вдалося знайти нотатку для збереження редагування. Оновіть і спробуйте знову.</value>
+  </data>
+  <data name="ErrorSavingNote" xml:space="preserve">
+    <value>Помилка збереження нотатки</value>
+  </data>
+
+  <!-- View / Перегляд -->
+  <data name="ViewNoteSubtitle" xml:space="preserve">
+    <value>Натисніть Enter для копіювання без мітки часу | Ctrl+C для повної нотатки | Права кнопка для параметрів</value>
+  </data>
+
+  <!-- Backup/Export / Резервне копіювання/Експорт -->
+  <data name="NoNotesFileToBackup" xml:space="preserve">
+    <value>Немає файлу нотаток для резервного копіювання</value>
+  </data>
+  <data name="NotesFileDoesntExist" xml:space="preserve">
+    <value>Файл нотаток не існує.</value>
+  </data>
+  <data name="BackupCreated" xml:space="preserve">
+    <value>Резервну копію створено</value>
+  </data>
+  <data name="BackupCreatedDesc" xml:space="preserve">
+    <value>Резервну копію збережено до: {0}
+Папку резервних копій відкрито.</value>
+  </data>
+  <data name="ErrorCreatingBackup" xml:space="preserve">
+    <value>Помилка створення резервної копії</value>
+  </data>
+  <data name="NoNotesFileToExport" xml:space="preserve">
+    <value>Немає файлу нотаток для експорту</value>
+  </data>
+  <data name="NoNotesToExport" xml:space="preserve">
+    <value>Немає нотаток для експорту</value>
+  </data>
+  <data name="NotesFileEmpty" xml:space="preserve">
+    <value>Ваш файл нотаток порожній.</value>
+  </data>
+  <data name="ExportCreated" xml:space="preserve">
+    <value>Експорт створено</value>
+  </data>
+  <data name="ExportCreatedDesc" xml:space="preserve">
+    <value>Експорт збережено до: {0}
+Папку експорту відкрито.</value>
+  </data>
+  <data name="ErrorCreatingExport" xml:space="preserve">
+    <value>Помилка створення експорту</value>
+  </data>
+
+  <!-- Help / Довідка -->
+  <data name="QuickNotesHelp" xml:space="preserve">
+    <value>Довідка швидких нотаток</value>
+  </data>
+  <data name="HelpText" xml:space="preserve">
+    <value>qq &lt;текст&gt;              Додати нотатку ✏️       | qq pin &lt;N&gt;             Закріпити 📌
+qq search &lt;текст&gt;        Пошук нотаток 🔍      | qq searchtag &lt;тег&gt;     Пошук за тегом
+qq view &lt;N&gt;              Перегляд нотатки         | qq sort &lt;поле&gt; &lt;напр&gt;  Сортування
+qq edit &lt;N&gt; &lt;новий текст&gt;   Редагування ✏️      | qq pin/unpin &lt;N&gt;     Закріпити/Відкріпити 📌
+qq del &lt;N&gt;             Видалити нотатку 🗑️    | qq backup/export       Резервна копія/Експорт 💾
+qq delall              Видалити всі    | qq undo                Скасувати видалення
+qq tagstyle &lt;стиль&gt;    Стиль тегів</value>
+  </data>
+
+  <!-- Delete All / Видалити все -->
+  <data name="ConfirmDeleteAll" xml:space="preserve">
+    <value>Підтвердження видалення ВСІХ нотаток</value>
+  </data>
+  <data name="ConfirmDeleteAllDesc" xml:space="preserve">
+    <value>Це назавжди видалить усі {0} нотаток. Ви впевнені?</value>
+  </data>
+  <data name="KeepYourNotes" xml:space="preserve">
+    <value>Залишити ваші нотатки (без змін)</value>
+  </data>
+  <data name="AllNotesDeleted" xml:space="preserve">
+    <value>Усі нотатки видалено</value>
+  </data>
+  <data name="AllNotesDeletedDesc" xml:space="preserve">
+    <value>Усі нотатки було назавжди видалено. Резервну копію можна знайти в тій самій папці.</value>
+  </data>
+  <data name="NoNotesToDelete" xml:space="preserve">
+    <value>Немає нотаток для видалення</value>
+  </data>
+  <data name="NotesFileAlreadyEmpty" xml:space="preserve">
+    <value>Ваш файл нотаток вже порожній.</value>
+  </data>
+  <data name="ErrorDeletingAllNotes" xml:space="preserve">
+    <value>Помилка видалення всіх нотаток</value>
+  </data>
+
+  <!-- Undo / Скасування -->
+  <data name="NothingToUndo" xml:space="preserve">
+    <value>Нічого скасовувати</value>
+  </data>
+  <data name="NothingToUndoDesc" xml:space="preserve">
+    <value>Немає нещодавно видаленої нотатки. Спочатку видаліть одну.</value>
+  </data>
+  <data name="NoteRestored" xml:space="preserve">
+    <value>Нотатку відновлено</value>
+  </data>
+  <data name="NoteRestoredDesc" xml:space="preserve">
+    <value>Відновлено нотатку{0}.
+{1}</value>
+  </data>
+  <data name="ErrorRestoringNote" xml:space="preserve">
+    <value>Помилка відновлення нотатки</value>
+  </data>
+
+  <!-- Validation / Валідація -->
+  <data name="InvalidNoteNumber" xml:space="preserve">
+    <value>Недійсний номер нотатки</value>
+  </data>
+  <data name="InvalidNoteNumberDesc" xml:space="preserve">
+    <value>Вкажіть дійсне додатне число. Наприклад: 'qq del 3'</value>
+  </data>
+  <data name="NoNotesToOperate" xml:space="preserve">
+    <value>Немає нотаток для операції. Спочатку додайте нотатку.</value>
+  </data>
+  <data name="NoteNumberDoesNotExist" xml:space="preserve">
+    <value>Нотатка #{0} не існує. Найбільший номер {1}.
+Доступні: {2}</value>
+  </data>
+  <data name="NoteDoesNotExist" xml:space="preserve">
+    <value>Нотатка #{0} не існує. Доступні: {1}</value>
+  </data>
+
+  <!-- Context Menu / Контекстне меню -->
+  <data name="CopyFullNote" xml:space="preserve">
+    <value>Копіювати повну нотатку (з міткою часу)</value>
+  </data>
+  <data name="CopyCleanContent" xml:space="preserve">
+    <value>Копіювати чистий вміст (без мітки часу, без тегів)</value>
+  </data>
+  <data name="EditNote" xml:space="preserve">
+    <value>Редагувати нотатку...</value>
+  </data>
+  <data name="DeleteNote" xml:space="preserve">
+    <value>Видалити нотатку</value>
+  </data>
+  <data name="PinNote" xml:space="preserve">
+    <value>Закріпити нотатку</value>
+  </data>
+  <data name="UnpinNote" xml:space="preserve">
+    <value>Відкріпити нотатку</value>
+  </data>
+  <data name="OpenUrl" xml:space="preserve">
+    <value>Відкрити URL: {0}</value>
+  </data>
+  <data name="FailedToCopy" xml:space="preserve">
+    <value>Не вдалося скопіювати: {0}</value>
+  </data>
+  <data name="CouldNotOpenUrl" xml:space="preserve">
+    <value>Не вдалося відкрити URL: {0}</value>
+  </data>
+  <data name="FailedToCopyNote" xml:space="preserve">
+    <value>Не вдалося скопіювати нотатку: {0}</value>
+  </data>
+  <data name="Error" xml:space="preserve">
+    <value>Помилка</value>
+  </data>
+  <data name="ErrorReadingNotes" xml:space="preserve">
+    <value>Помилка читання нотаток</value>
+  </data>
+  <data name="ErrorWritingNotes" xml:space="preserve">
+    <value>Помилка запису нотаток</value>
+  </data>
+
+  <!-- Markdown Dialog / Діалог Markdown -->
+  <data name="MarkdownEditorTitle" xml:space="preserve">
+    <value>QuickNotes - Редактор Markdown</value>
+  </data>
+  <data name="MarkdownInput" xml:space="preserve">
+    <value>Введення Markdown:</value>
+  </data>
+  <data name="Preview" xml:space="preserve">
+    <value>Попередній перегляд:</value>
+  </data>
+  <data name="PreviewPlaceholder" xml:space="preserve">
+    <value>Попередній перегляд з'явиться тут...</value>
+  </data>
+  <data name="MarkdownSyntaxHelp" xml:space="preserve">
+    <value>Довідка синтаксису Markdown</value>
+  </data>
+  <data name="SaveNote" xml:space="preserve">
+    <value>Зберегти нотатку (Ctrl+Enter)</value>
+  </data>
+  <data name="CancelEsc" xml:space="preserve">
+    <value>Скасувати (Esc)</value>
+  </data>
+  <data name="EmptyNote" xml:space="preserve">
+    <value>Порожня нотатка</value>
+  </data>
+  <data name="PleaseEnterText" xml:space="preserve">
+    <value>Будь ласка, введіть текст для вашої нотатки.</value>
+  </data>
+  <data name="MarkdownEditorInstructions" xml:space="preserve">
+    <value>Використовуйте синтаксис Markdown для форматування. Натисніть Ctrl+Enter для збереження, Escape для скасування.</value>
+  </data>
+
+  <!-- Misc / Різне -->
+  <data name="Unknown" xml:space="preserve">
+    <value>Невідомо</value>
+  </data>
+  <data name="Descending" xml:space="preserve">
+    <value>за спаданням</value>
+  </data>
+  <data name="Ascending" xml:space="preserve">
+    <value>за зростанням</value>
+  </data>
+  <data name="DefaultAsc" xml:space="preserve">
+    <value>(за замовчуванням зростання)</value>
+  </data>
+  <data name="NowNoteNumber" xml:space="preserve">
+    <value> (тепер нотатка #{0})</value>
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value>Деталі:</value>
+  </data>
+</root>

@@ -18,7 +18,7 @@
     <!-- Other important properties -->
     <RootNamespace>Community.PowerToys.Run.Plugin.QuickNotes</RootNamespace>
     <AssemblyName>Community.PowerToys.Run.Plugin.QuickNotes</AssemblyName>
-    <Version>1.0.11</Version>
+    <Version>1.0.12</Version>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
@@ -30,6 +30,30 @@
   <ItemGroup>
      <PackageReference Include="Community.PowerToys.Run.Plugin.Dependencies" Version="0.90.0" />
      <PackageReference Include="System.Text.Json" Version="9.0.0" />
+  </ItemGroup>
+
+  <!-- Make internals visible to test project -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="Community.PowerToys.Run.Plugin.QuickNotes.UnitTests" />
+  </ItemGroup>
+
+  <!-- Resource files for localization -->
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.zh-CN.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Properties\Resources.uk.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <!-- Additional files to include in the output -->
