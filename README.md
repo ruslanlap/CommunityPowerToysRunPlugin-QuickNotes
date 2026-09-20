@@ -7,10 +7,10 @@
   <h2>Create, manage, and search notes directly from PowerToys Run</h2>
   
   <div>
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-x64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-x64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_x64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
     </a>
-    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-arm64.zip">
+    <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-arm64.zip">
       <img src="https://img.shields.io/badge/⬇_Download_ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
     </a>
   </div>
@@ -21,12 +21,12 @@
     <a href="https://opensource.org/licenses/MIT">
       <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
     </a>
-    <img src="https://img.shields.io/maintenance/yes/2025" alt="Maintenance">
+    <img src="https://img.shields.io/maintenance/yes/2026" alt="Maintenance">
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions">
       <img src="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/actions/workflows/build-and-release.yml/badge.svg" alt="Build Status">
     </a>
     <img src="https://img.shields.io/badge/C%23-.NET-512BD4" alt="C#">
-    <img src="https://img.shields.io/badge/version-1.0.12-brightgreen" alt="Version">
+    <img src="https://img.shields.io/badge/version-1.1.0-brightgreen" alt="Version">
     <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome">
     <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/stargazers">
       <img src="https://img.shields.io/github/stars/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes" alt="GitHub stars">
@@ -52,8 +52,8 @@
 <summary>SHA256 Checksums</summary>
 
 ```text
-# QuickNotes-1.0.12-x64.zip
-# QuickNotes-1.0.12-arm64.zip
+# QuickNotes-1.1.0-x64.zip
+# QuickNotes-1.1.0-arm64.zip
 # Checksums will be generated during release build
 ```
 
@@ -62,6 +62,8 @@
 <div align="center">
   <img src="assets/image.png" alt="v1.0.10 MEGA RELEASE - Git Sync Feature" style="width:100%;max-width:600px;">
 </div>
+
+> 🆕 **v1.1.0**: Added `qq count` (total + pinned stats) and `qq copy <n>` (copy note to clipboard by number). Download links and maintenance badge updated.
 
 > 🆕 **v1.0.12**: Added Ukrainian localization 🇺🇦 with full translation support! Now QuickNotes speaks English, Chinese, and Ukrainian. [Full changelog](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/blob/master/Release.md/CHANGELOG.md)
 
@@ -89,7 +91,7 @@ For detailed documentation, visit the [QuickNotes Wiki](https://github.com/rusla
 
 ### Quick Install
 
-1. Download the [x64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-x64.zip) or [ARM64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-arm64.zip) version
+1. Download the [x64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-x64.zip) or [ARM64](https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-arm64.zip) version
 2. Extract to `%LOCALAPPDATA%\Microsoft\PowerToys\PowerToys Run\Plugins\`
 3. Restart PowerToys
 4. Start using with `Alt+Space` then type `qq`
@@ -98,7 +100,7 @@ For detailed documentation, visit the [QuickNotes Wiki](https://github.com/rusla
 
 ```powershell
 # Download and install the latest version (x64)
-$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-x64.zip"
+$url = "https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-x64.zip"
 $pluginPath = "$env:LOCALAPPDATA\Microsoft\PowerToys\PowerToys Run\Plugins\QuickNotes"
 New-Item -ItemType Directory -Force -Path $pluginPath | Out-Null
 Invoke-WebRequest -Uri $url -OutFile "$env:TEMP\QuickNotes.zip"
@@ -263,11 +265,11 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 <div align="center">
   <h2>📥 Download Latest Version</h2>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-x64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-x64.zip">
     <img src="https://img.shields.io/badge/Download-x64_64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download x64">
   </a>
   
-  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.0.12/QuickNotes-1.0.12-arm64.zip">
+  <a href="https://github.com/ruslanlap/CommunityPowerToysRunPlugin-QuickNotes/releases/download/v1.1.0/QuickNotes-1.1.0-arm64.zip">
     <img src="https://img.shields.io/badge/Download-ARM64-0078D7?style=for-the-badge&logo=windows&logoColor=white" alt="Download ARM64">
   </a>
   

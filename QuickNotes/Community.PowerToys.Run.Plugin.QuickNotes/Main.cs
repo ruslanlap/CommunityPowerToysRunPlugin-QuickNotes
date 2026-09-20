@@ -142,7 +142,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             "markdown",
             "md",
             "sync",
-            "restore"
+            "restore",
+            "count",
+            "copy"
         };
 
         // Опис команд
@@ -166,7 +168,9 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
             { "markdown", Resources.CommandMarkdown },
             { "md", Resources.CommandMarkdown },
             { "sync", Resources.CommandSync },
-            { "restore", Resources.CommandRestore }
+            { "restore", Resources.CommandRestore },
+            { "count", "Show total notes count and pinned count" },
+            { "copy", "Copy note to clipboard: qq copy <number>" }
         };
 
         // Setting keys
@@ -595,6 +599,10 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
                     return SyncNotes();
                 case "restore":
                     return RestoreNotes();
+                case "count":
+                    return CountNotes();
+                case "copy":
+                    return CopyNoteToClipboard(args);
                 default:
                     return AddNoteCommand(searchText);
             }
@@ -1663,6 +1671,49 @@ namespace Community.PowerToys.Run.Plugin.QuickNotes
         }
 
         // --- Зчитування нотаток ---
+        private List<Result> CountNotes()
+        {
+            var notes = ReadNotes();
+            var pinned = notes.Count(n => n.IsPinned);
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = $"📊 {notes.Count} notes total  •  📌 {pinned} pinned",
+                    SubTitle = $"Notes stored in: {_notesPath}",
+                    IcoPath = IconPath,
+                    Action = _ => false
+                }
+            };
+        }
+
+        private List<Result> CopyNoteToClipboard(string args)
+        {
+            if (!int.TryParse(args.Trim(), out int idx) || idx < 1)
+                return ErrorResult("Usage: qq copy <number>", "e.g. qq copy 3");
+
+            var notes = ReadNotes();
+            var note = notes.FirstOrDefault(n => n.DisplayIndex == idx);
+            if (note == null)
+                return ErrorResult($"Note #{idx} not found", $"You have {notes.Count} notes");
+
+            var content = StripTimestampAndTags(note.Text);
+            return new List<Result>
+            {
+                new Result
+                {
+                    Title = $"📋 Copy note #{idx} to clipboard",
+                    SubTitle = content.Length > 80 ? content[..80] + "…" : content,
+                    IcoPath = IconPath,
+                    Action = _ =>
+                    {
+                        try { Clipboard.SetText(content); return true; }
+                        catch (Exception ex) { Context?.API.ShowMsg(Resources.Error, ex.Message); return false; }
+                    }
+                }
+            };
+        }
+
         private List<NoteEntry> ReadNotes()
         {
             try
